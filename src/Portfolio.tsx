@@ -3,11 +3,13 @@ import { World } from './components/scene/World';
 import { SoundToggle } from './components/ui/SoundToggle';
 import { ScrollTrack } from './components/ui/ScrollTrack';
 import { ScrollProvider } from './context/ScrollContext';
+import { CinematicLoader } from './components/ui/Loader';
 
 export default function Portfolio() {
   return (
     <ScrollProvider>
       <div className="fixed inset-0 w-screen h-screen bg-[#030507] overflow-hidden">
+        <CinematicLoader />
         {/* 3D WebGL Canvas */}
         <Canvas
           shadows

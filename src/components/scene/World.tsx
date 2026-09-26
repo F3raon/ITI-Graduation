@@ -2,6 +2,8 @@ import { Suspense } from 'react';
 import { Lighting } from './Lighting';
 import { Environment } from './Environment';
 import { CameraRig } from './CameraRig';
+import { Effects } from './Effects';
+import { FloatingParticles } from './FloatingParticles';
 import { IntroScene } from '../sections/IntroScene';
 import { Office } from '../office/Office';
 import { CharacterScene } from '../sections/CharacterScene';
@@ -40,6 +42,12 @@ export function World() {
 
       {/* Cinematic Camera Controller driven by continuous scroll */}
       <CameraRig />
+
+      {/* Post Processing Effects */}
+      <Effects />
+
+      {/* Dust/Atmospheric Particles */}
+      <FloatingParticles count={1500} />
 
       {/* 3D World Journey Sections */}
       <Suspense fallback={null}>

@@ -13,6 +13,7 @@ export function SoundToggle() {
     <div className="fixed bottom-[14px] left-[14px] md:bottom-[24px] md:left-[24px] z-[9999] flex items-center gap-[12px] scale-[0.75] md:scale-100 origin-bottom-left">
       <button
         onClick={handleToggle}
+        onMouseEnter={() => soundEngine.playHover()}
         aria-label="Toggle ambient sound"
         style={{
           display: 'flex',

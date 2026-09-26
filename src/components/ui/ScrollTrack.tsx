@@ -88,6 +88,7 @@ export function ScrollTrack() {
       <div
         ref={trackRef}
         onClick={handleTrackClick}
+        onMouseEnter={() => soundEngine.playHover()}
         style={{
           width: '2px',
           height: '240px',
