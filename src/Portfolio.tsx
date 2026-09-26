@@ -7,7 +7,7 @@ import { ScrollProvider } from './context/ScrollContext';
 export default function Portfolio() {
   return (
     <ScrollProvider>
-      <div className="cinematic-app">
+      <div className="fixed inset-0 w-screen h-screen bg-[#030507] overflow-hidden">
         {/* 3D WebGL Canvas */}
         <Canvas
           shadows
@@ -18,6 +18,7 @@ export default function Portfolio() {
             powerPreference: 'high-performance',
             alpha: false,
           }}
+          className="!w-screen !h-screen block"
         >
           <World />
         </Canvas>
@@ -29,7 +30,7 @@ export default function Portfolio() {
         <ScrollTrack />
 
         {/* Minimal Top Brand Watermark */}
-        <div className="hud-watermark">
+        <div className="fixed top-[14px] left-[14px] md:top-[24px] md:left-[28px] z-[9999] pointer-events-none select-none scale-[0.75] md:scale-100 origin-top-left">
           <div
             style={{
               fontSize: '11px',

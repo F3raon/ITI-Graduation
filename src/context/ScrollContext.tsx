@@ -53,16 +53,13 @@ export function ScrollProvider({ children }: { children: React.ReactNode }) {
     };
 
     const handleTouchMove = (e: TouchEvent) => {
-      if (e.cancelable) {
-        e.preventDefault();
-      }
       if (e.touches.length > 0) {
         const touchY = e.touches[0].clientY;
         const deltaY = touchStartY - touchY;
         touchStartY = touchY;
 
-        // Controlled touch sensitivity for mobile
-        const sensitivity = 0.0015;
+        // Controlled touch sensitivity
+        const sensitivity = 0.0009;
         const next = Math.max(0, Math.min(1, scrollStore.target + deltaY * sensitivity));
         scrollStore.target = next;
       }
@@ -89,7 +86,7 @@ export function ScrollProvider({ children }: { children: React.ReactNode }) {
 
     window.addEventListener('wheel', handleWheel, { passive: true });
     window.addEventListener('touchstart', handleTouchStart, { passive: true });
-    window.addEventListener('touchmove', handleTouchMove, { passive: false });
+    window.addEventListener('touchmove', handleTouchMove, { passive: true });
     window.addEventListener('keydown', handleKeyDown);
 
     return () => {

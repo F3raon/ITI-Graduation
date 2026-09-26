@@ -12,8 +12,8 @@ export function CameraRig() {
   const points = useMemo<Vec3[]>(
     () => [
       [0.0, 1.20, 14.5],    // 0.00: Tunnel entry — Intro (Object Z=10)
-      [0.6, 1.00,  6.2],    // 0.08: Approaching office corridor
-      [0.0, 0.85,  4.5],    // 0.16: Office workstation & desk (Object Z=0)
+      [0.6, 1.00, 6.2],    // 0.08: Approaching office corridor
+      [0.0, 0.85, 4.5],    // 0.16: Office workstation & desk (Object Z=0)
       [0.0, 0.75, -1.8],    // 0.22: Through the archway toward character
       [0.0, 0.90, -5.0],    // 0.27: Facing Real Ahmed portrait (Object Z=-9.5)
       [0.0, 1.00, -5.2],    // 0.32: Neon transformation complete
@@ -40,8 +40,8 @@ export function CameraRig() {
   // LookAt targets — each points toward the section center
   const targets = useMemo<Vec3[]>(
     () => [
-      [0.0, 0.5,  6.0],     // Tunnel focal point
-      [0.2, 0.2,  0.0],     // Office reveal
+      [0.0, 0.5, 6.0],     // Tunnel focal point
+      [0.2, 0.2, 0.0],     // Office reveal
       [0.0, 0.1, -0.6],     // Desk & code monitors
       [0.0, 0.9, -9.5],     // Looking through arch to character dais
       [0.0, 1.0, -9.5],     // Real Ahmed face
@@ -138,8 +138,7 @@ export function CameraRig() {
     // Responsive aspect ratio compensation
     const aspect = state.size.width / Math.max(1, state.size.height);
     if (aspect < 1.6) {
-      const multiplier = aspect < 0.8 ? 2.8 : 1.8;
-      const pullback = (1.6 - aspect) * multiplier;
+      const pullback = (1.6 - aspect) * 1.8;
       const dir = desiredPos.current.clone().sub(lookAtPos.current).normalize();
       desiredPos.current.add(dir.multiplyScalar(pullback));
     }

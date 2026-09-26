@@ -55,7 +55,7 @@ export function ScrollTrack() {
   };
 
   return (
-    <div className="hud-scroll-track">
+    <div className="fixed right-[6px] md:right-[24px] top-1/2 -translate-y-1/2 z-[9999] flex flex-row items-center gap-[6px] md:gap-[16px] select-none scale-[0.7] md:scale-100 origin-right">
       {/* Current Sector Badge */}
       <div
         style={{
@@ -69,6 +69,7 @@ export function ScrollTrack() {
         }}
       >
         <span
+          className="hidden md:inline"
           style={{
             fontSize: '11px',
             fontFamily: 'sans-serif',
