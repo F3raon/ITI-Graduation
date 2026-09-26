@@ -8,7 +8,7 @@ export function Desk() {
     <group position={[0, -0.65, 0]}>
       {/* Heavy Desktop Surface */}
       <RoundedBox args={[4.8, 0.14, 2.0]} radius={0.04} smoothness={4} castShadow receiveShadow>
-        <meshStandardMaterial color="#0f172a" metalness={0.85} roughness={0.2} />
+        <meshStandardMaterial color="#1e293b" metalness={0.75} roughness={0.3} />
       </RoundedBox>
 
       {/* Front Bevel Emissive Accent Line */}

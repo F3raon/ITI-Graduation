@@ -9,7 +9,7 @@ export function OfficeChair({ position = [0, -0.65, 0.95] }: { position?: [numbe
       {/* High backrest with ergonomic curve */}
       <mesh position={[0, 1.15, 0.22]} castShadow>
         <RoundedBox args={[0.95, 1.45, 0.2]} radius={0.08} smoothness={4}>
-          <meshStandardMaterial color="#0f172a" metalness={0.4} roughness={0.4} />
+          <meshStandardMaterial color="#1e293b" metalness={0.3} roughness={0.5} />
         </RoundedBox>
       </mesh>
 
@@ -23,7 +23,7 @@ export function OfficeChair({ position = [0, -0.65, 0.95] }: { position?: [numbe
       {/* Seat Cushion */}
       <mesh position={[0, 0.38, 0]} castShadow>
         <RoundedBox args={[1.05, 0.16, 0.95]} radius={0.07} smoothness={4}>
-          <meshStandardMaterial color="#0f172a" metalness={0.4} roughness={0.4} />
+          <meshStandardMaterial color="#1e293b" metalness={0.3} roughness={0.5} />
         </RoundedBox>
       </mesh>
 
@@ -32,7 +32,7 @@ export function OfficeChair({ position = [0, -0.65, 0.95] }: { position?: [numbe
         <group key={i} position={[x, 0.65, 0]}>
           <mesh position={[0, 0, 0]} castShadow>
             <RoundedBox args={[0.12, 0.05, 0.6]} radius={0.02} smoothness={2}>
-              <meshStandardMaterial color="#1e293b" metalness={0.7} roughness={0.3} />
+              <meshStandardMaterial color="#334155" metalness={0.6} roughness={0.4} />
             </RoundedBox>
           </mesh>
           <mesh position={[0, -0.25, -0.05]} castShadow>

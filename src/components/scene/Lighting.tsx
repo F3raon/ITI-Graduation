@@ -46,9 +46,11 @@ export function Lighting() {
       />
 
       {/* Office warm key & neon rim lights */}
-      <pointLight position={[-4, 3, 3]} intensity={25} distance={16} color="#ff8a30" />
-      <pointLight position={[5, 2.5, 2]} intensity={22} distance={15} color="#67c9ff" />
-      <pointLight position={[0, 4.2, -1]} intensity={18} distance={12} color="#90b8f8" />
+      <pointLight position={[-4, 3, 3]} intensity={80} distance={20} decay={1.5} color="#ff8a30" />
+      <pointLight position={[5, 2.5, 2]} intensity={70} distance={20} decay={1.5} color="#67c9ff" />
+      <pointLight position={[0, 4.2, -1]} intensity={60} distance={15} decay={1.5} color="#90b8f8" />
+      {/* New Fill Light for the Chair back & Desk to prevent pure black silhouettes */}
+      <pointLight position={[0, 2, 4]} intensity={50} distance={12} decay={1.5} color="#d4e8ff" />
 
       {/* About Section Lighting */}
       <pointLight position={[3, 1.5, -18]} intensity={24} distance={16} color="#ff8a30" />
