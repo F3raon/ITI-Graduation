@@ -13,7 +13,7 @@ export function CameraRig() {
     () => [
       [0.0, 1.20, 14.5],    // 0.00: Tunnel entry — Intro (Object Z=10)
       [0.6, 1.00,  6.2],    // 0.08: Approaching office corridor
-      [0.2, 0.55,  2.0],    // 0.16: Office workstation & desk (Object Z=0)
+      [0.0, 0.85,  4.5],    // 0.16: Office workstation & desk (Object Z=0)
       [0.0, 0.75, -1.8],    // 0.22: Through the archway toward character
       [0.0, 0.90, -5.0],    // 0.27: Facing Real Ahmed portrait (Object Z=-9.5)
       [0.0, 1.00, -5.2],    // 0.32: Neon transformation complete
