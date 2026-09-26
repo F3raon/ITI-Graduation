@@ -40,28 +40,11 @@ function TechNode({
         setHovered(false);
       }}
     >
-      {/* 3D Polyhedral Object for Technology */}
+      {/* Simple Tech Indicator Dot */}
       <mesh position={[0, 0.45, 0]}>
-        <octahedronGeometry args={[0.32, 0]} />
-        <meshStandardMaterial
-          color="#0f172a"
-          emissive={skill.color}
-          emissiveIntensity={hovered ? 1.6 : 0.4}
-          roughness={0.2}
-          wireframe={!hovered}
-        />
+        <sphereGeometry args={[0.06, 16, 16]} />
+        <meshBasicMaterial color={hovered ? '#ffffff' : skill.color} />
       </mesh>
-
-      {/* Floating 3D Base Badge */}
-      <RoundedBox args={[1.7, 0.52, 0.12]} radius={0.08} smoothness={3}>
-        <meshStandardMaterial
-          color="#080c14"
-          metalness={0.9}
-          roughness={0.2}
-          emissive={skill.color}
-          emissiveIntensity={hovered ? 0.45 : 0.1}
-        />
-      </RoundedBox>
 
       {/* Skill Name */}
       <Text position={[0, 0.04, 0.08]} fontSize={0.115} color={hovered ? '#ffffff' : skill.color} anchorX="center" fontWeight={700}>
@@ -116,54 +99,20 @@ export function SkillsScene({ position = [0, 0, -34] }: { position?: [number, nu
         SKILLS LAB
       </Text>
 
-      {/* CENTRAL GLOWING .NET CORE REACTOR */}
+      {/* CENTRAL SYSTEM CORE (Minimal) */}
       <group ref={coreRef} position={[0, 0, 0]}>
-        {/* Outer Pulsing Polyhedron Wireframe */}
+        {/* Simple wireframe sphere */}
         <mesh>
-          <icosahedronGeometry args={[1.5, 1]} />
-          <meshStandardMaterial
-            color="#512bd4"
-            wireframe
-            emissive="#7c3aed"
-            emissiveIntensity={1.4}
-            transparent
-            opacity={0.7}
-          />
+          <sphereGeometry args={[1.2, 16, 16]} />
+          <meshBasicMaterial color="#38bdf8" wireframe transparent opacity={0.15} />
         </mesh>
 
-        {/* Inner Solid Energy Crystal */}
-        <Float speed={1.5} rotationIntensity={0.4} floatIntensity={0.2}>
-          <mesh>
-            <octahedronGeometry args={[0.9, 0]} />
-            <meshStandardMaterial
-              color="#ff8a30"
-              emissive="#ff8a30"
-              emissiveIntensity={1.2}
-              roughness={0.1}
-              metalness={0.9}
-            />
-          </mesh>
-        </Float>
-
-        {/* Core Name */}
-        <Text position={[0, 0, 1.15]} fontSize={0.34} color="#ffffff" anchorX="center" fontWeight={900}>
+        <Text position={[0, 0, 1.15]} fontSize={0.28} color="#ffffff" anchorX="center" fontWeight={900}>
           .NET
         </Text>
-        <Text position={[0, -0.42, 1.15]} fontSize={0.12} color="#67c9ff" anchorX="center" letterSpacing={0.15}>
+        <Text position={[0, -0.32, 1.15]} fontSize={0.1} color="#67c9ff" anchorX="center" letterSpacing={0.15}>
           CORE ARCHITECTURE
         </Text>
-      </group>
-
-      {/* Orbital Glowing Rings around the Core */}
-      <group ref={ringRef} position={[0, 0, 0]}>
-        <mesh rotation={[Math.PI / 3, 0, 0]}>
-          <torusGeometry args={[3.8, 0.018, 16, 64]} />
-          <meshBasicMaterial color="#512bd4" transparent opacity={0.6} />
-        </mesh>
-        <mesh rotation={[-Math.PI / 4, Math.PI / 4, 0]}>
-          <torusGeometry args={[4.4, 0.015, 16, 64]} />
-          <meshBasicMaterial color="#ff8a30" transparent opacity={0.4} />
-        </mesh>
       </group>
 
       {/* Surrounding Orbital Technology Nodes */}

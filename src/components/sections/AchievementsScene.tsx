@@ -95,13 +95,11 @@ function AchievementPedestal({
 
       {/* Trophy Pedestal Display Stand */}
       <group position={[0, -0.85, 0]}>
-        <RoundedBox args={[2.8, 1.45, 0.22]} radius={0.08} smoothness={4} castShadow>
+        <RoundedBox args={[2.8, 1.45, 0.05]} radius={0.02} smoothness={2} castShadow>
           <meshStandardMaterial
-            color="#080c14"
-            metalness={0.88}
-            roughness={0.2}
-            emissive={item.color}
-            emissiveIntensity={hovered ? 0.4 : 0.1}
+            color="#05080c"
+            metalness={0.9}
+            roughness={0.1}
           />
         </RoundedBox>
 
@@ -152,11 +150,7 @@ export function AchievementsScene({ position = [0, 0, -82] }: { position?: [numb
 
   return (
     <group position={position} scale={scale}>
-      {/* Chamber Architectural Dark Backdrop to isolate room view */}
-      <mesh position={[0, 1.2, -2.2]} receiveShadow>
-        <planeGeometry args={[24, 12]} />
-        <meshStandardMaterial color="#030508" roughness={0.95} metalness={0.1} />
-      </mesh>
+      {/* Removed artificial dark backdrop plane */}
 
       {/* Section Header */}
       <Text position={[-6.2, 3.6, 0]} fontSize={0.18} color="#94a3b8" anchorX="left" letterSpacing={0.22}>
@@ -165,7 +159,7 @@ export function AchievementsScene({ position = [0, 0, -82] }: { position?: [numb
       <Text position={[-6.2, 2.85, 0]} fontSize={0.72} color="#f8fafc" anchorX="left" fontWeight={900}>
         ACHIEVEMENTS CHAMBER
       </Text>
-      <Text position={[-6.2, 2.2, 0]} fontSize={0.14} color="#ffc83b" anchorX="left" letterSpacing={0.08}>
+      <Text position={[-6.2, 2.2, 0]} fontSize={0.14} color="#38bdf8" anchorX="left" letterSpacing={0.08}>
         COMPETITIVE ROBOTICS, CLOUD COMPUTING & SPACE INNOVATION AWARDS
       </Text>
 
