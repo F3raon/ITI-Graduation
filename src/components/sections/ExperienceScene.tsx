@@ -40,53 +40,41 @@ function ExperienceNode({
       }}
     >
       {/* 3D Floating Glass Milestone Block */}
-      <RoundedBox args={[5.2, 1.55, 0.18]} radius={0.08} smoothness={4} castShadow>
+      <RoundedBox args={[4.2, 1.2, 0.1]} radius={0.04} smoothness={2} castShadow>
         <meshStandardMaterial
-          color="#080c14"
+          color="#05080c"
           metalness={0.88}
           roughness={0.2}
           emissive={accentColor}
-          emissiveIntensity={hovered ? 0.4 : 0.1}
+          emissiveIntensity={hovered ? 0.3 : 0.05}
         />
       </RoundedBox>
 
-      {/* Accent Side Bar */}
-      <mesh position={[-2.55, 0, 0.1]}>
-        <boxGeometry args={[0.06, 1.4, 0.04]} />
-        <meshBasicMaterial color={accentColor} />
-      </mesh>
-
       {/* Date Marker Tag */}
-      <Text position={[-2.35, 0.52, 0.12]} fontSize={0.105} color={accentColor} anchorX="left" fontWeight={700}>
+      <Text position={[-1.9, 0.4, 0.06]} fontSize={0.09} color={accentColor} anchorX="left" fontWeight={700}>
         {item.period}
       </Text>
 
       {/* Role */}
-      <Text position={[-2.35, 0.24, 0.12]} fontSize={0.175} color="#f8fafc" anchorX="left" fontWeight={800} maxWidth={4.8}>
+      <Text position={[-1.9, 0.15, 0.06]} fontSize={0.14} color="#f8fafc" anchorX="left" fontWeight={800} maxWidth={3.8}>
         {item.role}
       </Text>
 
       {/* Company & Location */}
-      <Text position={[-2.35, -0.08, 0.12]} fontSize={0.11} color="#38bdf8" anchorX="left" maxWidth={4.5}>
+      <Text position={[-1.9, -0.1, 0.06]} fontSize={0.09} color="#38bdf8" anchorX="left" maxWidth={3.8}>
         {item.company}  //  {item.location}
       </Text>
 
-      {/* First bullet snippet */}
-      <Text position={[-2.35, -0.38, 0.12]} maxWidth={4.7} fontSize={0.075} color="#94a3b8" anchorX="left" lineHeight={1.35}>
+      {/* Detail snippet */}
+      <Text position={[-1.9, -0.35, 0.06]} maxWidth={3.8} fontSize={0.065} color="#94a3b8" anchorX="left" lineHeight={1.4}>
         {item.details[0]}
       </Text>
 
-      {/* Milestone Indicator Sphere on Timeline Rail */}
-      <group position={[-3.0, 0, 0]}>
-        <mesh>
-          <sphereGeometry args={[0.14, 24, 24]} />
-          <meshStandardMaterial
-            color={accentColor}
-            emissive={accentColor}
-            emissiveIntensity={hovered ? 2 : 0.8}
-          />
-        </mesh>
-      </group>
+      {/* Connecting line to center path */}
+      <mesh position={[index % 2 === 0 ? 2.3 : -2.3, 0, -0.05]}>
+        <boxGeometry args={[0.4, 0.02, 0.02]} />
+        <meshBasicMaterial color={accentColor} />
+      </mesh>
     </group>
   );
 }
@@ -115,44 +103,25 @@ export function ExperienceScene({ position = [0, 0, -48] }: { position?: [number
         PROFESSIONAL MILESTONES & ACHIEVEMENTS
       </Text>
 
-      {/* Glowing Central Timeline Rail */}
-      <mesh position={[-3.0, -0.0, 0]}>
-        <cylinderGeometry args={[0.025, 0.025, 7.2, 16]} />
-        <meshBasicMaterial color="#ff8a30" />
+      {/* Glowing Central Timeline Rail (Z-axis) */}
+      <mesh position={[0, -0.6, -4]}>
+        <boxGeometry args={[0.04, 0.04, 9]} />
+        <meshBasicMaterial color="#38bdf8" transparent opacity={0.3} />
       </mesh>
 
-      {/* Timeline Milestones */}
-      <group position={[0.5, 0, 0]}>
-        {PORTFOLIO_DATA.experience.slice(0, 4).map((item, i) => (
-          <ExperienceNode
-            key={item.company + item.period}
-            item={item}
-            position={[0, 1.85 - i * 1.82, 0]}
-            index={i}
-          />
-        ))}
-      </group>
-
-      {/* Right Column Architecture Monolith */}
-      <group position={[5.2, -0.2, 0]}>
-        <RoundedBox args={[2.8, 5.0, 0.3]} radius={0.15} smoothness={4} castShadow>
-          <meshStandardMaterial color="#090f18" metalness={0.85} roughness={0.25} emissive="#0369a1" emissiveIntensity={0.18} />
-        </RoundedBox>
-        <Text position={[0, 1.9, 0.18]} fontSize={0.26} color="#ff8a30" anchorX="center" fontWeight={800}>
-          LEAD
-        </Text>
-        <Text position={[0, 1.0, 0.18]} fontSize={0.26} color="#67c9ff" anchorX="center" fontWeight={800}>
-          ARCHITECT
-        </Text>
-        <Text position={[0, 0.1, 0.18]} fontSize={0.26} color="#ffffff" anchorX="center" fontWeight={800}>
-          DEPLOY
-        </Text>
-        <Text position={[0, -0.8, 0.18]} fontSize={0.26} color="#ff8a30" anchorX="center" fontWeight={800}>
-          SCALE
-        </Text>
-        <Text position={[0, -1.6, 0.18]} fontSize={0.09} color="#94a3b8" anchorX="center" letterSpacing={0.15}>
-          PRODUCTION RIGOR
-        </Text>
+      {/* Timeline Milestones along Z axis */}
+      <group position={[0, 0, 0]}>
+        {PORTFOLIO_DATA.experience.map((item, i) => {
+          const isLeft = i % 2 === 0;
+          return (
+            <ExperienceNode
+              key={item.company + item.period}
+              item={item}
+              position={[isLeft ? -2.8 : 2.8, -0.2, -i * 2.2]}
+              index={i}
+            />
+          );
+        })}
       </group>
     </group>
   );

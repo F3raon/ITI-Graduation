@@ -2,7 +2,6 @@ import { Suspense } from 'react';
 import { Lighting } from './Lighting';
 import { Environment } from './Environment';
 import { CameraRig } from './CameraRig';
-import { NavigationHUD } from '../ui/NavigationHUD';
 import { IntroScene } from '../sections/IntroScene';
 import { Office } from '../office/Office';
 import { CharacterScene } from '../sections/CharacterScene';
@@ -77,8 +76,6 @@ export function World() {
         {/* 1.00: Final Portal & Live Interactive Embedded Screen */}
         <PortfolioPortal position={[0, 0, -78]} />
 
-        {/* Floating 3D Navigation HUD */}
-        <NavigationHUD />
       </Suspense>
     </>
   );

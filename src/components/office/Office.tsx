@@ -1,6 +1,6 @@
 import { RoundedBox } from '@react-three/drei';
 import { Desk } from './Desk';
-import { OfficeChair, DeveloperCharacter } from './Character';
+import { OfficeChair } from './Character';
 
 export function Office() {
   return (
@@ -129,7 +129,6 @@ export function Office() {
       {/* The Central Developer Setup */}
       <Desk />
       <OfficeChair position={[0, -0.65, 0.95]} />
-      <DeveloperCharacter position={[0, -0.65, 0.95]} />
     </group>
   );
 }

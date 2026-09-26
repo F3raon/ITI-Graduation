@@ -101,49 +101,46 @@ export function ProjectPodium({
       <group ref={baseRef} position={[0, -1.2, 0]}>
         <RoundedBox args={[3.2, 1.45, 0.22]} radius={0.08} smoothness={4} castShadow>
           <meshStandardMaterial
-            color="#080c14"
+            color="#05070a"
             metalness={0.9}
-            roughness={0.2}
+            roughness={0.15}
             emissive={project.color}
             emissiveIntensity={hovered ? 0.35 : 0.08}
           />
         </RoundedBox>
 
-        {/* Index Tag */}
-        <Text position={[-1.38, 0.48, 0.13]} fontSize={0.11} color={project.color} anchorX="left">
-          {project.id} // {project.category.toUpperCase()}
+        {/* Index Tag & Title */}
+        <Text position={[-1.4, 0.45, 0.13]} fontSize={0.09} color={project.color} anchorX="left" letterSpacing={0.1}>
+          {project.id.toUpperCase()} // {project.category.toUpperCase()}
         </Text>
-
-        {/* Title */}
-        <Text position={[-1.38, 0.18, 0.13]} fontSize={0.19} color="#f8fafc" anchorX="left" fontWeight={700}>
+        <Text position={[-1.4, 0.22, 0.13]} fontSize={0.16} color="#ffffff" anchorX="left" fontWeight={800}>
           {project.title}
         </Text>
 
-        {/* Tags */}
-        <Text position={[-1.38, -0.1, 0.13]} fontSize={0.085} color="#67c9ff" anchorX="left">
-          {project.tags.join('  •  ')}
+        {/* TECHNOLOGIES */}
+        <Text position={[-1.4, 0.02, 0.13]} fontSize={0.07} color="#38bdf8" anchorX="left" letterSpacing={0.1}>
+          TECH: {project.tags.join(' • ')}
         </Text>
 
-        {/* Description snippet */}
-        <Text
-          position={[-1.38, -0.4, 0.13]}
-          maxWidth={2.8}
-          fontSize={0.072}
-          color="#94a3b8"
-          anchorX="left"
-          lineHeight={1.35}
-        >
-          {project.description}
+        {/* PROBLEM / PURPOSE */}
+        <Text position={[-1.4, -0.22, 0.13]} maxWidth={2.8} fontSize={0.065} color="#94a3b8" anchorX="left" lineHeight={1.4}>
+          PURPOSE: {project.description}
+        </Text>
+
+        {/* SOLUTION / RESULT */}
+        <Text position={[-1.4, -0.42, 0.13]} maxWidth={2.8} fontSize={0.065} color="#cbd5e1" anchorX="left" lineHeight={1.4}>
+          SOLUTION: {project.highlights[0]}
         </Text>
 
         {/* Action Button Label */}
         <Text
-          position={[1.35, -0.48, 0.13]}
-          fontSize={0.095}
+          position={[1.35, -0.5, 0.13]}
+          fontSize={0.08}
           color={hovered ? '#ffffff' : project.color}
           anchorX="right"
+          letterSpacing={0.1}
         >
-          {hovered ? 'EXPLORE LIVE ↗' : 'VIEW PROJECT →'}
+          {hovered ? 'ENTER WORLD ↗' : 'VIEW PROJECT →'}
         </Text>
 
         {/* Under-glow light */}

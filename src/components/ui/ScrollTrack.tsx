@@ -62,39 +62,24 @@ export function ScrollTrack() {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'flex-end',
-          gap: '2px',
+          gap: '4px',
+          marginRight: '12px',
+          justifyContent: 'center',
+          opacity: 0.8,
         }}
       >
         <span
           style={{
-            fontSize: '9px',
-            fontFamily: 'monospace',
-            letterSpacing: '1.5px',
-            color: '#64748b',
-          }}
-        >
-          SECTOR
-        </span>
-        <span
-          style={{
-            fontSize: '12px',
-            fontFamily: 'monospace',
-            fontWeight: 800,
-            letterSpacing: '1.5px',
-            color: '#ff8a30',
-            textShadow: '0 0 12px rgba(255, 138, 48, 0.4)',
+            fontSize: '11px',
+            fontFamily: 'sans-serif',
+            fontWeight: 600,
+            letterSpacing: '2px',
+            color: '#ffffff',
+            textShadow: '0 0 10px rgba(255, 255, 255, 0.3)',
+            textTransform: 'uppercase',
           }}
         >
           {currentSector.name}
-        </span>
-        <span
-          style={{
-            fontSize: '10px',
-            fontFamily: 'monospace',
-            color: '#38bdf8',
-          }}
-        >
-          {Math.round(progress * 100)}%
         </span>
       </div>
 
@@ -103,13 +88,11 @@ export function ScrollTrack() {
         ref={trackRef}
         onClick={handleTrackClick}
         style={{
-          width: '6px',
+          width: '2px',
           height: '240px',
-          background: 'rgba(255, 255, 255, 0.08)',
-          borderRadius: '999px',
+          background: 'rgba(255, 255, 255, 0.1)',
           position: 'relative',
           cursor: 'pointer',
-          boxShadow: '0 0 15px rgba(0, 0, 0, 0.5)',
         }}
       >
         {/* Glow Progress Fill */}
@@ -120,9 +103,8 @@ export function ScrollTrack() {
             left: 0,
             width: '100%',
             height: `${progress * 100}%`,
-            background: 'linear-gradient(to bottom, #ff8a30, #67c9ff)',
-            borderRadius: '999px',
-            boxShadow: '0 0 10px #ff8a30',
+            background: '#ffffff',
+            boxShadow: '0 0 8px #ffffff',
           }}
         />
 
@@ -134,14 +116,13 @@ export function ScrollTrack() {
             top: `${progress * 100}%`,
             left: '50%',
             transform: 'translate(-50%, -50%)',
-            width: isDragging ? '16px' : '14px',
-            height: isDragging ? '16px' : '14px',
+            width: isDragging ? '8px' : '6px',
+            height: isDragging ? '8px' : '6px',
             borderRadius: '50%',
             background: '#ffffff',
-            border: '2px solid #ff8a30',
-            boxShadow: '0 0 14px #ff8a30',
+            boxShadow: '0 0 10px #ffffff',
             cursor: 'grab',
-            transition: isDragging ? 'none' : 'transform 0.1s ease',
+            transition: isDragging ? 'none' : 'all 0.2s ease',
           }}
         />
 
@@ -152,10 +133,11 @@ export function ScrollTrack() {
             style={{
               position: 'absolute',
               top: `${s.target * 100}%`,
-              right: '-6px',
-              width: '4px',
-              height: '2px',
-              background: Math.abs(progress - s.target) < 0.04 ? '#ff8a30' : 'rgba(255, 255, 255, 0.25)',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              width: '6px',
+              height: '1px',
+              background: Math.abs(progress - s.target) < 0.04 ? '#ffffff' : 'rgba(255, 255, 255, 0.2)',
             }}
           />
         ))}

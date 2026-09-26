@@ -73,17 +73,12 @@ function TechNode({
         {skill.level}
       </Text>
 
-      {/* Supporting detail on hover */}
-      {hovered && (
-        <group position={[0, -0.65, 0.2]}>
-          <RoundedBox args={[2.4, 0.55, 0.08]} radius={0.04} smoothness={2}>
-            <meshStandardMaterial color="#020617" emissive={skill.color} emissiveIntensity={0.2} />
-          </RoundedBox>
-          <Text position={[0, 0, 0.06]} maxWidth={2.2} fontSize={0.068} color="#f8fafc" anchorX="center" lineHeight={1.3}>
-            {skill.description}
-          </Text>
-        </group>
-      )}
+      {/* Always visible description (Purpose) */}
+      <group position={[0, -0.4, 0.08]}>
+        <Text position={[0, 0, 0]} maxWidth={2.2} fontSize={0.07} color="#94a3b8" anchorX="center" lineHeight={1.2}>
+          {skill.description}
+        </Text>
+      </group>
 
       {/* Connecting Ray Line to Center Core */}
       <line>
@@ -186,7 +181,7 @@ export function SkillsScene({ position = [0, 0, -34] }: { position?: [number, nu
 
       {/* Bottom Subtitle */}
       <Text position={[0, -3.2, 0]} fontSize={0.14} color="#94a3b8" anchorX="center" letterSpacing={0.18}>
-        HOVER ANY TECHNOLOGY NODE TO INSPECT ARCHITECTURAL INTEGRATION
+        ARCHITECTURAL INTEGRATION MATRIX
       </Text>
     </group>
   );
