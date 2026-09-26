@@ -1,7 +1,76 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { RoundedBox, Text } from '@react-three/drei';
 import * as THREE from 'three';
+import { soundEngine } from '../../utils/audio';
+
+function MonitorPanel({ 
+  children, 
+  position, 
+  rotation, 
+  isCenter = false, 
+  glowColor 
+}: { 
+  children: React.ReactNode, 
+  position: [number, number, number], 
+  rotation?: [number, number, number], 
+  isCenter?: boolean,
+  glowColor: string
+}) {
+  const [hovered, setHovered] = useState(false);
+  const groupRef = useRef<THREE.Group>(null);
+  
+  useFrame((_, delta) => {
+    if (!groupRef.current) return;
+    const targetScale = hovered ? 1.04 : 1;
+    groupRef.current.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), 1 - Math.exp(-6 * delta));
+  });
+
+  return (
+    <group 
+      position={position} 
+      rotation={rotation} 
+      ref={groupRef}
+      onPointerOver={(e) => {
+        e.stopPropagation();
+        setHovered(true);
+        soundEngine.playHover();
+      }}
+      onPointerOut={(e) => {
+        e.stopPropagation();
+        setHovered(false);
+      }}
+    >
+      <RoundedBox args={isCenter ? [1.9, 1.25, 0.08] : [1.7, 1.15, 0.08]} radius={0.04} smoothness={4} castShadow>
+        <meshStandardMaterial 
+          color="#080d14" 
+          metalness={0.9} 
+          roughness={0.2} 
+          emissive={glowColor}
+          emissiveIntensity={hovered ? 0.25 : 0}
+        />
+      </RoundedBox>
+      <mesh position={[0, 0, 0.045]}>
+        <planeGeometry args={isCenter ? [1.78, 1.12] : [1.58, 1.02]} />
+        <meshBasicMaterial color={isCenter ? "#03080e" : "#040910"} />
+      </mesh>
+      
+      <group position={[0, 0, 0]}>
+        {children}
+      </group>
+      
+      {/* Stand */}
+      <mesh position={[0, isCenter ? -0.66 : -0.62, 0]}>
+        <cylinderGeometry args={[isCenter ? 0.045 : 0.04, isCenter ? 0.045 : 0.04, isCenter ? 0.45 : 0.42, 16]} />
+        <meshStandardMaterial color="#1a2432" metalness={0.85} roughness={0.25} />
+      </mesh>
+      <mesh position={[0, isCenter ? -0.88 : -0.82, 0.05]}>
+        <boxGeometry args={[isCenter ? 0.48 : 0.42, 0.03, isCenter ? 0.32 : 0.28]} />
+        <meshStandardMaterial color="#111822" metalness={0.9} roughness={0.2} />
+      </mesh>
+    </group>
+  );
+}
 
 export function Monitors() {
   const roboticsMeshRef = useRef<THREE.Group>(null);
@@ -20,15 +89,7 @@ export function Monitors() {
   return (
     <group position={[0, 0.95, -0.6]}>
       {/* LEFT MONITOR: C# / ASP.NET CORE CODE */}
-      <group position={[-1.75, 0.05, 0.18]} rotation={[0, 0.28, 0]}>
-        <RoundedBox args={[1.7, 1.15, 0.08]} radius={0.04} smoothness={4} castShadow>
-          <meshStandardMaterial color="#080d14" metalness={0.9} roughness={0.2} />
-        </RoundedBox>
-        {/* Screen Display */}
-        <mesh position={[0, 0, 0.045]}>
-          <planeGeometry args={[1.58, 1.02]} />
-          <meshBasicMaterial color="#040910" />
-        </mesh>
+      <MonitorPanel position={[-1.75, 0.05, 0.18]} rotation={[0, 0.28, 0]} glowColor="#67c9ff">
         <Text position={[-0.72, 0.42, 0.05]} fontSize={0.065} color="#67c9ff" anchorX="left">
           BackendAPI.cs // .NET 8
         </Text>
@@ -40,35 +101,12 @@ export function Monitors() {
           anchorX="left"
           lineHeight={1.4}
         >
-          {`[HttpPost("telemetry")]
-public async Task<IActionResult> Dispatch(
-    [FromBody] RoverPacket packet) {
-    await _mediator.Send(new LogTelemetryCmd(packet));
-    await _hub.Clients.All.SendAsync("Update", packet);
-    return Ok(new { Status = "Dispatched" });
-}`}
+          {`[HttpPost("telemetry")]\npublic async Task<IActionResult> Dispatch(\n    [FromBody] RoverPacket packet) {\n    await _mediator.Send(new LogTelemetryCmd(packet));\n    await _hub.Clients.All.SendAsync("Update", packet);\n    return Ok(new { Status = "Dispatched" });\n}`}
         </Text>
-        {/* Stand */}
-        <mesh position={[0, -0.62, 0]}>
-          <cylinderGeometry args={[0.04, 0.04, 0.42, 16]} />
-          <meshStandardMaterial color="#1a2432" metalness={0.85} roughness={0.25} />
-        </mesh>
-        <mesh position={[0, -0.82, 0.05]}>
-          <boxGeometry args={[0.42, 0.03, 0.28]} />
-          <meshStandardMaterial color="#111822" metalness={0.9} roughness={0.2} />
-        </mesh>
-      </group>
+      </MonitorPanel>
 
       {/* CENTER MONITOR: 3D ROBOTICS & ROS TELEMETRY */}
-      <group position={[0, 0.12, 0]}>
-        <RoundedBox args={[1.9, 1.25, 0.08]} radius={0.04} smoothness={4} castShadow>
-          <meshStandardMaterial color="#080d14" metalness={0.9} roughness={0.2} />
-        </RoundedBox>
-        {/* Screen Display */}
-        <mesh position={[0, 0, 0.045]}>
-          <planeGeometry args={[1.78, 1.12]} />
-          <meshBasicMaterial color="#03080e" />
-        </mesh>
+      <MonitorPanel position={[0, 0.12, 0]} isCenter glowColor="#ff8a30">
         <Text position={[-0.8, 0.46, 0.05]} fontSize={0.065} color="#ff8a30" anchorX="left">
           ROS_CORE // AUTONOMOUS ROVER 3D
         </Text>
@@ -94,27 +132,10 @@ public async Task<IActionResult> Dispatch(
         <Text position={[0, -0.44, 0.05]} fontSize={0.042} color="#64748b" anchorX="center">
           LIDAR: ACTIVE // SLAM: 99.8% CONFIDENCE // 120 FPS
         </Text>
-        {/* Stand */}
-        <mesh position={[0, -0.66, 0]}>
-          <cylinderGeometry args={[0.045, 0.045, 0.45, 16]} />
-          <meshStandardMaterial color="#1a2432" metalness={0.85} roughness={0.25} />
-        </mesh>
-        <mesh position={[0, -0.88, 0.05]}>
-          <boxGeometry args={[0.48, 0.03, 0.32]} />
-          <meshStandardMaterial color="#111822" metalness={0.9} roughness={0.2} />
-        </mesh>
-      </group>
+      </MonitorPanel>
 
       {/* RIGHT MONITOR: SYSTEM ARCHITECTURE & PERFORMANCE */}
-      <group position={[1.75, 0.05, 0.18]} rotation={[0, -0.28, 0]}>
-        <RoundedBox args={[1.7, 1.15, 0.08]} radius={0.04} smoothness={4} castShadow>
-          <meshStandardMaterial color="#080d14" metalness={0.9} roughness={0.2} />
-        </RoundedBox>
-        {/* Screen Display */}
-        <mesh position={[0, 0, 0.045]}>
-          <planeGeometry args={[1.58, 1.02]} />
-          <meshBasicMaterial color="#040910" />
-        </mesh>
+      <MonitorPanel position={[1.75, 0.05, 0.18]} rotation={[0, -0.28, 0]} glowColor="#38bdf8">
         <Text position={[-0.72, 0.42, 0.05]} fontSize={0.065} color="#38bdf8" anchorX="left">
           CLUSTER_METRICS // K8S & SQL
         </Text>
@@ -137,16 +158,7 @@ public async Task<IActionResult> Dispatch(
         >
           {`CPU LOAD: 28%  |  RAM: 14.2 GB\nSQL IOPS: 4,820/s  |  LATENCY: 4ms`}
         </Text>
-        {/* Stand */}
-        <mesh position={[0, -0.62, 0]}>
-          <cylinderGeometry args={[0.04, 0.04, 0.42, 16]} />
-          <meshStandardMaterial color="#1a2432" metalness={0.85} roughness={0.25} />
-        </mesh>
-        <mesh position={[0, -0.82, 0.05]}>
-          <boxGeometry args={[0.42, 0.03, 0.28]} />
-          <meshStandardMaterial color="#111822" metalness={0.9} roughness={0.2} />
-        </mesh>
-      </group>
+      </MonitorPanel>
     </group>
   );
 }
