@@ -100,31 +100,28 @@ a {
 
 @media (max-width: 768px) {
   .cinematic-app canvas {
-    touch-action: pan-y;
+    touch-action: none !important;
   }
   .hud-watermark {
     top: 14px;
-    left: 16px;
-    transform: scale(0.88);
+    left: 14px;
+    transform: scale(0.75);
     transform-origin: top left;
   }
   .hud-sound-toggle {
     bottom: 14px;
     left: 14px;
-    transform: scale(0.85);
+    transform: scale(0.75);
     transform-origin: bottom left;
   }
-  .hud-character-btn {
-    bottom: 14px !important;
-    left: 140px !important;
-    transform: scale(0.82) !important;
-    transform-origin: bottom left !important;
-    padding: 8px 12px !important;
-  }
   .hud-scroll-track {
-    right: 10px;
-    transform: translateY(-50%) scale(0.85);
+    right: 6px;
+    transform: translateY(-50%) scale(0.7);
     transform-origin: center right;
-    gap: 8px;
+    gap: 6px;
+  }
+  /* Hide text labels on scroll track for mobile */
+  .hud-scroll-track span {
+    display: none;
   }
 }

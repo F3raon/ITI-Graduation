@@ -138,7 +138,8 @@ export function CameraRig() {
     // Responsive aspect ratio compensation
     const aspect = state.size.width / Math.max(1, state.size.height);
     if (aspect < 1.6) {
-      const pullback = (1.6 - aspect) * 1.8;
+      const multiplier = aspect < 0.8 ? 2.8 : 1.8;
+      const pullback = (1.6 - aspect) * multiplier;
       const dir = desiredPos.current.clone().sub(lookAtPos.current).normalize();
       desiredPos.current.add(dir.multiplyScalar(pullback));
     }
