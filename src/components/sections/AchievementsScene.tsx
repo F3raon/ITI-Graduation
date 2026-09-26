@@ -143,37 +143,46 @@ function AchievementPedestal({
   );
 }
 
+import { useScrollProgress } from '../../context/ScrollContext';
+
 export function AchievementsScene({ position = [0, 0, -82] }: { position?: [number, number, number] }) {
   const { size } = useThree();
   const aspect = size.width / Math.max(1, size.height);
   const scale = aspect < 0.9 ? 0.6 : aspect < 1.25 ? 0.76 : aspect < 1.6 ? 0.92 : 1.0;
+
+  const { progress } = useScrollProgress();
+  const isActive = progress > 0.85 && progress < 0.93;
+  if (!isActive) return null;
 
   return (
     <group position={position} scale={scale}>
       {/* Removed artificial dark backdrop plane */}
 
       {/* Section Header */}
-      <Text position={[-6.2, 3.6, 0]} fontSize={0.18} color="#94a3b8" anchorX="left" letterSpacing={0.22}>
-        // HONORS & RECOGNITION
-      </Text>
-      <Text position={[-6.2, 2.85, 0]} fontSize={0.72} color="#f8fafc" anchorX="left" fontWeight={900}>
-        ACHIEVEMENTS CHAMBER
-      </Text>
-      <Text position={[-6.2, 2.2, 0]} fontSize={0.14} color="#38bdf8" anchorX="left" letterSpacing={0.08}>
-        COMPETITIVE ROBOTICS, CLOUD COMPUTING & SPACE INNOVATION AWARDS
-      </Text>
+      <group position={[0, 4.2, 0]}>
+        <Text position={[0, 0, 0]} fontSize={0.18} color="#94a3b8" anchorX="center" letterSpacing={0.22}>
+          // HONORS & RECOGNITION
+        </Text>
+        <Text position={[0, -0.75, 0]} fontSize={0.72} color="#f8fafc" anchorX="center" fontWeight={900}>
+          ACHIEVEMENTS CHAMBER
+        </Text>
+        <Text position={[0, -1.4, 0]} fontSize={0.14} color="#38bdf8" anchorX="center" letterSpacing={0.08}>
+          COMPETITIVE ROBOTICS, CLOUD COMPUTING & SPACE INNOVATION AWARDS
+        </Text>
+      </group>
 
-      {/* 4 Trophies arranged across the chamber */}
-      <group position={[0, 0, 0]}>
+      {/* 4 Trophies arranged across the chamber in a slight arc */}
+      <group position={[0, -0.5, -3]}>
         {PORTFOLIO_DATA.achievements.map((item, i) => {
           const total = PORTFOLIO_DATA.achievements.length;
-          const spacing = total > 4 ? 2.8 : 3.4;
+          const spacing = 2.4;
           const x = (i - (total - 1) / 2) * spacing;
+          const zArc = -Math.abs(x) * 0.15; // Push outer trophies back
           return (
             <AchievementPedestal
               key={item.id}
               item={item}
-              position={[x, 0, 0]}
+              position={[x, 0, zArc]}
             />
           );
         })}

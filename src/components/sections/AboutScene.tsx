@@ -69,38 +69,46 @@ function HolographicPortrait({ position = [2.8, 0, 0] }: { position?: [number, n
   );
 }
 
+import { useScrollProgress } from '../../context/ScrollContext';
+
 export function AboutScene({ position = [0, 0, -18] }: { position?: [number, number, number] }) {
   const { size } = useThree();
   const aspect = size.width / Math.max(1, size.height);
   const scale = aspect < 0.9 ? 0.62 : aspect < 1.25 ? 0.78 : aspect < 1.6 ? 0.92 : 1.0;
+  
+  const { progress } = useScrollProgress();
+  const isActive = progress > 0.58 && progress < 0.66;
+  if (!isActive) return null;
 
   return (
     <group position={position} scale={scale}>
       {/* Section Header */}
-      <Text position={[-5.8, 3.2, 0]} fontSize={0.18} color="#94a3b8" anchorX="left" letterSpacing={0.22}>
-        // IDENTITY DOSSIER
-      </Text>
-      <Text position={[-5.8, 2.45, 0]} fontSize={0.72} color="#f8fafc" anchorX="left" fontWeight={900}>
-        WHO AM I?
-      </Text>
+      <group position={[0, 3.2, 0]}>
+        <Text position={[0, 0, 0]} fontSize={0.18} color="#94a3b8" anchorX="center" letterSpacing={0.22}>
+          // IDENTITY DOSSIER
+        </Text>
+        <Text position={[0, -0.75, 0]} fontSize={0.72} color="#f8fafc" anchorX="center" fontWeight={900}>
+          WHO AM I?
+        </Text>
+      </group>
 
       {/* Removed the large glass box to keep typography clean against the world */}
 
       {/* Real 3D Bio Typography */}
-      <Text position={[-5.4, 1.35, 0]} maxWidth={5.8} fontSize={0.22} color="#f8fafc" anchorX="left" lineHeight={1.4}>
+      <Text position={[0, 1.35, 0]} maxWidth={5.8} fontSize={0.22} color="#f8fafc" anchorX="center" textAlign="center" lineHeight={1.4}>
         {`I'm Ahmed Hamada, a .NET Backend Developer who loves building systems, solving complex problems, and turning ambitious ideas into resilient products.`}
       </Text>
 
-      <Text position={[-5.4, 0.25, 0]} maxWidth={5.8} fontSize={0.15} color="#94a3b8" anchorX="left" lineHeight={1.6}>
+      <Text position={[0, 0.25, 0]} maxWidth={5.8} fontSize={0.15} color="#94a3b8" anchorX="center" textAlign="center" lineHeight={1.6}>
         {`Specializing in high-performance .NET backend systems, Clean Architecture, SQL Server, and microservices—while integrating computer vision, ROS robotics, and intelligent IoT hardware.`}
       </Text>
 
-      <Text position={[-5.4, -0.85, 0]} maxWidth={5.8} fontSize={0.13} color="#67c9ff" anchorX="left" letterSpacing={0.06}>
+      <Text position={[0, -0.85, 0]} maxWidth={5.8} fontSize={0.13} color="#38bdf8" anchorX="center" textAlign="center" letterSpacing={0.06}>
         {'.NET  //  C#  //  PYTHON  //  SQL SERVER  //  AI & ROBOTICS  //  CLEAN ARCHITECTURE'}
       </Text>
 
       {/* Holographic 3D Portrait Frame */}
-      <HolographicPortrait position={[3.2, 0.1, 0]} />
+      <HolographicPortrait position={[0, -3.2, 0]} />
 
       {/* Removed bulky 3D stat plates */}
     </group>

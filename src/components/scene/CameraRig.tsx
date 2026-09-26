@@ -25,14 +25,14 @@ export function CameraRig() {
       [-4.0, 1.00, -9.5],   // 0.49: Orbit Left Profile
       [-2.4, 0.90, -7.2],   // 0.51: Orbit Front-Left exit
       [-0.6, 0.80, -15.0],  // 0.56: Exiting toward About Me
-      [0.0, 0.80, -22.0],   // 0.62: About scene / WHO AM I
-      [0.0, 0.90, -30.0],   // 0.68: Skills Lab reactor
-      [0.0, 1.00, -39.0],   // 0.74: Project Lab dioramas (entry)
-      [-0.6, 0.85, -43.0],  // 0.77: Project Lab dioramas (settled)
-      [0.4, 0.70, -48.0],   // 0.81: Experience Timeline
-      [0.0, 0.90, -57.0],   // 0.86: Achievements Chamber
-      [0.0, 0.80, -66.0],   // 0.91: Contact Room
-      [0.0, 0.15, -78.0],   // 1.00: Final Live Portal
+      [0.0, 0.80, -16.0],   // 0.62: About scene (Target Z=-22, dist 6)
+      [0.0, 0.90, -24.0],   // 0.68: Skills Lab (Target Z=-30, dist 6)
+      [0.0, 1.00, -33.0],   // 0.74: Project Lab entry (Target Z=-39, dist 6)
+      [-0.6, 0.85, -35.0],  // 0.77: Project Lab settled
+      [0.0, 0.70, -42.0],   // 0.81: Experience Timeline (Target Z=-48, dist 6)
+      [0.0, 0.90, -51.0],   // 0.86: Achievements Chamber (Target Z=-57, dist 6)
+      [0.0, 0.80, -60.0],   // 0.91: Contact Room (Target Z=-66, dist 6)
+      [0.0, 0.15, -72.0],   // 1.00: Final Live Portal (Target Z=-78, dist 6)
     ],
     []
   );

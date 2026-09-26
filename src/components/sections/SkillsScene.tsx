@@ -72,12 +72,18 @@ function TechNode({
   );
 }
 
+import { useScrollProgress } from '../../context/ScrollContext';
+
 export function SkillsScene({ position = [0, 0, -34] }: { position?: [number, number, number] }) {
   const coreRef = useRef<THREE.Group>(null);
   const ringRef = useRef<THREE.Group>(null);
   const { size } = useThree();
   const aspect = size.width / Math.max(1, size.height);
   const scale = aspect < 0.9 ? 0.6 : aspect < 1.25 ? 0.76 : aspect < 1.6 ? 0.92 : 1.0;
+
+  const { progress } = useScrollProgress();
+  const isActive = progress > 0.65 && progress < 0.75;
+  if (!isActive) return null;
 
   useFrame((state, delta) => {
     if (coreRef.current) {
@@ -92,12 +98,14 @@ export function SkillsScene({ position = [0, 0, -34] }: { position?: [number, nu
   return (
     <group position={position} scale={scale}>
       {/* Section Header */}
-      <Text position={[-6.2, 3.4, 0]} fontSize={0.18} color="#94a3b8" anchorX="left" letterSpacing={0.22}>
-        // SYSTEM CORE // SKILLS REACTOR
-      </Text>
-      <Text position={[-6.2, 2.65, 0]} fontSize={0.72} color="#f8fafc" anchorX="left" fontWeight={900}>
-        SKILLS LAB
-      </Text>
+      <group position={[0, 3.4, 0]}>
+        <Text position={[0, 0, 0]} fontSize={0.18} color="#94a3b8" anchorX="center" letterSpacing={0.22}>
+          // SYSTEM CORE // SKILLS REACTOR
+        </Text>
+        <Text position={[0, -0.75, 0]} fontSize={0.72} color="#f8fafc" anchorX="center" fontWeight={900}>
+          SKILLS LAB
+        </Text>
+      </group>
 
       {/* CENTRAL SYSTEM CORE (Minimal) */}
       <group ref={coreRef} position={[0, 0, 0]}>
@@ -119,8 +127,8 @@ export function SkillsScene({ position = [0, 0, -34] }: { position?: [number, nu
       {PORTFOLIO_DATA.skills.map((skill, i) => {
         const total = PORTFOLIO_DATA.skills.length;
         const angle = (i / total) * Math.PI * 2;
-        const radiusX = 5.2;
-        const radiusY = 2.8;
+        const radiusX = 3.6;
+        const radiusY = 2.4;
         const x = Math.cos(angle) * radiusX;
         const y = Math.sin(angle) * radiusY;
         return (

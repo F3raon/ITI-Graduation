@@ -5,10 +5,16 @@ import * as THREE from 'three';
 import { PORTFOLIO_DATA } from '../../data/portfolio';
 import { soundEngine } from '../../utils/audio';
 
+import { useScrollProgress } from '../../context/ScrollContext';
+
 export function ContactScene({ position = [0, 0, -98] }: { position?: [number, number, number] }) {
   const { size } = useThree();
   const aspect = size.width / Math.max(1, size.height);
   const scale = aspect < 0.9 ? 0.6 : aspect < 1.25 ? 0.76 : aspect < 1.6 ? 0.92 : 1.0;
+
+  const { progress } = useScrollProgress();
+  const isActive = progress > 0.90 && progress < 0.96;
+  if (!isActive) return null;
 
   return (
     <group position={position} scale={scale}>

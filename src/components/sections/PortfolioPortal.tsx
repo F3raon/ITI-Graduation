@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
-import { RoundedBox, Text, Html } from '@react-three/drei';
+import { RoundedBox, Text } from '@react-three/drei';
 import * as THREE from 'three';
 import { PORTFOLIO_DATA } from '../../data/portfolio';
 import { soundEngine } from '../../utils/audio';
@@ -8,10 +8,12 @@ import { useScrollProgress } from '../../context/ScrollContext';
 
 export function PortfolioPortal({ position = [0, 0, -114] }: { position?: [number, number, number] }) {
   const { progress } = useScrollProgress();
-  const isNearPortal = progress >= 0.91;
+  const isActive = progress >= 0.95;
   const { size } = useThree();
   const aspect = size.width / Math.max(1, size.height);
   const scale = aspect < 0.9 ? 0.55 : aspect < 1.25 ? 0.72 : aspect < 1.6 ? 0.88 : 1.0;
+
+  if (!isActive) return null;
 
   const [isHovered, setIsHovered] = useState(false);
   const portalRingsRef = useRef<THREE.Group>(null);
@@ -77,21 +79,16 @@ export function PortfolioPortal({ position = [0, 0, -114] }: { position?: [numbe
         </mesh>
 
         {/* Enter Label */}
-        <Html transform position={[0, 0, 1.6]} pointerEvents="none" center>
-          <div style={{
-            color: isHovered ? '#ffffff' : '#38bdf8',
-            fontFamily: 'monospace',
-            fontSize: '18px',
-            fontWeight: 800,
-            letterSpacing: '3px',
-            textShadow: isHovered ? '0 0 15px #38bdf8' : 'none',
-            pointerEvents: 'none',
-            transition: 'all 0.3s ease',
-            whiteSpace: 'nowrap'
-          }}>
-            [ ENTER OLD PORTFOLIO ↗ ]
-          </div>
-        </Html>
+        <Text 
+          position={[0, 0, 1.8]} 
+          fontSize={0.2} 
+          color={isHovered ? '#ffffff' : '#38bdf8'} 
+          anchorX="center" 
+          fontWeight={800} 
+          letterSpacing={0.2}
+        >
+          [ ENTER OLD PORTFOLIO ↗ ]
+        </Text>
         
         {/* Ambient Portal illumination */}
         <pointLight position={[0, 0, 2.2]} intensity={isHovered ? 40 : 15} distance={14} color="#38bdf8" />
