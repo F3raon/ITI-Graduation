@@ -1,0 +1,171 @@
+import { useState, useRef } from 'react';
+import { useFrame, useThree } from '@react-three/fiber';
+import { RoundedBox, Text } from '@react-three/drei';
+import * as THREE from 'three';
+import { PORTFOLIO_DATA } from '../../data/portfolio';
+import { soundEngine } from '../../utils/audio';
+
+function ContactTerminal({
+  label,
+  value,
+  url,
+  color,
+  position,
+  icon,
+}: {
+  label: string;
+  value: string;
+  url: string;
+  color: string;
+  position: [number, number, number];
+  icon: string;
+}) {
+  const [hovered, setHovered] = useState(false);
+  const groupRef = useRef<THREE.Group>(null);
+
+  useFrame((_, delta) => {
+    if (!groupRef.current) return;
+    const targetZ = position[2] + (hovered ? 0.35 : 0);
+    groupRef.current.position.z = THREE.MathUtils.lerp(groupRef.current.position.z, targetZ, 1 - Math.exp(-6 * delta));
+  });
+
+  const handleClick = (e: { stopPropagation: () => void }) => {
+    e.stopPropagation();
+    soundEngine.playSelect();
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
+
+  return (
+    <group
+      ref={groupRef}
+      position={position}
+      onPointerOver={(e) => {
+        e.stopPropagation();
+        setHovered(true);
+        soundEngine.playHover();
+      }}
+      onPointerOut={(e) => {
+        e.stopPropagation();
+        setHovered(false);
+      }}
+      onClick={handleClick}
+    >
+      <RoundedBox args={[2.8, 1.35, 0.2]} radius={0.08} smoothness={4} castShadow>
+        <meshStandardMaterial
+          color="#080c14"
+          metalness={0.9}
+          roughness={0.2}
+          emissive={color}
+          emissiveIntensity={hovered ? 0.5 : 0.1}
+        />
+      </RoundedBox>
+
+      {/* Terminal Icon Symbol */}
+      <Text position={[-1.05, 0.22, 0.12]} fontSize={0.24} color={color} anchorX="center">
+        {icon}
+      </Text>
+
+      {/* Label */}
+      <Text position={[-0.7, 0.25, 0.12]} fontSize={0.14} color="#f8fafc" anchorX="left" fontWeight={800}>
+        {label}
+      </Text>
+
+      {/* Value */}
+      <Text position={[-0.7, -0.05, 0.12]} maxWidth={2.2} fontSize={0.078} color="#94a3b8" anchorX="left">
+        {value}
+      </Text>
+
+      {/* Action CTA */}
+      <Text position={[1.15, -0.4, 0.12]} fontSize={0.095} color={hovered ? '#ffffff' : color} anchorX="right">
+        {hovered ? 'TRANSMIT ↗' : 'CONNECT →'}
+      </Text>
+    </group>
+  );
+}
+
+export function ContactScene({ position = [0, 0, -98] }: { position?: [number, number, number] }) {
+  const ringRef = useRef<THREE.Group>(null);
+  const { size } = useThree();
+  const aspect = size.width / Math.max(1, size.height);
+  const scale = aspect < 0.9 ? 0.6 : aspect < 1.25 ? 0.76 : aspect < 1.6 ? 0.92 : 1.0;
+
+  useFrame((_, delta) => {
+    if (ringRef.current) {
+      ringRef.current.rotation.z += delta * 0.18;
+    }
+  });
+
+  return (
+    <group position={position} scale={scale}>
+      {/* Chamber Architectural Dark Backdrop to isolate room view */}
+      <mesh position={[0, 1.0, -2.4]} receiveShadow>
+        <planeGeometry args={[26, 14]} />
+        <meshStandardMaterial color="#030508" roughness={0.95} metalness={0.1} />
+      </mesh>
+
+      {/* Background Energy Ring */}
+      <group ref={ringRef} position={[0, 1.0, -1]}>
+        <mesh rotation={[Math.PI / 2, 0, 0]}>
+          <torusGeometry args={[3.8, 0.035, 16, 64]} />
+          <meshBasicMaterial color="#ff8a30" transparent opacity={0.6} />
+        </mesh>
+        <mesh rotation={[Math.PI / 2, 0, 0]} scale={0.88}>
+          <torusGeometry args={[3.8, 0.02, 12, 64]} />
+          <meshBasicMaterial color="#67c9ff" transparent opacity={0.4} />
+        </mesh>
+      </group>
+
+      {/* Giant 3D Typography */}
+      <group position={[0, 2.2, 0]}>
+        <Text position={[0, 1.4, 0]} fontSize={0.18} color="#94a3b8" anchorX="center" letterSpacing={0.24}>
+          // COMMENCE COLLABORATION
+        </Text>
+        <Text position={[0, 0.55, 0]} fontSize={0.92} color="#f8fafc" anchorX="center" fontWeight={900}>
+          LET'S BUILD
+        </Text>
+        <Text position={[0, -0.4, 0]} fontSize={0.92} color="#ff8a30" anchorX="center" fontWeight={900}>
+          SOMETHING.
+        </Text>
+        <Text position={[0, -1.15, 0]} fontSize={0.14} color="#67c9ff" anchorX="center" letterSpacing={0.12}>
+          HAVE AN IDEA, A PROJECT OR JUST WANT TO CONNECT?
+        </Text>
+      </group>
+
+      {/* 4 Interactive Contact Terminals */}
+      <group position={[0, -1.2, 0]}>
+        <ContactTerminal
+          label="EMAIL"
+          value={PORTFOLIO_DATA.identity.email}
+          url={`mailto:${PORTFOLIO_DATA.identity.email}`}
+          color="#ff8a30"
+          position={[-4.5, 0, 0]}
+          icon="✉"
+        />
+        <ContactTerminal
+          label="LINKEDIN"
+          value="/in/ahmed-hamada-saad"
+          url={PORTFOLIO_DATA.identity.linkedin}
+          color="#0284c7"
+          position={[-1.5, 0, 0]}
+          icon="in"
+        />
+        <ContactTerminal
+          label="GITHUB"
+          value="github.com/F3raon"
+          url={PORTFOLIO_DATA.identity.github}
+          color="#a855f7"
+          position={[1.5, 0, 0]}
+          icon="⌥"
+        />
+        <ContactTerminal
+          label="WHATSAPP"
+          value={PORTFOLIO_DATA.identity.phone}
+          url={PORTFOLIO_DATA.identity.whatsapp}
+          color="#10b981"
+          position={[4.5, 0, 0]}
+          icon="✆"
+        />
+      </group>
+    </group>
+  );
+}
