@@ -12,6 +12,7 @@ export function ProjectsScene({ position = [0, 0, -50] }: { position?: [number, 
   const miniatureProjects = PORTFOLIO_DATA.projects.filter((p) => p.category === 'miniature');
   // Verified Production Systems placed in supporting gallery
   const productionProjects = PORTFOLIO_DATA.projects.filter((p) => p.category === 'production');
+  const isMobile = aspect < 0.9;
 
   return (
     <group position={position} scale={scale}>
@@ -27,14 +28,15 @@ export function ProjectsScene({ position = [0, 0, -50] }: { position?: [number, 
       </Text>
 
       {/* Row 1: The 4 Interactive 3D Miniature Worlds */}
-      <group position={[0, 0.4, 0]}>
+      <group position={[0, isMobile ? 1.8 : 0.4, 0]}>
         {miniatureProjects.map((project, i) => {
-          const x = (i - 1.5) * 3.8;
+          const x = isMobile ? (i % 2 === 0 ? -1.9 : 1.9) : (i - 1.5) * 3.8;
+          const y = isMobile ? (i < 2 ? 1.6 : -1.6) : 0;
           return (
             <ProjectPodium
               key={project.id}
               project={project}
-              position={[x, 0, 0]}
+              position={[x, y, 0]}
               index={i}
             />
           );
@@ -42,14 +44,15 @@ export function ProjectsScene({ position = [0, 0, -50] }: { position?: [number, 
       </group>
 
       {/* Row 2: Production Systems & APIs */}
-      <group position={[0, -2.6, 0]}>
+      <group position={[0, isMobile ? -3.4 : -2.6, 0]}>
         {productionProjects.slice(0, 4).map((project, i) => {
-          const x = (i - 1.5) * 3.8;
+          const x = isMobile ? (i % 2 === 0 ? -1.9 : 1.9) : (i - 1.5) * 3.8;
+          const y = isMobile ? (i < 2 ? 1.6 : -1.6) : 0;
           return (
             <ProjectPodium
               key={project.id}
               project={project}
-              position={[x, 0, 0]}
+              position={[x, y, 0]}
               index={i + 4}
             />
           );

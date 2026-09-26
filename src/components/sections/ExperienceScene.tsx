@@ -113,11 +113,13 @@ export function ExperienceScene({ position = [0, 0, -48] }: { position?: [number
       <group position={[0, 0, 0]}>
         {PORTFOLIO_DATA.experience.map((item, i) => {
           const isLeft = i % 2 === 0;
+          const isMobile = aspect < 0.9;
+          const x = isMobile ? 0 : (isLeft ? -2.8 : 2.8);
           return (
             <ExperienceNode
               key={item.company + item.period}
               item={item}
-              position={[isLeft ? -2.8 : 2.8, -0.2, -i * 2.2]}
+              position={[x, -0.2, -i * 2.2]}
               index={i}
             />
           );

@@ -169,12 +169,12 @@ export function SkillsScene({ position = [0, 0, -34] }: { position?: [number, nu
         </mesh>
       </group>
 
-      {/* Surrounding Orbital Technology Nodes */}
       {PORTFOLIO_DATA.skills.map((skill, i) => {
         const total = PORTFOLIO_DATA.skills.length;
         const angle = (i / total) * Math.PI * 2;
-        const radiusX = 5.2;
-        const radiusY = 2.8;
+        const isMobile = aspect < 0.9;
+        const radiusX = isMobile ? 2.8 : 5.2;
+        const radiusY = isMobile ? 4.8 : 2.8;
         const x = Math.cos(angle) * radiusX;
         const y = Math.sin(angle) * radiusY;
         return (
