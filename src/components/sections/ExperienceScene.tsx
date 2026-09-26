@@ -79,23 +79,10 @@ function ExperienceNode({
   );
 }
 
-import { useScrollProgress } from '../../context/ScrollContext';
-
 export function ExperienceScene({ position = [0, 0, -48] }: { position?: [number, number, number] }) {
   const { size } = useThree();
   const aspect = size.width / Math.max(1, size.height);
   const scale = aspect < 0.9 ? 0.58 : aspect < 1.25 ? 0.74 : aspect < 1.6 ? 0.9 : 1.0;
-
-  const { progress } = useScrollProgress();
-  const isActive = progress > 0.77 && progress < 0.88;
-  
-  if (!isActive) return null;
-
-  // Map scroll progress (0.79 to 0.84) to move the timeline forward
-  const progressRatio = Math.max(0, Math.min(1, (progress - 0.79) / 0.05));
-  // Total Z distance to move = (number of items - 1) * spacing
-  const maxZTravel = (PORTFOLIO_DATA.experience.length - 1) * 2.2;
-  const timelineZ = progressRatio * maxZTravel;
 
   return (
     <group position={position} scale={scale}>
@@ -106,17 +93,15 @@ export function ExperienceScene({ position = [0, 0, -48] }: { position?: [number
       </mesh>
 
       {/* Section Header */}
-      <group position={[0, 4.2, -2]}>
-        <Text position={[0, 0, 0]} fontSize={0.18} color="#94a3b8" anchorX="center" letterSpacing={0.22}>
-          // CHRONOLOGICAL TRAJECTORY
-        </Text>
-        <Text position={[0, -0.75, 0]} fontSize={0.72} color="#f8fafc" anchorX="center" fontWeight={900}>
-          EXPERIENCE HALL
-        </Text>
-        <Text position={[0, -1.4, 0]} fontSize={0.14} color="#38bdf8" anchorX="center" letterSpacing={0.08}>
-          PROFESSIONAL MILESTONES & ACHIEVEMENTS // SCROLL TO ADVANCE
-        </Text>
-      </group>
+      <Text position={[-6.2, 3.6, 0]} fontSize={0.18} color="#94a3b8" anchorX="left" letterSpacing={0.22}>
+        // CHRONOLOGICAL TRAJECTORY
+      </Text>
+      <Text position={[-6.2, 2.85, 0]} fontSize={0.72} color="#f8fafc" anchorX="left" fontWeight={900}>
+        EXPERIENCE HALL
+      </Text>
+      <Text position={[-6.2, 2.2, 0]} fontSize={0.14} color="#67c9ff" anchorX="left" letterSpacing={0.08}>
+        PROFESSIONAL MILESTONES & ACHIEVEMENTS
+      </Text>
 
       {/* Glowing Central Timeline Rail (Z-axis) */}
       <mesh position={[0, -0.6, -4]}>
@@ -124,22 +109,17 @@ export function ExperienceScene({ position = [0, 0, -48] }: { position?: [number
         <meshBasicMaterial color="#38bdf8" transparent opacity={0.3} />
       </mesh>
 
-      {/* Timeline Milestones sliding along Z axis */}
-      <group position={[0, 0, timelineZ]}>
+      {/* Timeline Milestones along Z axis */}
+      <group position={[0, 0, 0]}>
         {PORTFOLIO_DATA.experience.map((item, i) => {
-          // Calculate opacity based on distance to center (0)
-          const nodeZ = -i * 2.2 + timelineZ;
-          const distance = Math.abs(nodeZ);
-          const opacity = Math.max(0.1, 1 - distance * 0.4);
-
+          const isLeft = i % 2 === 0;
           return (
-            <group key={item.company + item.period} position={[0, 0, -i * 2.2]} scale={opacity > 0.8 ? 1 : 0.85}>
-              <ExperienceNode
-                item={item}
-                position={[i % 2 === 0 ? -2.8 : 2.8, -0.2, 0]}
-                index={i}
-              />
-            </group>
+            <ExperienceNode
+              key={item.company + item.period}
+              item={item}
+              position={[isLeft ? -2.8 : 2.8, -0.2, -i * 2.2]}
+              index={i}
+            />
           );
         })}
       </group>

@@ -2,6 +2,8 @@ import { useRef, useState } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import { AhmedCharacter } from '../character/AhmedCharacter';
 import { CharacterLighting } from '../character/CharacterLighting';
+import { CharacterParticles } from '../character/CharacterParticles';
+import { CharacterEffects } from '../character/CharacterEffects';
 import { scrollStore } from '../../context/ScrollContext';
 import * as THREE from 'three';
 
@@ -62,7 +64,11 @@ export function CharacterScene({
       {/* Dynamic Lighting Rig tuned to transformation progress */}
       <CharacterLighting progress={currentProgress} />
 
+      {/* Cyber Particle Sparks swirling around the dais */}
+      <CharacterParticles count={120} progress={currentProgress} />
 
+      {/* Dynamic Energy Rings */}
+      <CharacterEffects progress={currentProgress} />
 
       {/* Approved Ahmed Hamada 3D Character System */}
       <AhmedCharacter

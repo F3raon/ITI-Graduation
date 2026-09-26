@@ -29,20 +29,37 @@ export function IntroScene({ position = [0, 0, 8] }: { position?: [number, numbe
 
   return (
     <group position={position}>
-      {/* Cinematic Gateway Rings */}
+      {/* Dark Futuristic Tunnel Portal Rings */}
       <group ref={tunnelRef} position={[0, 0, -2]}>
         {[0, 3, 6, 9, 12].map((z, i) => (
           <group key={i} position={[0, 0, -z]}>
             <mesh rotation={[Math.PI / 2, 0, 0]}>
-              <torusGeometry args={[3.2 - i * 0.16, 0.015, 16, 64]} />
+              <torusGeometry args={[3.2 - i * 0.16, 0.025, 16, 64]} />
               <meshBasicMaterial
-                color={i % 2 === 0 ? '#38bdf8' : '#7c3aed'}
+                color={i % 2 === 0 ? '#ff8a30' : '#67c9ff'}
                 transparent
-                opacity={0.4 - i * 0.08}
+                opacity={0.8 - i * 0.12}
+              />
+            </mesh>
+            <mesh rotation={[Math.PI / 2, 0, 0]} scale={1.05}>
+              <torusGeometry args={[3.2 - i * 0.16, 0.01, 12, 64]} />
+              <meshBasicMaterial
+                color={i % 2 === 0 ? '#ff8a30' : '#67c9ff'}
+                transparent
+                opacity={0.2}
               />
             </mesh>
           </group>
         ))}
+      </group>
+
+      {/* Central Light Pulse Core behind the text */}
+      <group ref={coreRef} position={[0, 0, -2.5]}>
+        <pointLight intensity={7} distance={8} color="#ff8a30" />
+        <mesh>
+          <sphereGeometry args={[0.22, 16, 16]} />
+          <meshBasicMaterial color="#ffffff" />
+        </mesh>
       </group>
 
       {/* Hero 3D Typography inside the Scene with responsive bounds */}
@@ -74,7 +91,7 @@ export function IntroScene({ position = [0, 0, 8] }: { position?: [number, numbe
         <Text
           position={[0, 0.32, 0]}
           fontSize={titleFontSize}
-          color="#38bdf8"
+          color="#ff8a30"
           anchorX="center"
           fontWeight={700}
           letterSpacing={0.15}

@@ -60,57 +60,98 @@ function HolographicPortrait({ position = [2.8, 0, 0] }: { position?: [number, n
         />
       </mesh>
 
-      {/* Removed emissive brackets and scanline to reduce clutter */}
+      {/* Moving Holographic Scanline */}
+      <mesh ref={scanlineRef} position={[0, 0, 0.17]}>
+        <planeGeometry args={[2.85, 0.05]} />
+        <meshBasicMaterial color="#67c9ff" transparent opacity={0.65} />
+      </mesh>
 
-      {/* Subtle rim light casting on portrait */}
-      <pointLight position={[1.2, 1.8, 0.8]} intensity={2.5} distance={5} color="#38bdf8" />
-      <pointLight position={[-1.2, -1.5, 0.8]} intensity={2.0} distance={5} color="#7c3aed" />
+      {/* Emissive Corner Brackets */}
+      {[-1.4, 1.4].map((x) =>
+        [-2.0, 2.0].map((y) => (
+          <mesh key={`${x}-${y}`} position={[x, y, 0.18]}>
+            <boxGeometry args={[0.2, 0.2, 0.02]} />
+            <meshBasicMaterial color="#ff8a30" />
+          </mesh>
+        ))
+      )}
+
+      {/* Hologram Subtitle */}
+      <Text position={[0, -2.45, 0]} fontSize={0.12} color="#94a3b8" anchorX="center" letterSpacing={0.15}>
+        AUTHENTICATED // BIOMETRIC ID
+      </Text>
+
+      {/* Rim light casting on portrait */}
+      <pointLight position={[1.2, 1.8, 0.8]} intensity={4.5} distance={5} color="#ff8a30" />
+      <pointLight position={[-1.2, -1.5, 0.8]} intensity={3.5} distance={5} color="#67c9ff" />
     </group>
   );
 }
-
-import { useScrollProgress } from '../../context/ScrollContext';
 
 export function AboutScene({ position = [0, 0, -18] }: { position?: [number, number, number] }) {
   const { size } = useThree();
   const aspect = size.width / Math.max(1, size.height);
   const scale = aspect < 0.9 ? 0.62 : aspect < 1.25 ? 0.78 : aspect < 1.6 ? 0.92 : 1.0;
-  
-  const { progress } = useScrollProgress();
-  const isActive = progress > 0.58 && progress < 0.66;
-  if (!isActive) return null;
 
   return (
     <group position={position} scale={scale}>
       {/* Section Header */}
-      <group position={[0, 3.2, 0]}>
-        <Text position={[0, 0, 0]} fontSize={0.18} color="#94a3b8" anchorX="center" letterSpacing={0.22}>
-          // IDENTITY DOSSIER
-        </Text>
-        <Text position={[0, -0.75, 0]} fontSize={0.72} color="#f8fafc" anchorX="center" fontWeight={900}>
-          WHO AM I?
-        </Text>
-      </group>
+      <Text position={[-5.8, 3.2, 0]} fontSize={0.18} color="#94a3b8" anchorX="left" letterSpacing={0.22}>
+        // IDENTITY DOSSIER
+      </Text>
+      <Text position={[-5.8, 2.45, 0]} fontSize={0.72} color="#f8fafc" anchorX="left" fontWeight={900}>
+        WHO AM I?
+      </Text>
 
-      {/* Removed the large glass box to keep typography clean against the world */}
+      {/* 3D Glass Information Panel */}
+      <RoundedBox args={[6.8, 3.8, 0.28]} radius={0.14} smoothness={5} position={[-2.4, 0.1, -0.2]}>
+        <meshStandardMaterial
+          color="#0b121e"
+          metalness={0.75}
+          roughness={0.25}
+          emissive="#0369a1"
+          emissiveIntensity={0.15}
+        />
+      </RoundedBox>
 
       {/* Real 3D Bio Typography */}
-      <Text position={[0, 1.35, 0]} maxWidth={5.8} fontSize={0.22} color="#f8fafc" anchorX="center" textAlign="center" lineHeight={1.4}>
+      <Text position={[-5.4, 1.35, 0]} maxWidth={5.8} fontSize={0.22} color="#f8fafc" anchorX="left" lineHeight={1.4}>
         {`I'm Ahmed Hamada, a .NET Backend Developer who loves building systems, solving complex problems, and turning ambitious ideas into resilient products.`}
       </Text>
 
-      <Text position={[0, 0.25, 0]} maxWidth={5.8} fontSize={0.15} color="#94a3b8" anchorX="center" textAlign="center" lineHeight={1.6}>
+      <Text position={[-5.4, 0.25, 0]} maxWidth={5.8} fontSize={0.15} color="#94a3b8" anchorX="left" lineHeight={1.6}>
         {`Specializing in high-performance .NET backend systems, Clean Architecture, SQL Server, and microservices—while integrating computer vision, ROS robotics, and intelligent IoT hardware.`}
       </Text>
 
-      <Text position={[0, -0.85, 0]} maxWidth={5.8} fontSize={0.13} color="#38bdf8" anchorX="center" textAlign="center" letterSpacing={0.06}>
+      <Text position={[-5.4, -0.85, 0]} maxWidth={5.8} fontSize={0.13} color="#67c9ff" anchorX="left" letterSpacing={0.06}>
         {'.NET  //  C#  //  PYTHON  //  SQL SERVER  //  AI & ROBOTICS  //  CLEAN ARCHITECTURE'}
       </Text>
 
       {/* Holographic 3D Portrait Frame */}
-      <HolographicPortrait position={[0, -3.2, 0]} />
+      <HolographicPortrait position={[3.2, 0.1, 0]} />
 
-      {/* Removed bulky 3D stat plates */}
+      {/* Floating 3D Stat Plates */}
+      <group position={[-5.4, -2.2, 0]}>
+        {PORTFOLIO_DATA.stats.map((s, i) => (
+          <group key={s.label} position={[i * 2.3, 0, 0]}>
+            <RoundedBox args={[1.9, 0.95, 0.14]} radius={0.08} smoothness={3}>
+              <meshStandardMaterial
+                color="#0f172a"
+                metalness={0.85}
+                roughness={0.2}
+                emissive={i === 2 ? '#ff8a30' : '#38bdf8'}
+                emissiveIntensity={0.25}
+              />
+            </RoundedBox>
+            <Text position={[0, 0.16, 0.1]} fontSize={0.26} color={i === 2 ? '#ff8a30' : '#f8fafc'} anchorX="center" fontWeight={800}>
+              {s.value}
+            </Text>
+            <Text position={[0, -0.22, 0.1]} fontSize={0.085} color="#94a3b8" anchorX="center" letterSpacing={0.12}>
+              {s.label}
+            </Text>
+          </group>
+        ))}
+      </group>
     </group>
   );
 }

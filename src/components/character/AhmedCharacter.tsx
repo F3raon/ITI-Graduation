@@ -125,10 +125,70 @@ export function AhmedCharacter({
           />
         </mesh>
 
+        {/* Outer Glowing Neon Ring on Floor */}
+        <mesh position={[0, 0.18, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+          <ringGeometry args={[2.2, 2.28, 48]} />
+          <meshBasicMaterial
+            color={progress > 0.5 ? '#00f0ff' : '#ff8a30'}
+            transparent
+            opacity={0.85}
+          />
+        </mesh>
+
+        {/* Inner Counter-Rotating Holographic Emitter Ring */}
+        <mesh position={[0, 0.19, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+          <ringGeometry args={[1.5, 1.56, 48]} />
+          <meshBasicMaterial
+            color="#a855f7"
+            transparent
+            opacity={0.4 + progress * 0.5}
+          />
+        </mesh>
+
+        {/* 6 Peripheral Conduit Nodes */}
+        {Array.from({ length: 6 }).map((_, i) => {
+          const a = (i / 6) * Math.PI * 2;
+          return (
+            <group key={i} position={[Math.cos(a) * 2.05, 0.22, Math.sin(a) * 2.05]}>
+              <mesh>
+                <boxGeometry args={[0.16, 0.12, 0.16]} />
+                <meshStandardMaterial color="#1e293b" metalness={0.8} />
+              </mesh>
+              <mesh position={[0, 0.08, 0]}>
+                <sphereGeometry args={[0.045, 12, 12]} />
+                <meshBasicMaterial color={progress > 0.4 ? '#00f0ff' : '#a855f7'} />
+              </mesh>
+            </group>
+          );
+        })}
       </group>
 
       {/* ================================================================ */}
-      {/* Dynamic Energy Rings Removed for cleaner look */}
+      {/* 2. DYNAMIC ENERGY RINGS & PARTICLES */}
+      {/* ================================================================ */}
+      <group ref={ringsRef} position={[0, 1.45, 0]}>
+        {/* Orbital Cyan Ring */}
+        <mesh rotation={[Math.PI / 3.5, 0, 0]}>
+          <torusGeometry args={[1.35, 0.012, 16, 64]} />
+          <meshBasicMaterial
+            color="#00f0ff"
+            transparent
+            opacity={0.25 + progress * 0.7}
+            blending={THREE.AdditiveBlending}
+          />
+        </mesh>
+
+        {/* Orbital Violet Ring */}
+        <mesh rotation={[-Math.PI / 4, Math.PI / 5, 0]}>
+          <torusGeometry args={[1.5, 0.01, 16, 64]} />
+          <meshBasicMaterial
+            color="#a855f7"
+            transparent
+            opacity={0.2 + progress * 0.65}
+            blending={THREE.AdditiveBlending}
+          />
+        </mesh>
+      </group>
 
       {/* ================================================================ */}
       {/* 3. AHMED HAMADA APPROVED 3D CHARACTER (VOLUMETRIC CONCEPT RIG) */}
@@ -149,7 +209,28 @@ export function AhmedCharacter({
         />
       </mesh>
 
-      {/* Removed Cyber Aura and Scanlines for a realistic/clean cinematic presentation */}
+      {/* Dynamic Cyber Lightning & Rim Glow Aura */}
+      <mesh ref={auraRef} position={[0, 1.48, 0]}>
+        <planeGeometry args={[1.65, 2.9]} />
+        <meshBasicMaterial
+          color={progress > 0.5 ? '#00f0ff' : '#a855f7'}
+          transparent
+          opacity={progress * 0.28}
+          blending={THREE.AdditiveBlending}
+          side={THREE.DoubleSide}
+        />
+      </mesh>
+
+      {/* Sweeping Laser Scanline */}
+      <mesh ref={scanlineRef} position={[0, 1.48, 0.02]}>
+        <planeGeometry args={[1.6, 0.035]} />
+        <meshBasicMaterial
+          color={progress > 0.6 ? '#00f0ff' : '#ff8a30'}
+          transparent
+          opacity={0.75}
+          blending={THREE.AdditiveBlending}
+        />
+      </mesh>
 
       {/* ================================================================ */}
       {/* 4. REAL PORTRAIT TRANSFORMATION */}

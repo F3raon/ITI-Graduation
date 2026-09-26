@@ -11,11 +11,11 @@ export function CameraRig() {
   // Cinematic Camera Spline Path — tightly matched to World section positions
   const points = useMemo<Vec3[]>(
     () => [
-      [0.0, 1.20, 14.5],    // 0.00: Tunnel entry — Intro
+      [0.0, 1.20, 14.5],    // 0.00: Tunnel entry — Intro (Object Z=10)
       [0.6, 1.00,  6.2],    // 0.08: Approaching office corridor
-      [0.2, 0.55,  2.0],    // 0.16: Office workstation & desk
+      [0.2, 0.55,  2.0],    // 0.16: Office workstation & desk (Object Z=0)
       [0.0, 0.75, -1.8],    // 0.22: Through the archway toward character
-      [0.0, 0.90, -5.0],    // 0.27: Facing Real Ahmed portrait
+      [0.0, 0.90, -5.0],    // 0.27: Facing Real Ahmed portrait (Object Z=-9.5)
       [0.0, 1.00, -5.2],    // 0.32: Neon transformation complete
       [2.8, 1.00, -7.2],    // 0.36: Orbit Front-Right
       [4.0, 1.00, -9.5],    // 0.39: Orbit Right Profile
@@ -25,14 +25,14 @@ export function CameraRig() {
       [-4.0, 1.00, -9.5],   // 0.49: Orbit Left Profile
       [-2.4, 0.90, -7.2],   // 0.51: Orbit Front-Left exit
       [-0.6, 0.80, -15.0],  // 0.56: Exiting toward About Me
-      [0.0, 0.80, -16.0],   // 0.62: About scene (Target Z=-22, dist 6)
-      [0.0, 0.90, -24.0],   // 0.68: Skills Lab (Target Z=-30, dist 6)
-      [0.0, 1.00, -33.0],   // 0.74: Project Lab entry (Target Z=-39, dist 6)
-      [-0.6, 0.85, -35.0],  // 0.77: Project Lab settled
-      [0.0, 0.70, -42.0],   // 0.81: Experience Timeline (Target Z=-48, dist 6)
-      [0.0, 0.90, -51.0],   // 0.86: Achievements Chamber (Target Z=-57, dist 6)
-      [0.0, 0.80, -60.0],   // 0.91: Contact Room (Target Z=-66, dist 6)
-      [0.0, 0.15, -72.0],   // 1.00: Final Live Portal (Target Z=-78, dist 6)
+      [0.0, 0.80, -16.0],   // 0.62: About scene (Object Z=-22) -> Cam Z=-16
+      [0.0, 0.90, -24.0],   // 0.68: Skills Lab (Object Z=-30) -> Cam Z=-24
+      [0.0, 1.00, -32.0],   // 0.74: Project Lab entry (Object Z=-39) -> Cam Z=-32
+      [-0.6, 0.85, -36.0],  // 0.77: Project Lab settled -> Cam Z=-36
+      [0.4, 0.70, -42.0],   // 0.81: Experience (Object Z=-48) -> Cam Z=-42
+      [0.0, 0.90, -51.0],   // 0.86: Achievements (Object Z=-57) -> Cam Z=-51
+      [0.0, 0.80, -60.0],   // 0.91: Contact Room (Object Z=-66) -> Cam Z=-60
+      [0.0, 0.15, -72.0],   // 1.00: Final Portal (Object Z=-78) -> Cam Z=-72
     ],
     []
   );
