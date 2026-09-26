@@ -4,16 +4,16 @@ import { soundEngine } from '../../utils/audio';
 
 const SECTORS = [
   { name: 'ENTRY', target: 0.0 },
-  { name: '3D OFFICE', target: 0.15 },
-  { name: 'REAL AHMED', target: 0.25 },
-  { name: 'NEON MORPH', target: 0.30 },
-  { name: '360° ORBIT', target: 0.40 },
-  { name: 'ABOUT ME', target: 0.54 },
-  { name: 'SKILLS LAB', target: 0.63 },
-  { name: 'PROJECT LAB', target: 0.73 },
-  { name: 'TIMELINE', target: 0.82 },
-  { name: 'HONORS', target: 0.89 },
-  { name: 'CONTACT', target: 0.94 },
+  { name: '3D OFFICE', target: 0.16 },
+  { name: 'REAL AHMED', target: 0.27 },
+  { name: 'NEON MORPH', target: 0.32 },
+  { name: '360° ORBIT', target: 0.45 },
+  { name: 'ABOUT ME', target: 0.62 },
+  { name: 'SKILLS LAB', target: 0.68 },
+  { name: 'PROJECT LAB', target: 0.74 },
+  { name: 'TIMELINE', target: 0.81 },
+  { name: 'HONORS', target: 0.86 },
+  { name: 'CONTACT', target: 0.91 },
   { name: 'LIVE PORTAL', target: 1.0 },
 ];
 

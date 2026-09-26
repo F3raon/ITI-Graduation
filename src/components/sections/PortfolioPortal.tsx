@@ -8,7 +8,7 @@ import { useScrollProgress } from '../../context/ScrollContext';
 
 export function PortfolioPortal({ position = [0, 0, -114] }: { position?: [number, number, number] }) {
   const { progress } = useScrollProgress();
-  const isNearPortal = progress >= 0.88;
+  const isNearPortal = progress >= 0.91;
   const { size } = useThree();
   const aspect = size.width / Math.max(1, size.height);
   const scale = aspect < 0.9 ? 0.55 : aspect < 1.25 ? 0.72 : aspect < 1.6 ? 0.88 : 1.0;

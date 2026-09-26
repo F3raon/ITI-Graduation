@@ -27,12 +27,12 @@ export function CharacterScene({
   useFrame(() => {
     const s = scrollStore.current;
     // Scroll interval for character transformation:
-    // 0.20 -> 0.34
+    // 0.24 -> 0.32 (Real Portrait → Full Neon)
     let p = 0;
-    if (s < 0.22) {
+    if (s < 0.24) {
       p = 0.0;
     } else if (s <= 0.32) {
-      p = (s - 0.22) / 0.10;
+      p = (s - 0.24) / 0.08;
     } else {
       p = 1.0;
     }

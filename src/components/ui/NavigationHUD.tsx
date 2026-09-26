@@ -13,15 +13,15 @@ interface NavPoint {
 
 const NAV_POINTS: NavPoint[] = [
   { id: '01', name: 'ENTRY', target: 0.0 },
-  { id: '02', name: 'OFFICE', target: 0.15 },
-  { id: '03', name: 'AHMED 3D', target: 0.28 },
-  { id: '04', name: 'ORBIT', target: 0.40 },
-  { id: '05', name: 'ABOUT', target: 0.54 },
-  { id: '06', name: 'SKILLS', target: 0.63 },
-  { id: '07', name: 'PROJECTS', target: 0.73 },
-  { id: '08', name: 'TIMELINE', target: 0.82 },
-  { id: '09', name: 'HONORS', target: 0.89 },
-  { id: '10', name: 'CONTACT', target: 0.94 },
+  { id: '02', name: 'OFFICE', target: 0.16 },
+  { id: '03', name: 'AHMED 3D', target: 0.27 },
+  { id: '04', name: 'ORBIT', target: 0.45 },
+  { id: '05', name: 'ABOUT', target: 0.62 },
+  { id: '06', name: 'SKILLS', target: 0.68 },
+  { id: '07', name: 'PROJECTS', target: 0.74 },
+  { id: '08', name: 'TIMELINE', target: 0.81 },
+  { id: '09', name: 'HONORS', target: 0.86 },
+  { id: '10', name: 'CONTACT', target: 0.91 },
   { id: '11', name: 'PORTAL', target: 1.0 },
 ];
 
