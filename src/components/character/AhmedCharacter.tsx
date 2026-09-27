@@ -149,8 +149,44 @@ function NeonHalo({ progress }: { progress: number }) {
   );
 }
 
+// ─── Interactive Conduit Light ────────────────────────────────────────────────
+function ConduitLight({ a, energyT, onToggle }: { a: number; energyT: number; onToggle: () => void }) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <group position={[Math.cos(a) * 2.1, 0.22, Math.sin(a) * 2.1]}>
+      <mesh>
+        <boxGeometry args={[0.14, 0.10, 0.14]} />
+        <meshStandardMaterial color="#131f30" metalness={0.8} />
+      </mesh>
+      <mesh
+        position={[0, 0.07, 0]}
+        onClick={(e) => {
+          e.stopPropagation();
+          onToggle();
+        }}
+        onPointerOver={(e) => {
+          e.stopPropagation();
+          setHovered(true);
+          document.body.style.cursor = 'pointer';
+        }}
+        onPointerOut={(e) => {
+          e.stopPropagation();
+          setHovered(false);
+          document.body.style.cursor = 'auto';
+        }}
+      >
+        <sphereGeometry args={[hovered ? 0.05 : 0.038, 10, 10]} />
+        <meshBasicMaterial
+          color={hovered ? '#ffffff' : (energyT > 0.4 ? '#00f0ff' : '#a855f7')}
+          toneMapped={false}
+        />
+      </mesh>
+    </group>
+  );
+}
+
 // ─── Cinematic platform ───────────────────────────────────────────────────────
-function CharacterPlatform({ progress }: { progress: number }) {
+function CharacterPlatform({ progress, onToggle }: { progress: number; onToggle: () => void }) {
   const energyT = easeInOut(clamp(invLerp(0.0, 0.4, progress)));
 
   return (
@@ -183,25 +219,10 @@ function CharacterPlatform({ progress }: { progress: number }) {
         />
       </mesh>
 
-      {/* 6 corner conduit lights */}
-      {Array.from({ length: 6 }).map((_, i) => {
-        const a = (i / 6) * Math.PI * 2;
-        return (
-          <group key={i} position={[Math.cos(a) * 2.1, 0.22, Math.sin(a) * 2.1]}>
-            <mesh>
-              <boxGeometry args={[0.14, 0.10, 0.14]} />
-              <meshStandardMaterial color="#131f30" metalness={0.8} />
-            </mesh>
-            <mesh position={[0, 0.07, 0]}>
-              <sphereGeometry args={[0.038, 10, 10]} />
-              <meshBasicMaterial
-                color={energyT > 0.4 ? '#00f0ff' : '#a855f7'}
-                toneMapped={false}
-              />
-            </mesh>
-          </group>
-        );
-      })}
+      {/* 6 corner conduit lights (Interactive Buttons) */}
+      {Array.from({ length: 6 }).map((_, i) => (
+        <ConduitLight key={i} a={(i / 6) * Math.PI * 2} energyT={energyT} onToggle={onToggle} />
+      ))}
 
       {/* Platform under-glow */}
       <pointLight
@@ -227,6 +248,7 @@ export function AhmedCharacter({
   const { size }   = useThree();
 
   const [hovered, setHovered] = useState(false);
+  const [manualOverride, setManualOverride] = useState(false);
 
   // ── Textures (authoritative assets) ────────────────────────────────────────
   const realTex = useTexture('/models/REAL_AHMED.png');
@@ -337,8 +359,13 @@ export function AhmedCharacter({
     uHover.current = THREE.MathUtils.lerp(uHover.current, targetHover, delta * 8.0);
     shaderMaterial.uniforms.uHover.value = uHover.current;
     
-    // Update scroll progress
-    shaderMaterial.uniforms.uProgress.value = progress;
+    // Update scroll progress with manual override capability
+    const effectiveProgress = manualOverride ? (progress < 0.5 ? 1.0 : 0.0) : progress;
+    shaderMaterial.uniforms.uProgress.value = THREE.MathUtils.lerp(
+      shaderMaterial.uniforms.uProgress.value,
+      effectiveProgress,
+      delta * 5.0
+    );
     
     // Explicitly update the cloned uniform vector from the ref
     if (shaderMaterial.uniforms.uMouse.value) {
@@ -383,7 +410,7 @@ export function AhmedCharacter({
       }}
     >
       {/* ── Platform ──────────────────────────────────────────────────────── */}
-      <CharacterPlatform progress={progress} />
+      <CharacterPlatform progress={progress} onToggle={() => setManualOverride((prev) => !prev)} />
 
       {/* ── Neon halo backdrop ────────────────────────────────────────────── */}
       <NeonHalo progress={progress} />
