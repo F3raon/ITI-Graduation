@@ -90,21 +90,15 @@ export function PortfolioPortal({ position = [0, 0, -114] }: { position?: [numbe
         </mesh>
 
         {/* Enter Label */}
-        <Html transform position={[0, 0, 1.6]} pointerEvents="none" center>
-          <div style={{
-            color: isHovered ? '#ffffff' : '#38bdf8',
-            fontFamily: 'monospace',
-            fontSize: '18px',
-            fontWeight: 800,
-            letterSpacing: '3px',
-            textShadow: isHovered ? '0 0 15px #38bdf8' : 'none',
-            pointerEvents: 'none',
-            transition: 'all 0.3s ease',
-            whiteSpace: 'nowrap'
-          }}>
-            [ ENTER OLD PORTFOLIO ↗ ]
-          </div>
-        </Html>
+        <Text
+          position={[0, 0, 1.6]}
+          fontSize={0.25}
+          color={isHovered ? '#ffffff' : '#38bdf8'}
+          letterSpacing={0.15}
+          fontWeight={800}
+        >
+          [ ENTER OLD PORTFOLIO ↗ ]
+        </Text>
         
         {/* Ambient Portal illumination */}
         <pointLight position={[0, 0, 2.2]} intensity={isHovered ? 40 : 15} distance={14} color="#38bdf8" />

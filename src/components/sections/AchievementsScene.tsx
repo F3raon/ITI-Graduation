@@ -94,8 +94,8 @@ function AchievementPedestal({
       <TrophyObject rank={item.rank} color={item.color} hovered={hovered} />
 
       {/* Trophy Pedestal Display Stand */}
-      <group position={[0, -0.85, 0]}>
-        <RoundedBox args={[2.8, 1.45, 0.22]} radius={0.08} smoothness={4} castShadow>
+      <group position={[0, -0.9, 0]}>
+        <RoundedBox args={[3.0, 1.7, 0.22]} radius={0.08} smoothness={4} castShadow>
           <meshStandardMaterial
             color="#080c14"
             metalness={0.88}
@@ -106,28 +106,28 @@ function AchievementPedestal({
         </RoundedBox>
 
         {/* Badge / Rank Ribbon */}
-        <Text position={[0, 0.46, 0.12]} fontSize={0.12} color={item.color} anchorX="center" fontWeight={800}>
+        <Text position={[0, 0.55, 0.12]} fontSize={0.12} color={item.color} anchorX="center" fontWeight={800}>
           {item.rank} // {item.year}
         </Text>
 
         {/* Title */}
-        <Text position={[0, 0.18, 0.12]} fontSize={0.165} color="#f8fafc" anchorX="center" fontWeight={800}>
+        <Text position={[0, 0.28, 0.12]} fontSize={0.165} color="#f8fafc" anchorX="center" fontWeight={800}>
           {item.title}
         </Text>
 
         {/* Competition */}
-        <Text position={[0, -0.08, 0.12]} fontSize={0.1} color="#67c9ff" anchorX="center">
+        <Text position={[0, 0.0, 0.12]} fontSize={0.1} color="#67c9ff" anchorX="center">
           {item.competition}
         </Text>
 
         {/* Description */}
         <Text
-          position={[0, -0.4, 0.12]}
-          maxWidth={2.5}
-          fontSize={0.07}
+          position={[0, -0.35, 0.12]}
+          maxWidth={2.7}
+          fontSize={0.08}
           color="#94a3b8"
           anchorX="center"
-          lineHeight={1.35}
+          lineHeight={1.45}
         >
           {item.description}
         </Text>
@@ -179,10 +179,10 @@ export function AchievementsScene({ position = [0, 0, -82] }: { position?: [numb
           const row = Math.floor(i / 2);
           
           const xSpacing = isMobile ? 3.0 : 3.4;
-          const ySpacing = isMobile ? 3.6 : 3.2;
+          const ySpacing = isMobile ? 4.0 : 3.8;
           
           const x = (col - 0.5) * xSpacing;
-          const y = (0.5 - row) * ySpacing - (isMobile ? 1.0 : 0);
+          const y = (0.5 - row) * ySpacing - (isMobile ? 1.0 : 1.2);
 
           return (
             <AchievementPedestal

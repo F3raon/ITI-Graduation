@@ -128,13 +128,16 @@ export function AboutScene({ position = [0, 0, -18] }: { position?: [number, num
       </Text>
 
       {/* Holographic 3D Portrait Frame */}
-      <HolographicPortrait position={[3.2, 0.1, 0]} />
+      <HolographicPortrait position={[3.8, 0.1, 0]} />
 
       {/* Floating 3D Stat Plates */}
-      <group position={[-5.4, -2.2, 0]}>
-        {PORTFOLIO_DATA.stats.map((s, i) => (
-          <group key={s.label} position={[i * 2.3, 0, 0]}>
-            <RoundedBox args={[1.9, 0.95, 0.14]} radius={0.08} smoothness={3}>
+      <group position={[-4.5, -2.4, 0]}>
+        {PORTFOLIO_DATA.stats.map((s, i) => {
+          const col = i % 2;
+          const row = Math.floor(i / 2);
+          return (
+          <group key={s.label} position={[col * 2.2, -row * 1.2, 0]}>
+            <RoundedBox args={[2.0, 1.0, 0.14]} radius={0.08} smoothness={3}>
               <meshStandardMaterial
                 color="#0f172a"
                 metalness={0.85}
@@ -143,14 +146,14 @@ export function AboutScene({ position = [0, 0, -18] }: { position?: [number, num
                 emissiveIntensity={0.25}
               />
             </RoundedBox>
-            <Text position={[0, 0.16, 0.1]} fontSize={0.26} color={i === 2 ? '#ff8a30' : '#f8fafc'} anchorX="center" fontWeight={800}>
+            <Text position={[0, 0.16, 0.1]} fontSize={0.28} color={i === 2 ? '#ff8a30' : '#f8fafc'} anchorX="center" fontWeight={800}>
               {s.value}
             </Text>
-            <Text position={[0, -0.22, 0.1]} fontSize={0.085} color="#94a3b8" anchorX="center" letterSpacing={0.12}>
+            <Text position={[0, -0.22, 0.1]} fontSize={0.09} color="#94a3b8" anchorX="center" letterSpacing={0.12}>
               {s.label}
             </Text>
           </group>
-        ))}
+        )})}
       </group>
     </group>
   );

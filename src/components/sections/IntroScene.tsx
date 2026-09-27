@@ -72,7 +72,7 @@ function DigitalCore({ progress }: { progress: number }) {
   const energyT = Math.max(0, Math.min(1, (progress - 0.15) / 0.4));
 
   return (
-    <group position={[0, 1.6, -0.4]}>
+    <group position={[0, 1.6, -5.0]} scale={1.5}>
       {/* Outer arc ring — very thin, segmented appearance */}
       <mesh ref={ring1Ref}>
         <torusGeometry args={[3.2, 0.008, 8, 128, Math.PI * 1.6]} />

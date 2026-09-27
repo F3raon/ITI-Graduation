@@ -20,10 +20,10 @@ export const WORLD = {
   ABOUT_Z:       -22,     // About Me bio + portrait
   SKILLS_Z:      -34,     // Skills reactor
   PROJECTS_Z:    -46,     // Project podiums
-  EXPERIENCE_Z:  -58,     // Experience timeline
-  ACHIEVEMENTS_Z:-70,     // Achievements chamber
-  CONTACT_Z:     -82,     // Contact terminals
-  PORTAL_Z:      -94,     // Final portal
+  EXPERIENCE_Z:  -70,     // Experience timeline (shifted -12 to clear Projects carousel)
+  ACHIEVEMENTS_Z:-82,     // Achievements chamber
+  CONTACT_Z:     -94,     // Contact terminals
+  PORTAL_Z:      -106,    // Final portal
 
   // ── Camera Z when focused on each section ─────────────────────────────────
   // Camera sits ~4-6 units in front (+Z) of the section origin
@@ -38,10 +38,10 @@ export const WORLD = {
   CAM_SKILLS:    -29,
   CAM_PROJECTS:  -41,
   CAM_PROJECTS2: -44,
-  CAM_EXPERIENCE:-53,
-  CAM_ACHIEVEMENTS:-65,
-  CAM_CONTACT:   -77,
-  CAM_PORTAL:    -89,
+  CAM_EXPERIENCE:-65,
+  CAM_ACHIEVEMENTS:-77,
+  CAM_CONTACT:   -89,
+  CAM_PORTAL:    -101,
 
   // ── Scroll progress mapped to each section ────────────────────────────────
   // Changing these also requires updating CameraRig keyframes

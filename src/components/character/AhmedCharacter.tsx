@@ -254,20 +254,26 @@ export function AhmedCharacter({
 
   const shaderMaterial = useMemo(() => {
     return new THREE.ShaderMaterial({
-      uniforms: {
-        tReal: { value: realTex },
-        tNeon: { value: neonTex },
-        uMouse: { value: uMouse.current },
-        uHover: { value: 0 },
-        uAspect: { value: 1.0 },
-        uRadius: { value: 0.35 },
-        uSmoothness: { value: 0.15 }
-      },
+      uniforms: THREE.UniformsUtils.merge([
+        THREE.UniformsLib["fog"],
+        {
+          tReal: { value: realTex },
+          tNeon: { value: neonTex },
+          uMouse: { value: uMouse.current },
+          uHover: { value: 0 },
+          uAspect: { value: 1.0 },
+          uRadius: { value: 0.35 },
+          uSmoothness: { value: 0.15 }
+        }
+      ]),
       vertexShader: `
         varying vec2 vUv;
+        #include <fog_pars_vertex>
         void main() {
           vUv = uv;
-          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+          vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+          gl_Position = projectionMatrix * mvPosition;
+          #include <fog_vertex>
         }
       `,
       fragmentShader: `
@@ -280,6 +286,8 @@ export function AhmedCharacter({
         uniform float uAspect;
 
         varying vec2 vUv;
+        
+        #include <fog_pars_fragment>
 
         void main() {
           vec4 realColor = texture2D(tReal, vUv);
@@ -299,12 +307,15 @@ export function AhmedCharacter({
           
           if (finalColor.a < 0.05) discard;
           gl_FragColor = finalColor;
+          
+          #include <fog_fragment>
         }
       `,
       transparent: true,
       side: THREE.DoubleSide,
       depthWrite: false,
       toneMapped: false,
+      fog: true,
     });
   }, [realTex, neonTex]);
 
