@@ -4,6 +4,7 @@ import { Text } from '@react-three/drei';
 import * as THREE from 'three';
 import { PORTFOLIO_DATA } from '../../data/portfolio';
 import { ProjectPodium } from '../projects/ProjectPodium';
+import { ITIProjectsBranch } from '../projects/ITIProjectsBranch';
 import { WORLD, sectionProgress } from '../../data/world';
 import { scrollStore } from '../../context/ScrollContext';
 
@@ -74,6 +75,9 @@ export function ProjectsScene({ position = [0, 0, WORLD.PROJECTS_Z] }: { positio
           })}
         </group>
       </group>
+
+      {/* ITI Academic Projects Branch (Right side) */}
+      <ITIProjectsBranch position={[6.0, 0.5, 0]} />
     </group>
   );
 }
