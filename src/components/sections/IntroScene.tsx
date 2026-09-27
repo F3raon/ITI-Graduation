@@ -3,7 +3,6 @@ import { useFrame, useThree } from '@react-three/fiber';
 import { Text } from '@react-three/drei';
 import * as THREE from 'three';
 import { PORTFOLIO_DATA } from '../../data/portfolio';
-import { scrollStore } from '../../context/ScrollContext';
 
 // ─── Atmospheric particle field ───────────────────────────────────────────────
 function IntroParticles({ count = 350 }: { count?: number }) {
@@ -235,15 +234,9 @@ function GridFloor() {
 }
 
 // ─── Main IntroScene ──────────────────────────────────────────────────────────
-export function IntroScene({ position = [0, 0, 10] }: { position?: [number, number, number] }) {
+export function IntroScene({ position = [0, 0, 8] }: { position?: [number, number, number] }) {
   const { viewport, size } = useThree();
   const isMobile = size.width / Math.max(1, size.height) < 1.0 || size.width < 768;
-
-  // Scroll progress for this section (0.0 at intro, rising as user scrolls)
-  const progressRef = useRef(0);
-  useFrame(() => {
-    progressRef.current = Math.max(0, Math.min(1, scrollStore.current * 5));
-  });
 
   // Responsive typography sizing
   const nameFontSize   = isMobile ? Math.min(0.38, viewport.width * 0.07) : Math.min(0.52, viewport.width * 0.06);

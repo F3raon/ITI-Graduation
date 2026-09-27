@@ -13,8 +13,8 @@ export default function Portfolio() {
         {/* 3D WebGL Canvas */}
         <Canvas
           shadows
-          camera={{ position: [0, 0.9, 14], fov: 72 }}
-          dpr={[1, 2]}
+          camera={{ position: [0, 0.9, 13], fov: 58, near: 0.1, far: 120 }}
+          dpr={[1, 1.5]}
           gl={{
             antialias: true,
             powerPreference: 'high-performance',
