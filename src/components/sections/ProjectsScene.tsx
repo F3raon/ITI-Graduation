@@ -22,7 +22,7 @@ export function ProjectsScene({ position = [0, 0, WORLD.PROJECTS_Z] }: { positio
   ].slice(0, 6); // Cap at 6 for presentation stability
 
   const total = allProjects.length;
-  const radius = 6.5; // Radius of the carousel cylinder
+  const radius = 4.5; // Reduced radius so it doesn't overlap with ITI Branch on the right
 
   useFrame(() => {
     if (!carouselRef.current) return;
@@ -54,9 +54,8 @@ export function ProjectsScene({ position = [0, 0, WORLD.PROJECTS_Z] }: { positio
         PHYSICAL 3D DIORAMAS & PRODUCTION ARCHITECTURES // SCROLL TO BROWSE // CLICK TO OPEN
       </Text>
 
-      {/* Rotating Carousel of Projects */}
-      {/* We move it back by radius so the front-most item is at Z=0 relative to the scene */}
-      <group position={[0, -0.2, -radius + 1]}>
+      {/* Rotating Carousel of Projects (Moved to the left) */}
+      <group position={[-2.5, -0.2, -radius + 1]}>
         <group ref={carouselRef}>
           {allProjects.map((project, i) => {
             const angle = -(i / total) * Math.PI * 2;
@@ -77,7 +76,7 @@ export function ProjectsScene({ position = [0, 0, WORLD.PROJECTS_Z] }: { positio
       </group>
 
       {/* ITI Academic Projects Branch (Right side) */}
-      <ITIProjectsBranch position={[6.0, 0.5, 0]} />
+      <ITIProjectsBranch position={[4.0, -0.2, 0]} />
     </group>
   );
 }

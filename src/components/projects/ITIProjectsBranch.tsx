@@ -46,33 +46,33 @@ function FileItem({ name, url, position }: { name: string; url: string; position
       {/* File Base (Premium Dark Glass) */}
       <RoundedBox args={[1.8, 0.38, 0.05]} radius={0.02} smoothness={3}>
         <meshPhysicalMaterial 
-          color="#05080c"
+          color="#0a0505"
           metalness={0.9}
           roughness={0.1}
           clearcoat={1.0}
           transparent
           opacity={0.9}
-          emissive={hovered ? "#38bdf8" : "#000000"}
+          emissive={hovered ? "#ef4444" : "#000000"}
           emissiveIntensity={hovered ? 0.3 : 0}
         />
       </RoundedBox>
 
-      {/* Futuristic Folder Icon */}
+      {/* Futuristic Folder Icon (Red Tint) */}
       <mesh position={[-0.7, 0, 0.03]}>
         <boxGeometry args={[0.15, 0.12, 0.02]} />
-        <meshStandardMaterial color={hovered ? "#ffffff" : "#67c9ff"} emissive={hovered ? "#ffffff" : "#000000"} emissiveIntensity={0.5} />
+        <meshStandardMaterial color={hovered ? "#ffffff" : "#f87171"} emissive={hovered ? "#ffffff" : "#000000"} emissiveIntensity={0.5} />
       </mesh>
       {/* Folder Flap */}
       <mesh position={[-0.74, 0.08, 0.03]}>
         <boxGeometry args={[0.07, 0.04, 0.02]} />
-        <meshStandardMaterial color={hovered ? "#ffffff" : "#67c9ff"} />
+        <meshStandardMaterial color={hovered ? "#ffffff" : "#f87171"} />
       </mesh>
 
       <Text position={[-0.5, 0, 0.03]} fontSize={0.11} color={hovered ? "#ffffff" : "#cbd5e1"} anchorX="left" fontWeight={700} letterSpacing={0.05}>
         {name.toUpperCase()}
       </Text>
       
-      <Text position={[0.7, 0, 0.03]} fontSize={0.08} color={hovered ? "#38bdf8" : "#475569"} anchorX="right" fontWeight={500}>
+      <Text position={[0.7, 0, 0.03]} fontSize={0.08} color={hovered ? "#ef4444" : "#475569"} anchorX="right" fontWeight={500}>
         OPEN ↗
       </Text>
     </group>
@@ -85,7 +85,7 @@ export function ITIProjectsBranch({ position = [0, 0, 0] }: { position?: [number
       {/* Main Container Glass Panel */}
       <RoundedBox args={[4.4, 4.8, 0.1]} radius={0.08} smoothness={4} position={[0, 0, -0.1]} castShadow>
         <meshPhysicalMaterial
-          color="#020406"
+          color="#060202"
           metalness={0.9}
           roughness={0.2}
           clearcoat={1.0}
@@ -95,7 +95,7 @@ export function ITIProjectsBranch({ position = [0, 0, 0] }: { position?: [number
       </RoundedBox>
 
       {/* Header Text */}
-      <Text position={[-1.8, 2.0, 0.0]} fontSize={0.14} color="#67c9ff" anchorX="left" letterSpacing={0.2}>
+      <Text position={[-1.8, 2.0, 0.0]} fontSize={0.14} color="#f87171" anchorX="left" letterSpacing={0.2}>
         // ACADEMIC BRANCH
       </Text>
       <Text position={[-1.8, 1.6, 0.0]} fontSize={0.4} color="#f8fafc" anchorX="left" fontWeight={900}>
