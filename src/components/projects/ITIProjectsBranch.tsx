@@ -1,38 +1,107 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { RoundedBox, Text } from '@react-three/drei';
+import { RoundedBox, Text, Html } from '@react-three/drei';
 import * as THREE from 'three';
+import axios from 'axios';
 import { soundEngine } from '../../utils/audio';
 
 const ITI_SESSIONS = [
-  { name: "Session 1", url: "https://github.com/F3raon/ITI-react.js-Assignments/tree/main/Session%201" },
-  { name: "Session 2", url: "https://github.com/F3raon/ITI-react.js-Assignments/tree/main/Session%202" },
-  { name: "Session 3", url: "https://github.com/F3raon/ITI-react.js-Assignments/tree/main/Session%203" },
-  { name: "Session 4", url: "https://github.com/F3raon/ITI-react.js-Assignments/tree/main/Session%204" },
-  { name: "Session 5", url: "https://github.com/F3raon/ITI-react.js-Assignments/tree/main/Session%205" },
-  { name: "Session 6", url: "https://github.com/F3raon/ITI-react.js-Assignments/tree/main/Session%206" },
-  { name: "Session 7", url: "https://github.com/F3raon/ITI-react.js-Assignments/tree/main/Session%207" },
-  { name: "Session 8", url: "https://github.com/F3raon/ITI-react.js-Assignments/tree/main/Session%208" },
-  { name: "Session 9", url: "https://github.com/F3raon/ITI-react.js-Assignments/tree/main/Session%209" },
-  { name: "Session 10", url: "https://github.com/F3raon/ITI-react.js-Assignments/tree/main/Session%2010" },
-  { name: "Session 12", url: "https://github.com/F3raon/ITI-react.js-Assignments/tree/main/Session%2012" },
-  { name: "Session 13", url: "https://github.com/F3raon/ITI-react.js-Assignments/tree/main/Session%2013" },
-  { name: "Session 14", url: "https://github.com/F3raon/ITI-react.js-Assignments/tree/main/Session%2014" },
-  { name: "Session 15", url: "https://github.com/F3raon/ITI-react.js-Assignments/tree/main/Session%2015" },
-  { name: "Session 16", url: "https://github.com/F3raon/ITI-react.js-Assignments/tree/main/Session%2016" },
-  { name: "Session 17", url: "https://github.com/F3raon/ITI-react.js-Assignments/tree/main/Session%2017" },
-  { name: "Session 18", url: "https://github.com/F3raon/ITI-react.js-Assignments/tree/main/Session%2018" }
+  "Session 1", "Session 2", "Session 3", "Session 4", 
+  "Session 5", "Session 6", "Session 7", "Session 8", 
+  "Session 9", "Session 10", "Session 12", "Session 13", 
+  "Session 14", "Session 15", "Session 16", "Session 17", "Session 18"
 ];
 
-function FileItem({ name, url, position }: { name: string; url: string; position: [number, number, number] }) {
+function SessionModal({ sessionName, onClose }: { sessionName: string, onClose: () => void }) {
+  const [projects, setProjects] = useState<{name: string, html_url: string}[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    soundEngine.playSelect();
+    const fetchProjects = async () => {
+      try {
+        const res = await axios.get(`https://api.github.com/repos/F3raon/ITI-react.js-Assignments/contents/${encodeURIComponent(sessionName)}`);
+        // Filter out files, keep directories (projects)
+        const dirs = res.data.filter((item: any) => item.type === 'dir' || item.name.endsWith('.js') || item.name.endsWith('.html'));
+        setProjects(dirs.length > 0 ? dirs : res.data); // Fallback to all files if no dirs
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProjects();
+  }, [sessionName]);
+
+  return (
+    <Html center zIndexRange={[100, 0]} transform={false}>
+      <div 
+        className="backdrop-blur-xl border border-red-500/30 rounded-lg p-6 shadow-[0_0_40px_rgba(220,38,38,0.2)]"
+        style={{
+          background: 'rgba(5, 8, 12, 0.85)',
+          width: '80vw',
+          maxWidth: '500px',
+          maxHeight: '70vh',
+          overflowY: 'auto',
+          color: 'white',
+          fontFamily: 'sans-serif'
+        }}
+      >
+        <div className="flex justify-between items-center mb-6 border-b border-red-500/20 pb-4">
+          <div>
+            <h2 className="text-2xl font-bold text-red-500 m-0 uppercase tracking-wider">{sessionName}</h2>
+            <p className="text-slate-400 text-sm mt-1 mb-0 uppercase tracking-widest">Select a project to enter</p>
+          </div>
+          <button 
+            onClick={(e) => { e.stopPropagation(); soundEngine.playHover(); onClose(); }}
+            className="text-slate-400 hover:text-white transition-colors bg-transparent border-none text-2xl cursor-pointer"
+          >
+            ✕
+          </button>
+        </div>
+
+        {loading ? (
+          <div className="flex justify-center py-8">
+            <div className="w-8 h-8 border-2 border-red-500 border-t-transparent rounded-full animate-spin"></div>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-3">
+            {projects.map(proj => (
+              <a 
+                key={proj.name}
+                href={proj.html_url} 
+                target="_blank" 
+                rel="noreferrer"
+                onMouseEnter={() => soundEngine.playHover()}
+                onClick={() => soundEngine.playSelect()}
+                className="group flex items-center justify-between p-4 bg-slate-900/50 hover:bg-red-950/40 border border-slate-800 hover:border-red-500/50 rounded-md transition-all no-underline"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="text-red-400 group-hover:text-red-300">📁</span>
+                  <span className="text-slate-200 group-hover:text-white font-medium">{proj.name}</span>
+                </div>
+                <span className="text-xs text-red-500/50 group-hover:text-red-400 font-bold tracking-widest">OPEN ↗</span>
+              </a>
+            ))}
+            {projects.length === 0 && (
+              <p className="text-slate-500 text-center py-4">No projects found in this session.</p>
+            )}
+          </div>
+        )}
+      </div>
+    </Html>
+  );
+}
+
+function Folder3DItem({ name, position, onClick }: { name: string; position: [number, number, number]; onClick: () => void }) {
   const [hovered, setHovered] = useState(false);
   const ref = useRef<THREE.Group>(null);
   
   useFrame((_, delta) => {
     if (!ref.current) return;
-    const targetScale = hovered ? 1.05 : 1;
+    const targetScale = hovered ? 1.1 : 1;
     ref.current.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), 1 - Math.exp(-8 * delta));
-    ref.current.position.z = THREE.MathUtils.lerp(ref.current.position.z, position[2] + (hovered ? 0.1 : 0), 1 - Math.exp(-8 * delta));
+    ref.current.position.z = THREE.MathUtils.lerp(ref.current.position.z, position[2] + (hovered ? 0.15 : 0), 1 - Math.exp(-8 * delta));
   });
 
   return (
@@ -41,49 +110,47 @@ function FileItem({ name, url, position }: { name: string; url: string; position
       position={position}
       onPointerOver={(e) => { e.stopPropagation(); setHovered(true); soundEngine.playHover(); }}
       onPointerOut={(e) => { e.stopPropagation(); setHovered(false); }}
-      onClick={(e) => { e.stopPropagation(); soundEngine.playSelect(); window.open(url, '_blank'); }}
+      onClick={(e) => { e.stopPropagation(); onClick(); }}
     >
-      {/* File Base (Premium Dark Glass) */}
-      <RoundedBox args={[1.8, 0.38, 0.05]} radius={0.02} smoothness={3}>
-        <meshPhysicalMaterial 
-          color="#0a0505"
-          metalness={0.9}
-          roughness={0.1}
-          clearcoat={1.0}
-          transparent
-          opacity={0.9}
-          emissive={hovered ? "#ef4444" : "#000000"}
-          emissiveIntensity={hovered ? 0.3 : 0}
-        />
-      </RoundedBox>
-
-      {/* Futuristic Folder Icon (Red Tint) */}
-      <mesh position={[-0.7, 0, 0.03]}>
-        <boxGeometry args={[0.15, 0.12, 0.02]} />
-        <meshStandardMaterial color={hovered ? "#ffffff" : "#f87171"} emissive={hovered ? "#ffffff" : "#000000"} emissiveIntensity={0.5} />
+      {/* Back Cover of Folder */}
+      <mesh position={[0, 0, -0.04]}>
+        <boxGeometry args={[1.2, 0.8, 0.02]} />
+        <meshStandardMaterial color={hovered ? "#ef4444" : "#991b1b"} roughness={0.3} />
       </mesh>
-      {/* Folder Flap */}
-      <mesh position={[-0.74, 0.08, 0.03]}>
-        <boxGeometry args={[0.07, 0.04, 0.02]} />
-        <meshStandardMaterial color={hovered ? "#ffffff" : "#f87171"} />
-      </mesh>
-
-      <Text position={[-0.5, 0, 0.03]} fontSize={0.11} color={hovered ? "#ffffff" : "#cbd5e1"} anchorX="left" fontWeight={700} letterSpacing={0.05}>
-        {name.toUpperCase()}
-      </Text>
       
-      <Text position={[0.7, 0, 0.03]} fontSize={0.08} color={hovered ? "#ef4444" : "#475569"} anchorX="right" fontWeight={500}>
-        OPEN ↗
+      {/* Folder Tab */}
+      <mesh position={[-0.4, 0.42, -0.04]}>
+        <boxGeometry args={[0.35, 0.08, 0.02]} />
+        <meshStandardMaterial color={hovered ? "#ef4444" : "#991b1b"} roughness={0.3} />
+      </mesh>
+
+      {/* White Paper Inside */}
+      <mesh position={[0, 0.05, -0.01]}>
+        <boxGeometry args={[1.1, 0.7, 0.01]} />
+        <meshBasicMaterial color="#ffffff" />
+      </mesh>
+
+      {/* Front Flap of Folder (Tilted forward) */}
+      <mesh position={[0, -0.05, 0.04]} rotation={[-0.1, 0, 0]}>
+        <boxGeometry args={[1.2, 0.7, 0.02]} />
+        <meshStandardMaterial color={hovered ? "#f87171" : "#dc2626"} roughness={0.2} metalness={0.1} />
+      </mesh>
+
+      {/* Label on Folder */}
+      <Text position={[0, -0.1, 0.08]} fontSize={0.16} color="#ffffff" anchorX="center" fontWeight={800} letterSpacing={0.05}>
+        {name.toUpperCase()}
       </Text>
     </group>
   );
 }
 
 export function ITIProjectsBranch({ position = [0, 0, 0] }: { position?: [number, number, number] }) {
+  const [activeSession, setActiveSession] = useState<string | null>(null);
+
   return (
     <group position={position}>
       {/* Main Container Glass Panel */}
-      <RoundedBox args={[4.6, 5.6, 0.1]} radius={0.08} smoothness={4} position={[0, -0.4, -0.1]} castShadow>
+      <RoundedBox args={[5.2, 5.0, 0.1]} radius={0.08} smoothness={4} position={[0, -0.2, -0.1]} castShadow>
         <meshPhysicalMaterial
           color="#060202"
           metalness={0.9}
@@ -95,36 +162,41 @@ export function ITIProjectsBranch({ position = [0, 0, 0] }: { position?: [number
       </RoundedBox>
 
       {/* Header Text */}
-      <Text position={[-1.8, 2.0, 0.0]} fontSize={0.14} color="#f87171" anchorX="left" letterSpacing={0.2}>
+      <Text position={[-2.2, 1.8, 0.0]} fontSize={0.14} color="#f87171" anchorX="left" letterSpacing={0.2}>
         // ACADEMIC BRANCH
       </Text>
-      <Text position={[-1.8, 1.6, 0.0]} fontSize={0.4} color="#f8fafc" anchorX="left" fontWeight={900}>
+      <Text position={[-2.2, 1.4, 0.0]} fontSize={0.4} color="#f8fafc" anchorX="left" fontWeight={900}>
         ITI ASSIGNMENTS
       </Text>
-      <Text position={[-1.8, 1.25, 0.0]} maxWidth={3.6} fontSize={0.09} color="#94a3b8" anchorX="left" lineHeight={1.5}>
-        REACT.JS TRACK • COMPREHENSIVE TASKS & PROJECTS ARCHIVE
+      <Text position={[-2.2, 1.05, 0.0]} maxWidth={4.0} fontSize={0.09} color="#94a3b8" anchorX="left" lineHeight={1.5}>
+        REACT.JS TRACK • CLICK ANY FOLDER TO VIEW INTERNAL PROJECTS
       </Text>
 
-      {/* Grid of Files */}
-      <group position={[0, -0.2, 0.05]}>
+      {/* Grid of 3D Folders */}
+      <group position={[0, 0, 0.05]}>
         {ITI_SESSIONS.map((session, i) => {
-          // 2 Columns layout
-          const col = i % 2;
-          const row = Math.floor(i / 2);
+          // 3 Columns layout
+          const col = i % 3;
+          const row = Math.floor(i / 3);
           
-          const x = col === 0 ? -1.0 : 1.0;
-          const y = 1.0 - (row * 0.45); // Start at top and go down
+          const x = (col - 1) * 1.5;
+          const y = 0.5 - (row * 0.65); // Start at Y=0.5 and go down
           
           return (
-            <FileItem
-              key={session.name}
-              name={session.name}
-              url={session.url}
+            <Folder3DItem
+              key={session}
+              name={session}
               position={[x, y, 0]}
+              onClick={() => setActiveSession(session)}
             />
           );
         })}
       </group>
+
+      {/* Modal Overlay for displaying contents */}
+      {activeSession && (
+        <SessionModal sessionName={activeSession} onClose={() => setActiveSession(null)} />
+      )}
     </group>
   );
 }
