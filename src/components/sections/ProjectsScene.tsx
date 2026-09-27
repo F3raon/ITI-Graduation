@@ -55,7 +55,7 @@ export function ProjectsScene({ position = [0, 0, WORLD.PROJECTS_Z] }: { positio
       </Text>
 
       {/* Rotating Carousel of Projects (Moved left and scaled down) */}
-      <group position={[-3.2, 0, 0]} scale={0.75}>
+      <group position={[-4.0, 0, 0]} scale={0.75}>
         <group position={[0, -0.2, -radius + 1]}>
           <group ref={carouselRef}>
           {allProjects.map((project, i) => {
@@ -78,7 +78,7 @@ export function ProjectsScene({ position = [0, 0, WORLD.PROJECTS_Z] }: { positio
       </group>
 
       {/* ITI Academic Projects Branch (Right side, scaled down) */}
-      <group position={[3.6, 0.4, 0]} scale={0.8}>
+      <group position={[2.2, 0.4, 0]} scale={0.75}>
         <ITIProjectsBranch position={[0, 0, 0]} />
       </group>
     </group>

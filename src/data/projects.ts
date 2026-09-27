@@ -13,86 +13,106 @@ export interface ProjectItem {
 
 export const PROJECTS_DATA: ProjectItem[] = [
   {
-    id: 'koky-sweets',
-    title: 'KOKY SWEETS E-COMMERCE',
-    category: 'production',
-    tags: ['ASP.NET Core 8', 'MVC', 'SQL Server', 'SignalR', 'PayPal', 'TailwindCSS'],
-    description:
-      'A full-featured e-commerce platform for custom baked goods with real-time order tracking, payment gateway integration, responsive dashboard, and live notifications.',
-    highlights: [
-      'Built with ASP.NET Core 8 MVC, EF Core, and SQL Server',
-      'Real-time order progress via SignalR',
-      'Secure PayPal checkout & automated invoicing',
-      'Comprehensive administrative analytics & stock control',
-    ],
-    demoUrl: 'https://koky-sweets.runasp.net/',
-    githubUrl: 'https://github.com/F3raon/Koky-Sweets',
-    color: '#ff8a30',
-  },
-  {
-    id: 'erp-system',
-    title: 'ENTERPRISE ERP SYSTEM',
-    category: 'production',
-    tags: ['C#', 'WinForms', 'SQL Server', 'Crystal Reports', 'Guna UI'],
-    description:
-      'A comprehensive Enterprise Resource Planning desktop software built for commercial businesses with multi-branch inventory, invoicing, CRM, and accounting.',
-    highlights: [
-      'Multi-branch warehouse stock tracking and auditing',
-      'Automated financial reporting with Crystal Reports',
-      'Granular role-based user permissions and audit trail logs',
-      'High-throughput SQL Server schema handling 100k+ inventory rows',
-    ],
-    githubUrl: 'https://github.com/F3raon/ERP-System',
-    color: '#3b82f6',
-  },
-  {
     id: 'axon-erp-api',
-    title: 'AXON ERP API',
+    title: 'AXON ERP SYSTEM',
     category: 'production',
-    tags: ['Clean Architecture', '.NET 8', 'REST API', 'CQRS', 'JWT'],
+    tags: ['ASP.NET Core 10', 'Clean Architecture', 'JWT', 'EF Core', 'Next.js'],
     description:
-      'A high-performance enterprise REST API designed with Onion / Clean Architecture to power multi-tenant web and mobile client dashboards with high security.',
+      'Architected a full multi-module ERP backend from scratch using Clean Architecture (Domain, Application, Infrastructure, API) serving a Next.js frontend, covering Auth, Inventory, Sales, Purchases, POS, HR, Accounting, CRM, and Maintenance modules.',
     highlights: [
-      'Onion / Clean Architecture with Domain-Driven Design principles',
-      'JWT token authentication with refresh tokens and claim-based access',
-      'Automated Swagger documentation and API contract versioning',
-      'Deployed live on RunASP hosting infrastructure',
+      'Implemented JWT role-based authorization with 7 roles (Admin, Cashier, Salesman, Technician, Warehouse, Auditor, Owner)',
+      'FluentValidation on all DTOs and global ProblemDetails error handling',
+      'Reusable pagination/filtering/sorting pattern across all endpoints',
     ],
-    demoUrl: 'https://axon-api.runasp.net/swagger/index.html',
-    githubUrl: 'https://github.com/F3raon/Axon-ERP-API',
+    demoUrl: 'https://axon-erp-one.vercel.app/',
+    githubUrl: 'https://axon-api.runasp.net/swagger', // Using GitHub field for API docs link
     color: '#10b981',
   },
   {
     id: 'edusaas-api',
-    title: 'EDUSAAS ACADEMY API',
+    title: 'EDUSAAS API',
     category: 'production',
     tags: ['ASP.NET Core', 'SQL Server', 'JWT Auth', 'REST API', 'Swagger'],
     description:
-      'Backend infrastructure for educational institutes, managing student enrollments, course catalogs, grading rubrics, schedule calendars, and teacher assignments.',
+      'Designed and built a RESTful API for a SaaS-based educational platform covering course management, user enrollment, and role-based authorization.',
     highlights: [
-      'Full CRUD RESTful endpoints with validation pipelines',
-      'Role-based authorization for Students, Instructors, and Admin staff',
-      'Optimized database queries with EF Core and SQL indexing',
+      'Full Swagger/OpenAPI documentation',
+      'JWT authentication and role-based authorization',
     ],
     demoUrl: 'https://edusaas-api.runasp.net/Swagger',
-    githubUrl: 'https://github.com/F3raon/EduSaaS-API',
     color: '#8b5cf6',
   },
   {
     id: 'pills-dispenser',
-    title: 'SMART PILLS DISPENSER API & IOT',
+    title: 'PILLS DISPENSER API',
     category: 'production',
-    tags: ['IoT Backend', 'ASP.NET Core', 'Hardware Integration', 'Raspberry Pi'],
+    tags: ['ASP.NET Core', 'IoT Backend', 'Hardware Integration', 'SQL Server'],
     description:
-      'An intelligent IoT medical dispenser backend that coordinates hardware motor drivers, patient dosage schedules, and caregiver alerts in real time.',
+      'Built a RESTful backend API for a hardware-connected smart medication dispenser, handling pill scheduling, dose tracking, and patient management.',
     highlights: [
-      'Hardware communication with sensors and motorized dosage carousels',
-      'Scheduled background cron tasks for prescription alarm dispatching',
-      'Live patient compliance logging and emergency alerts',
+      'Consumed by an embedded ESP32/mobile client to control physical dispensing operations',
+      'Documented with Swagger/OpenAPI',
     ],
     demoUrl: 'https://pills-despinser.runasp.net/swagger/index.html',
-    githubUrl: 'https://github.com/F3raon/Pills-Dispenser',
     color: '#ec4899',
+  },
+  {
+    id: 'koky-sweets',
+    title: 'KOKY SWEETS E-COMMERCE',
+    category: 'production',
+    tags: ['ASP.NET Core 8 MVC', 'Clean Architecture', 'SignalR', 'EF Core', 'Leaflet.js'],
+    description:
+      'Production-ready bakery e-commerce platform using Clean Architecture with real-time Uber-like live order tracking powered by SignalR, broadcasting courier GPS coordinates.',
+    highlights: [
+      'Dynamic ETA calculation using the Haversine formula',
+      'Smart checkout geocoding map using Leaflet.js and Nominatim (OpenStreetMap)',
+      'WhatsApp API integration for instant order tracking links',
+    ],
+    demoUrl: 'https://koky-sweets.runasp.net/',
+    color: '#ff8a30',
+  },
+  {
+    id: 'student-echo',
+    title: 'STUDENTECHO PLATFORM',
+    category: 'production',
+    tags: ['ASP.NET Core 8 MVC', 'Clean Architecture', 'Google OAuth', 'CQRS'],
+    description:
+      'University complaint management system using Clean Architecture with Repository Pattern, Unit of Work, and CQRS, featuring Google OAuth 2.0 and OTP verification.',
+    highlights: [
+      'Smart keyword-based complaint categorization and automated priority engine',
+      'Role-based access (Student, Staff, Supervisor, Admin) and SMTP email notifications',
+      'Chart.js analytics dashboard with staff performance metrics',
+    ],
+    demoUrl: 'https://student-echo.runasp.net/',
+    color: '#38bdf8',
+  },
+  {
+    id: 'muslimy',
+    title: 'MUSLIMY ISLAMIC PLATFORM',
+    category: 'production',
+    tags: ['ASP.NET Core 8 MVC', 'Clean Architecture', 'CQRS', 'MediatR'],
+    description:
+      'Enterprise-grade Islamic platform using Clean Architecture and CQRS via MediatR, integrating AlQuran Cloud API, Aladhan API, a Hadith browser, and Duas collection.',
+    highlights: [
+      'Real-time prayer times with auto location detection',
+      'Group/Individual Khatmah tracking system',
+    ],
+    demoUrl: 'https://muslimy-app.runasp.net/',
+    color: '#14b8a6',
+  },
+  {
+    id: 'erp-system',
+    title: 'DESKTOP ERP SYSTEM (PHARAOXON)',
+    category: 'production',
+    tags: ['C#', '.NET Framework', 'SQL Server', 'WinForms', 'DevExpress'],
+    description:
+      'Comprehensive desktop ERP covering Customers, Suppliers, Branches, Warehouses, Categories, Purchases, Sales, Finance, HR, and Settings with advanced DevExpress reporting.',
+    highlights: [
+      'Used daily in production at Pharaoxon',
+      'Handles complex purchases (invoices + returns) and sales (invoices + returns)',
+      'Granular role-based user permissions',
+    ],
+    color: '#3b82f6',
   },
   // 4 Interactive 3D Miniature Diorama Worlds
   {
