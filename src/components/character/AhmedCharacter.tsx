@@ -261,6 +261,7 @@ export function AhmedCharacter({
           tNeon: { value: neonTex },
           uMouse: { value: uMouse.current },
           uHover: { value: 0 },
+          uProgress: { value: 0 },
           uAspect: { value: 1.0 },
           uRadius: { value: 0.35 },
           uSmoothness: { value: 0.15 }
@@ -281,6 +282,7 @@ export function AhmedCharacter({
         uniform sampler2D tNeon;
         uniform vec2 uMouse;
         uniform float uHover;
+        uniform float uProgress;
         uniform float uRadius;
         uniform float uSmoothness;
         uniform float uAspect;
@@ -299,11 +301,17 @@ export function AhmedCharacter({
           uv.y /= uAspect;
           mouse.y /= uAspect;
 
+          // Mouse hover circular mask
           float dist = distance(uv, mouse);
-          float mask = 1.0 - smoothstep(uRadius - uSmoothness, uRadius, dist);
-          mask *= uHover;
+          float hoverMask = (1.0 - smoothstep(uRadius - uSmoothness, uRadius, dist)) * uHover;
 
-          vec4 finalColor = mix(realColor, neonColor, mask);
+          // Scroll-based full reveal (happens between progress 0.35 and 0.65)
+          float scrollMask = smoothstep(0.35, 0.65, uProgress);
+
+          // Combine both masks
+          float finalMask = clamp(hoverMask + scrollMask, 0.0, 1.0);
+
+          vec4 finalColor = mix(realColor, neonColor, finalMask);
           
           if (finalColor.a < 0.05) discard;
           gl_FragColor = finalColor;
@@ -328,6 +336,9 @@ export function AhmedCharacter({
     const targetHover = hovered ? 1.0 : 0.0;
     uHover.current = THREE.MathUtils.lerp(uHover.current, targetHover, delta * 8.0);
     shaderMaterial.uniforms.uHover.value = uHover.current;
+    
+    // Update scroll progress
+    shaderMaterial.uniforms.uProgress.value = progress;
     
     // Explicitly update the cloned uniform vector from the ref
     if (shaderMaterial.uniforms.uMouse.value) {
