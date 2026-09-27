@@ -172,14 +172,23 @@ export function AchievementsScene({ position = [0, 0, -82] }: { position?: [numb
       {/* 4 Trophies arranged across the chamber */}
       <group position={[0, 0, 0]}>
         {PORTFOLIO_DATA.achievements.map((item, i) => {
-          const total = PORTFOLIO_DATA.achievements.length;
-          const spacing = total > 4 ? 2.8 : 3.4;
-          const x = (i - (total - 1) / 2) * spacing;
+          const isMobile = aspect < 0.9;
+          
+          // 2x2 Grid Layout to fit within camera view
+          const col = i % 2;
+          const row = Math.floor(i / 2);
+          
+          const xSpacing = isMobile ? 3.0 : 3.4;
+          const ySpacing = isMobile ? 3.6 : 3.2;
+          
+          const x = (col - 0.5) * xSpacing;
+          const y = (0.5 - row) * ySpacing - (isMobile ? 1.0 : 0);
+
           return (
             <AchievementPedestal
               key={item.id}
               item={item}
-              position={[x, 0, 0]}
+              position={[x, y, 0]}
             />
           );
         })}

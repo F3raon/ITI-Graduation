@@ -131,14 +131,14 @@ export function ContactScene({ position = [0, 0, -98] }: { position?: [number, n
         </Text>
       </group>
 
-      {/* 4 Interactive Contact Terminals */}
+      {/* 4 Interactive Contact Terminals - 2x2 Grid */}
       <group position={[0, -1.2, 0]}>
         <ContactTerminal
           label="EMAIL"
           value={PORTFOLIO_DATA.identity.email}
           url={`mailto:${PORTFOLIO_DATA.identity.email}`}
           color="#ff8a30"
-          position={[aspect < 0.9 ? -1.6 : -4.5, aspect < 0.9 ? 1.6 : 0, 0]}
+          position={[-1.6, 1.6, 0]}
           icon="✉"
         />
         <ContactTerminal
@@ -146,7 +146,7 @@ export function ContactScene({ position = [0, 0, -98] }: { position?: [number, n
           value="/in/ahmed-hamada-saad"
           url={PORTFOLIO_DATA.identity.linkedin}
           color="#0284c7"
-          position={[aspect < 0.9 ? 1.6 : -1.5, aspect < 0.9 ? 1.6 : 0, 0]}
+          position={[1.6, 1.6, 0]}
           icon="in"
         />
         <ContactTerminal
@@ -154,7 +154,7 @@ export function ContactScene({ position = [0, 0, -98] }: { position?: [number, n
           value="github.com/F3raon"
           url={PORTFOLIO_DATA.identity.github}
           color="#a855f7"
-          position={[aspect < 0.9 ? -1.6 : 1.5, aspect < 0.9 ? -1.6 : 0, 0]}
+          position={[-1.6, -1.6, 0]}
           icon="⌥"
         />
         <ContactTerminal
@@ -162,7 +162,7 @@ export function ContactScene({ position = [0, 0, -98] }: { position?: [number, n
           value={PORTFOLIO_DATA.identity.phone}
           url={PORTFOLIO_DATA.identity.whatsapp}
           color="#10b981"
-          position={[aspect < 0.9 ? 1.6 : 4.5, aspect < 0.9 ? -1.6 : 0, 0]}
+          position={[1.6, -1.6, 0]}
           icon="✆"
         />
       </group>
