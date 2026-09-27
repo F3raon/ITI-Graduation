@@ -323,11 +323,16 @@ export function AhmedCharacter({
     shaderMaterial.uniforms.uAspect.value = pW / pH;
   }, [pW, pH, shaderMaterial]);
 
-  // Smoothly interpolate the hover uniform
+  // Smoothly interpolate the hover uniform and update mouse
   useFrame((_, delta) => {
     const targetHover = hovered ? 1.0 : 0.0;
     uHover.current = THREE.MathUtils.lerp(uHover.current, targetHover, delta * 8.0);
     shaderMaterial.uniforms.uHover.value = uHover.current;
+    
+    // Explicitly update the cloned uniform vector from the ref
+    if (shaderMaterial.uniforms.uMouse.value) {
+      shaderMaterial.uniforms.uMouse.value.copy(uMouse.current);
+    }
   });
 
   // ── Scroll stage derivations ───────────────────────────────────────────────
