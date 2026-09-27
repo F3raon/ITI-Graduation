@@ -35,8 +35,8 @@ export function World() {
     <>
       {/* Scene background & fog */}
       <color attach="background" args={['#020507']} />
-      {/* Fog starts at 10 units, fully opaque at 105 units — covers entire journey */}
-      <fog attach="fog" args={['#020507', 10, 105]} />
+      {/* Fog starts at 8 units, fully opaque at 22 units — hides distant sections to prevent visual overlap */}
+      <fog attach="fog" args={['#020507', 8, 22]} />
 
       {/* Global lighting */}
       <Lighting />

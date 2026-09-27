@@ -1,4 +1,4 @@
-import { useRef, useMemo } from 'react';
+import { useRef, useMemo, useState } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import { useTexture } from '@react-three/drei';
 import * as THREE from 'three';
@@ -214,7 +214,6 @@ function CharacterPlatform({ progress }: { progress: number }) {
   );
 }
 
-// ─── Main Character Component ─────────────────────────────────────────────────
 export function AhmedCharacter({
   position = [0, 0, 0],
   rotationY = 0,
@@ -229,6 +228,9 @@ export function AhmedCharacter({
   const auraRef    = useRef<THREE.Mesh>(null);
   const flashRef   = useRef<THREE.Mesh>(null);
   const { size }   = useThree();
+
+  const [hovered, setHovered] = useState(false);
+  const [activeProgress, setActiveProgress] = useState(progress);
 
   // ── Textures (authoritative assets) ────────────────────────────────────────
   const realTex = useTexture('/models/REAL_AHMED.png');
@@ -250,15 +252,26 @@ export function AhmedCharacter({
   const pH = isMobile ? 3.0  : 4.1;
   const pY = isMobile ? 1.2  : 1.65; // plane center Y above dais
 
+  // ── Hover & Scroll Sync ───────────────────────────────────────────────────
+  useFrame((_, delta) => {
+    // If hovered, force progress towards 1.0. Otherwise fall back to global scroll progress.
+    const target = hovered ? Math.max(progress, 1.0) : progress;
+    if (Math.abs(activeProgress - target) > 0.005) {
+      setActiveProgress(THREE.MathUtils.lerp(activeProgress, target, delta * 6.0));
+    } else if (activeProgress !== target) {
+      setActiveProgress(target);
+    }
+  });
+
   // ── Scroll stage derivations ───────────────────────────────────────────────
   // Stage 1: Real  (0.00 → 0.20)  real=1, neon=0
   // Stage 2: Dissolve (0.20 → 0.55) crossfade window
   // Stage 3: Neon   (0.55 → 1.00)  real=0, neon=1
-  const dissolveT = easeInOut(clamp(invLerp(0.20, 0.55, progress)));  // Real fades
+  const dissolveT = easeInOut(clamp(invLerp(0.20, 0.55, activeProgress)));  // Real fades
   const realOp    = 1.0 - dissolveT;
-  const neonOp    = easeInOut(clamp(invLerp(0.35, 0.65, progress)));  // Neon emerges
-  const energyT   = easeInOut(clamp(invLerp(0.05, 0.35, progress)));  // Aura buildup
-  const flashT    = Math.max(0, 1 - Math.abs(progress - 0.50) / 0.09); // spike at 0.50
+  const neonOp    = easeInOut(clamp(invLerp(0.35, 0.65, activeProgress)));  // Neon emerges
+  const energyT   = easeInOut(clamp(invLerp(0.05, 0.35, activeProgress)));  // Aura buildup
+  const flashT    = Math.max(0, 1 - Math.abs(activeProgress - 0.50) / 0.09); // spike at 0.50
   const auraOp    = energyT * (1 - dissolveT * 0.6) * 0.28;
 
   // ── Frame animation ────────────────────────────────────────────────────────
@@ -287,15 +300,23 @@ export function AhmedCharacter({
       position={position}
       rotation={[rotationX, rotationY, 0]}
       scale={[scale, scale, scale]}
+      onPointerOver={(e) => {
+        e.stopPropagation();
+        setHovered(true);
+      }}
+      onPointerOut={(e) => {
+        e.stopPropagation();
+        setHovered(false);
+      }}
     >
       {/* ── Platform ──────────────────────────────────────────────────────── */}
-      <CharacterPlatform progress={progress} />
+      <CharacterPlatform progress={activeProgress} />
 
       {/* ── Neon halo backdrop ────────────────────────────────────────────── */}
-      <NeonHalo progress={progress} />
+      <NeonHalo progress={activeProgress} />
 
       {/* ── Electric orbit arcs ───────────────────────────────────────────── */}
-      <ElectricArcs progress={progress} />
+      <ElectricArcs progress={activeProgress} />
 
       {/* ── Blue energy aura behind Real portrait ─────────────────────────── */}
       <mesh ref={auraRef} position={[0, pY, -0.05]}>
@@ -365,7 +386,7 @@ export function AhmedCharacter({
       </mesh>
 
       {/* ── Transformation burst particles ────────────────────────────────── */}
-      <TransformBurst progress={progress} count={isMobile ? 48 : 80} />
+      <TransformBurst progress={activeProgress} count={isMobile ? 48 : 80} />
     </group>
   );
 }
