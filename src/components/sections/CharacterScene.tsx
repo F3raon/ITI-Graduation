@@ -11,14 +11,16 @@ export interface CharacterSceneProps {
   position?: [number, number, number];
 }
 
-export function CharacterScene({
-  position = [0, -0.6, -8.0],
-}: CharacterSceneProps) {
-  const [rotationY, setRotationY] = useState(0);
-  const [rotationX, setRotationX] = useState(0);
-  const [dragStart, setDragStart] = useState<{ x: number; y: number } | null>(null);
-  const [currentProgress, setCurrentProgress] = useState(0.5);
+// Scroll window for the character transformation:
+// global scroll 0.24 → real Ahmed visible
+// global scroll 0.24 → 0.51 full transformation arc
+const SCROLL_START = 0.24;
+const SCROLL_END   = 0.51;
 
+export function CharacterScene({
+  position = [0, -0.6, -9.5],
+}: CharacterSceneProps) {
+  const [progress, setProgress] = useState(0);
   const groupRef = useRef<THREE.Group>(null);
   const { size } = useThree();
   const aspect = size.width / Math.max(1, size.height);
@@ -26,58 +28,36 @@ export function CharacterScene({
 
   useFrame(() => {
     const s = scrollStore.current;
-    // Scroll interval for character transformation:
-    // 0.24 -> 0.32 (Real Portrait → Full Neon)
     let p = 0;
-    if (s < 0.24) {
+    if (s < SCROLL_START) {
       p = 0.0;
-    } else if (s <= 0.32) {
-      p = (s - 0.24) / 0.08;
+    } else if (s <= SCROLL_END) {
+      p = (s - SCROLL_START) / (SCROLL_END - SCROLL_START);
     } else {
       p = 1.0;
     }
     p = Math.max(0, Math.min(1, p));
-    if (Math.abs(p - currentProgress) > 0.005) {
-      setCurrentProgress(p);
+    if (Math.abs(p - progress) > 0.003) {
+      setProgress(p);
     }
   });
 
   return (
-    <group
-      ref={groupRef}
-      position={position}
-      scale={[scale, scale, scale]}
-      onPointerDown={(e) => {
-        setDragStart({ x: e.clientX, y: e.clientY });
-      }}
-      onPointerMove={(e) => {
-        if (!dragStart) return;
-        const dx = (e.clientX - dragStart.x) * 0.008;
-        const dy = (e.clientY - dragStart.y) * 0.004;
-        setRotationY((prev) => prev + dx);
-        setRotationX((prev) => Math.max(-0.25, Math.min(0.25, prev + dy)));
-        setDragStart({ x: e.clientX, y: e.clientY });
-      }}
-      onPointerUp={() => setDragStart(null)}
-      onPointerLeave={() => setDragStart(null)}
-    >
+    <group ref={groupRef} position={position} scale={[scale, scale, scale]}>
       {/* Dynamic Lighting Rig tuned to transformation progress */}
-      <CharacterLighting progress={currentProgress} />
+      <CharacterLighting progress={progress} />
 
       {/* Cyber Particle Sparks swirling around the dais */}
-      <CharacterParticles count={120} progress={currentProgress} />
+      <CharacterParticles count={120} progress={progress} />
 
       {/* Dynamic Energy Rings */}
-      <CharacterEffects progress={currentProgress} />
+      <CharacterEffects progress={progress} />
 
-      {/* Approved Ahmed Hamada 3D Character System */}
+      {/* Ahmed Hamada — PNG Portrait System with Cinematic Transformation */}
       <AhmedCharacter
         position={[0, 0, 0]}
-        rotationY={rotationY}
-        rotationX={rotationX}
         scale={1}
-        progress={currentProgress}
-        isInteractive={true}
+        progress={progress}
       />
     </group>
   );

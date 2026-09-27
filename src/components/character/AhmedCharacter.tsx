@@ -1,6 +1,6 @@
-import { useRef, useState, useEffect, useMemo } from 'react';
+import { useRef, useMemo } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
-import { Text, useTexture, RoundedBox } from '@react-three/drei';
+import { useTexture } from '@react-three/drei';
 import * as THREE from 'three';
 
 export interface AhmedCharacterProps {
@@ -8,144 +8,247 @@ export interface AhmedCharacterProps {
   rotationY?: number;
   rotationX?: number;
   scale?: number;
-  progress?: number; // 0.0 Real -> 1.0 Full Neon
+  progress?: number; // 0.0 Real Ahmed -> 1.0 Full Neon Ahmed
   isInteractive?: boolean;
 }
 
-// 8 Turnaround pose image paths extracted from the approved concept turnaround sheet
-const POSE_PATHS = [
-  '/images/character/pose_feather_0.png', // 0: Front
-  '/images/character/pose_feather_1.png', // 1: Front-Left (3/4)
-  '/images/character/pose_feather_2.png', // 2: Left (Profile)
-  '/images/character/pose_feather_3.png', // 3: Back-Left (3/4 rear)
-  '/images/character/pose_feather_4.png', // 4: Back (Illuminated "AH" Crest & Curly Hair)
-  '/images/character/pose_feather_5.png', // 5: Back-Right (3/4 rear)
-  '/images/character/pose_feather_6.png', // 6: Right (Profile)
-  '/images/character/pose_feather_7.png', // 7: Front-Right (3/4)
-];
+// ============================================================
+// Easing helpers
+// ============================================================
+function easeInOut(t: number) {
+  return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+}
 
-// Transformation stage cards
-const TRANS_CARD_PATHS = [
-  '/images/character/trans_card_feather_0.png', // Real Photo
-  '/images/character/trans_card_feather_1.png', // Lighting Ignition
-  '/images/character/trans_card_feather_2.png', // Stylized 3D
-  '/images/character/trans_card_feather_3.png', // Full Neon Mode
-];
+function clamp(v: number, lo: number, hi: number) {
+  return Math.max(lo, Math.min(hi, v));
+}
 
+function invLerp(a: number, b: number, v: number) {
+  return clamp((v - a) / (b - a), 0, 1);
+}
+
+// ============================================================
+// Particle geometry for the transformation burst
+// ============================================================
+function TransformParticles({ progress, count = 80 }: { progress: number; count?: number }) {
+  const meshRef = useRef<THREE.InstancedMesh>(null);
+  const dummy = useMemo(() => new THREE.Object3D(), []);
+  const seeds = useMemo(
+    () =>
+      Array.from({ length: count }, (_, i) => ({
+        t: Math.random() * Math.PI * 2,
+        ry: Math.random() * Math.PI * 2,
+        radius: 0.4 + Math.random() * 1.2,
+        yBase: -0.8 + Math.random() * 3.0,
+        speed: 0.5 + Math.random() * 1.0,
+        phase: Math.random() * Math.PI * 2,
+        size: 0.015 + Math.random() * 0.03,
+      })),
+    [count]
+  );
+
+  useFrame((state) => {
+    if (!meshRef.current) return;
+    // burst window: progress 0.3 → 0.8
+    const burstT = clamp(invLerp(0.25, 0.85, progress), 0, 1);
+    const opacity = burstT < 0.5 ? easeInOut(burstT * 2) : easeInOut((1 - burstT) * 2);
+
+    seeds.forEach((s, i) => {
+      const angle = s.ry + state.clock.elapsedTime * s.speed * 0.4;
+      const r = s.radius * (1 + burstT * 0.8);
+      dummy.position.set(Math.cos(angle) * r, s.yBase + Math.sin(state.clock.elapsedTime * s.speed + s.phase) * 0.25, Math.sin(angle) * r);
+      dummy.scale.setScalar(s.size * (0.5 + burstT * 1.5) * opacity);
+      dummy.updateMatrix();
+      meshRef.current!.setMatrixAt(i, dummy.matrix);
+    });
+    meshRef.current.instanceMatrix.needsUpdate = true;
+  });
+
+  if (progress < 0.1) return null;
+
+  return (
+    <instancedMesh ref={meshRef} args={[undefined, undefined, count]}>
+      <dodecahedronGeometry args={[1, 0]} />
+      <meshBasicMaterial
+        color={progress > 0.5 ? '#00f0ff' : '#ff8a30'}
+        transparent
+        opacity={0.9}
+        blending={THREE.AdditiveBlending}
+        depthWrite={false}
+        toneMapped={false}
+      />
+    </instancedMesh>
+  );
+}
+
+// ============================================================
+// Electric streak lines that trace the silhouette
+// ============================================================
+function ElectricStreaks({ progress }: { progress: number }) {
+  const groupRef = useRef<THREE.Group>(null);
+
+  useFrame((state, delta) => {
+    if (groupRef.current) {
+      groupRef.current.rotation.z += delta * (0.6 + progress * 1.4);
+      groupRef.current.rotation.y = Math.sin(state.clock.elapsedTime * 2.2) * 0.15;
+    }
+  });
+
+  const streakProgress = clamp(invLerp(0.2, 0.8, progress), 0, 1);
+  if (streakProgress < 0.05) return null;
+
+  return (
+    <group ref={groupRef} position={[0, 1.4, 0]}>
+      {/* Cyan orbital rings */}
+      <mesh rotation={[Math.PI / 3.2, 0, 0]}>
+        <torusGeometry args={[1.1, 0.008, 12, 64]} />
+        <meshBasicMaterial
+          color="#00f0ff"
+          transparent
+          opacity={streakProgress * 0.85}
+          blending={THREE.AdditiveBlending}
+          toneMapped={false}
+        />
+      </mesh>
+      <mesh rotation={[-Math.PI / 4, Math.PI / 5, 0]}>
+        <torusGeometry args={[1.3, 0.006, 12, 64]} />
+        <meshBasicMaterial
+          color="#a855f7"
+          transparent
+          opacity={streakProgress * 0.7}
+          blending={THREE.AdditiveBlending}
+          toneMapped={false}
+        />
+      </mesh>
+      {/* Yellow accent ring (neon power) */}
+      <mesh rotation={[Math.PI / 5, Math.PI / 3, 0]}>
+        <torusGeometry args={[0.9, 0.005, 12, 48]} />
+        <meshBasicMaterial
+          color="#facc15"
+          transparent
+          opacity={clamp(invLerp(0.5, 0.9, progress), 0, 1) * 0.7}
+          blending={THREE.AdditiveBlending}
+          toneMapped={false}
+        />
+      </mesh>
+    </group>
+  );
+}
+
+// ============================================================
+// Main Component
+// ============================================================
 export function AhmedCharacter({
   position = [0, 0, 0],
   rotationY = 0,
   rotationX = 0,
   scale = 1,
-  progress = 0.5,
-  isInteractive = true,
+  progress = 0.0,
 }: AhmedCharacterProps) {
   const rootRef = useRef<THREE.Group>(null);
-  const characterPlaneRef = useRef<THREE.Mesh>(null);
+  const realPlaneRef = useRef<THREE.Mesh>(null);
+  const neonPlaneRef = useRef<THREE.Mesh>(null);
+  const neonGlowRef = useRef<THREE.Mesh>(null);
   const auraRef = useRef<THREE.Mesh>(null);
   const ringsRef = useRef<THREE.Group>(null);
-  const scanlineRef = useRef<THREE.Mesh>(null);
-  const { camera } = useThree();
+  const flashRef = useRef<THREE.Mesh>(null);
+  const { size } = useThree();
 
-  // Preload turnaround textures and transformation textures
-  const poseTextures = useTexture(POSE_PATHS);
-  const transTextures = useTexture(TRANS_CARD_PATHS);
-  const realPortraitTexture = useTexture('/images/ahmed-real.png');
+  // Load the two authoritative portrait textures
+  const realTexture = useTexture('/models/REAL_AHMED.png');
+  const neonTexture = useTexture('/models/NEON_AHMED.png');
 
-  // Currently active pose index based on camera viewing angle
-  const [activePoseIndex, setActivePoseIndex] = useState(0);
+  // ---- Texture setup ----
+  useMemo(() => {
+    [realTexture, neonTexture].forEach((t) => {
+      t.colorSpace = THREE.SRGBColorSpace;
+      t.premultiplyAlpha = false;
+    });
+  }, [realTexture, neonTexture]);
 
-  // Which transformation card to display in the biometric scan matrix
-  const transCardIndex = Math.min(3, Math.floor(progress * 4));
+  // ---- Derived scroll-stage values ----
+  const isMobile = size.width / size.height < 1.0;
+  const planeW = isMobile ? 1.6 : 2.2;
+  const planeH = isMobile ? 3.0 : 4.0;
+  const planeY = isMobile ? 1.2 : 1.6;
+
+  // Stage breakpoints (0→1 global progress)
+  const energyT   = easeInOut(clamp(invLerp(0.15, 0.35, progress), 0, 1)); // energy buildup
+  const dissolveT = easeInOut(clamp(invLerp(0.35, 0.65, progress), 0, 1)); // crossfade
+  const neonT     = easeInOut(clamp(invLerp(0.55, 0.80, progress), 0, 1)); // neon hero
+
+  // Flash: bright spike around midpoint
+  const flashT = Math.max(0, 1 - Math.abs(progress - 0.52) / 0.08);
+
+  // Real image: opaque 0→0.35, dissolves 0.35→0.65
+  const realOpacity = 1.0 - dissolveT;
+  // Neon image: invisible until 0.5, fully visible at 0.75
+  const neonOpacity = neonT;
+  // Aura glow expands with energy
+  const auraOpacity = energyT * (1 - dissolveT * 0.5) * 0.3;
 
   useFrame((state, delta) => {
-    // 1. Natural idle breathing motion
-    const breath = Math.sin(state.clock.elapsedTime * 2.4) * 0.02;
-    if (characterPlaneRef.current) {
-      characterPlaneRef.current.position.y = 1.48 + breath;
-    }
-
-    // 2. Rotate energy rings
+    // Dais ring rotation
     if (ringsRef.current) {
-      ringsRef.current.rotation.y += delta * (0.3 + progress * 0.9);
+      ringsRef.current.rotation.y += delta * (0.2 + progress * 0.9);
     }
 
-    // 3. Oscillate scanline
-    if (scanlineRef.current) {
-      scanlineRef.current.position.y = 1.48 + Math.sin(state.clock.elapsedTime * 3.2) * 1.1;
+    // Idle breathing on the character planes
+    const breath = Math.sin(state.clock.elapsedTime * 2.2) * 0.015;
+    const parallaxX = Math.sin(state.clock.elapsedTime * 0.6) * 0.04 * (1 + neonT);
+    if (realPlaneRef.current) {
+      realPlaneRef.current.position.y = planeY + breath;
+      realPlaneRef.current.position.x = parallaxX;
     }
-
-    // 4. Calculate relative viewing angle between camera and character
-    if (rootRef.current) {
-      const worldPos = new THREE.Vector3();
-      rootRef.current.getWorldPosition(worldPos);
-
-      // Angle from character to camera in world space
-      const dx = camera.position.x - worldPos.x;
-      const dz = camera.position.z - worldPos.z;
-      let angle = Math.atan2(dx, dz) - rotationY;
-
-      // Normalize to [0, 2*PI)
-      while (angle < 0) angle += Math.PI * 2;
-      while (angle >= Math.PI * 2) angle -= Math.PI * 2;
-
-      // 8 sectors (each is 45 deg or PI/4)
-      // Sector 0 is centered at angle 0 (Front)
-      const sector = Math.round((angle / (Math.PI * 2)) * 8) % 8;
-      if (sector !== activePoseIndex) {
-        setActivePoseIndex(sector);
-      }
-
-      // Keep the character plane always facing the camera plane
-      if (characterPlaneRef.current) {
-        characterPlaneRef.current.rotation.y = Math.atan2(dx, dz);
-      }
+    if (neonPlaneRef.current) {
+      neonPlaneRef.current.position.y = planeY + breath;
+      neonPlaneRef.current.position.x = parallaxX;
     }
-
-    // 5. Aura scale pulse
+    if (neonGlowRef.current) {
+      neonGlowRef.current.position.y = planeY + breath;
+      neonGlowRef.current.position.x = parallaxX;
+    }
     if (auraRef.current) {
-      const s = 1.0 + Math.sin(state.clock.elapsedTime * 3.5) * 0.04 * progress;
+      const s = 1.0 + Math.sin(state.clock.elapsedTime * 3.8) * 0.04 * energyT;
       auraRef.current.scale.set(s, s, s);
+    }
+    // Flash intensity
+    if (flashRef.current) {
+      const mat = flashRef.current.material as THREE.MeshBasicMaterial;
+      mat.opacity = flashT * 0.85;
     }
   });
 
   return (
-    <group ref={rootRef} position={position} scale={[scale, scale, scale]}>
-      {/* ================================================================ */}
-      {/* 1. ELEVATED SCI-FI PEDESTAL & DAIS */}
-      {/* ================================================================ */}
-      <group position={[0, 0, 0]}>
-        {/* Main Base Hexagonal Dais */}
+    <group ref={rootRef} position={position} rotation={[rotationX, rotationY, 0]} scale={[scale, scale, scale]}>
+      {/* ── PEDESTAL ─────────────────────────────────────────── */}
+      <group>
+        {/* Hex base */}
         <mesh position={[0, 0.08, 0]} receiveShadow>
           <cylinderGeometry args={[2.3, 2.5, 0.18, 6]} />
-          <meshStandardMaterial
-            color="#080e18"
-            metalness={0.9}
-            roughness={0.2}
-          />
+          <meshStandardMaterial color="#080e18" metalness={0.9} roughness={0.2} />
         </mesh>
-
-        {/* Outer Glowing Neon Ring on Floor */}
+        {/* Outer neon floor ring */}
         <mesh position={[0, 0.18, 0]} rotation={[-Math.PI / 2, 0, 0]}>
           <ringGeometry args={[2.2, 2.28, 48]} />
           <meshBasicMaterial
             color={progress > 0.5 ? '#00f0ff' : '#ff8a30'}
             transparent
             opacity={0.85}
+            toneMapped={false}
           />
         </mesh>
-
-        {/* Inner Counter-Rotating Holographic Emitter Ring */}
+        {/* Inner purple emitter ring */}
         <mesh position={[0, 0.19, 0]} rotation={[-Math.PI / 2, 0, 0]}>
           <ringGeometry args={[1.5, 1.56, 48]} />
           <meshBasicMaterial
             color="#a855f7"
             transparent
-            opacity={0.4 + progress * 0.5}
+            opacity={0.4 + energyT * 0.5}
+            toneMapped={false}
           />
         </mesh>
-
-        {/* 6 Peripheral Conduit Nodes */}
+        {/* 6 conduit nodes */}
         {Array.from({ length: 6 }).map((_, i) => {
           const a = (i / 6) * Math.PI * 2;
           return (
@@ -156,103 +259,109 @@ export function AhmedCharacter({
               </mesh>
               <mesh position={[0, 0.08, 0]}>
                 <sphereGeometry args={[0.045, 12, 12]} />
-                <meshBasicMaterial color={progress > 0.4 ? '#00f0ff' : '#a855f7'} />
+                <meshBasicMaterial color={energyT > 0.4 ? '#00f0ff' : '#a855f7'} toneMapped={false} />
               </mesh>
             </group>
           );
         })}
       </group>
 
-      {/* ================================================================ */}
-      {/* 2. DYNAMIC ENERGY RINGS & PARTICLES */}
-      {/* ================================================================ */}
-      <group ref={ringsRef} position={[0, 1.45, 0]}>
-        {/* Orbital Cyan Ring */}
+      {/* ── DAIS ROTATION RINGS ───────────────────────────────── */}
+      <group ref={ringsRef} position={[0, planeY, 0]}>
         <mesh rotation={[Math.PI / 3.5, 0, 0]}>
-          <torusGeometry args={[1.35, 0.012, 16, 64]} />
+          <torusGeometry args={[isMobile ? 1.0 : 1.35, 0.01, 16, 64]} />
           <meshBasicMaterial
             color="#00f0ff"
             transparent
-            opacity={0.25 + progress * 0.7}
+            opacity={0.2 + energyT * 0.7}
             blending={THREE.AdditiveBlending}
+            toneMapped={false}
           />
         </mesh>
-
-        {/* Orbital Violet Ring */}
         <mesh rotation={[-Math.PI / 4, Math.PI / 5, 0]}>
-          <torusGeometry args={[1.5, 0.01, 16, 64]} />
+          <torusGeometry args={[isMobile ? 1.15 : 1.5, 0.008, 16, 64]} />
           <meshBasicMaterial
             color="#a855f7"
             transparent
-            opacity={0.2 + progress * 0.65}
+            opacity={0.15 + energyT * 0.55}
             blending={THREE.AdditiveBlending}
+            toneMapped={false}
           />
         </mesh>
       </group>
 
-      {/* ================================================================ */}
-      {/* 3. AHMED HAMADA APPROVED 3D CHARACTER (VOLUMETRIC CONCEPT RIG) */}
-      {/* ================================================================ */}
-      <mesh
-        ref={characterPlaneRef}
-        position={[0, 1.48, 0]}
-        castShadow
-      >
-        {/* Plane sized to preserve authentic proportions */}
-        <planeGeometry args={[1.55, 2.8]} />
+      {/* ── REAL AHMED PORTRAIT ───────────────────────────────── */}
+      <mesh ref={realPlaneRef} position={[0, planeY, 0.01]} castShadow>
+        <planeGeometry args={[planeW, planeH]} />
         <meshBasicMaterial
-          map={poseTextures[activePoseIndex]}
+          map={realTexture}
           transparent
-          alphaTest={0.02}
+          opacity={realOpacity}
+          alphaTest={0.01}
           side={THREE.DoubleSide}
+          toneMapped={false}
+          depthWrite={false}
+        />
+      </mesh>
+
+      {/* ── ELECTRIC AURA over REAL (energy buildup) ─────────── */}
+      <mesh ref={auraRef} position={[0, planeY, 0.015]}>
+        <planeGeometry args={[planeW * 1.08, planeH * 1.04]} />
+        <meshBasicMaterial
+          color="#00f0ff"
+          transparent
+          opacity={auraOpacity}
+          blending={THREE.AdditiveBlending}
+          depthWrite={false}
           toneMapped={false}
         />
       </mesh>
 
-      {/* Dynamic Cyber Lightning & Rim Glow Aura */}
-      <mesh ref={auraRef} position={[0, 1.48, 0]}>
-        <planeGeometry args={[1.65, 2.9]} />
+      {/* ── TRANSFORMATION FLASH ──────────────────────────────── */}
+      <mesh ref={flashRef} position={[0, planeY, 0.05]}>
+        <planeGeometry args={[planeW * 1.5, planeH * 1.3]} />
         <meshBasicMaterial
-          color={progress > 0.5 ? '#00f0ff' : '#a855f7'}
+          color="#ffffff"
           transparent
-          opacity={progress * 0.28}
+          opacity={0}
           blending={THREE.AdditiveBlending}
+          depthWrite={false}
+          toneMapped={false}
+        />
+      </mesh>
+
+      {/* ── NEON AHMED PORTRAIT ───────────────────────────────── */}
+      <mesh ref={neonPlaneRef} position={[0, planeY, 0.02]} castShadow>
+        <planeGeometry args={[planeW, planeH]} />
+        <meshBasicMaterial
+          map={neonTexture}
+          transparent
+          opacity={neonOpacity}
+          alphaTest={0.01}
           side={THREE.DoubleSide}
+          toneMapped={false}
+          depthWrite={false}
         />
       </mesh>
 
-      {/* Sweeping Laser Scanline */}
-      <mesh ref={scanlineRef} position={[0, 1.48, 0.02]}>
-        <planeGeometry args={[1.6, 0.035]} />
+      {/* ── NEON GLOW BLOOM OVERLAY ───────────────────────────── */}
+      <mesh ref={neonGlowRef} position={[0, planeY, 0.01]}>
+        <planeGeometry args={[planeW * 1.12, planeH * 1.06]} />
         <meshBasicMaterial
-          color={progress > 0.6 ? '#00f0ff' : '#ff8a30'}
+          color="#00f0ff"
           transparent
-          opacity={0.75}
+          opacity={neonOpacity * 0.22}
           blending={THREE.AdditiveBlending}
+          depthWrite={false}
+          toneMapped={false}
         />
       </mesh>
 
-      {/* ================================================================ */}
-      {/* 4. REAL PORTRAIT TRANSFORMATION */}
-      {/* ================================================================ */}
-      {progress < 0.85 && (
-        <group
-          position={[0, 1.45, 0.05]}
-          scale={Math.max(0.01, 1.0 - progress * 0.9)}
-        >
-          {/* Current Transformation Stage Image */}
-          <mesh position={[0, 0, 0]}>
-            <planeGeometry args={[1.5, 2.7]} />
-            <meshBasicMaterial
-              map={transTextures[transCardIndex]}
-              transparent
-              opacity={Math.max(0.0, 1.0 - progress * 1.2)}
-              toneMapped={false}
-              blending={THREE.NormalBlending}
-            />
-          </mesh>
-        </group>
-      )}
+      {/* ── ELECTRIC ORBIT STREAKS ────────────────────────────── */}
+      <ElectricStreaks progress={progress} />
+
+      {/* ── BURST PARTICLES ───────────────────────────────────── */}
+      <TransformParticles progress={progress} count={isMobile ? 50 : 90} />
     </group>
   );
 }
