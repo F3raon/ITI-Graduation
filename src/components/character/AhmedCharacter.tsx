@@ -223,14 +223,10 @@ export function AhmedCharacter({
 }: AhmedCharacterProps) {
   const rootRef    = useRef<THREE.Group>(null);
   const realRef    = useRef<THREE.Mesh>(null);
-  const neonRef    = useRef<THREE.Mesh>(null);
-  const neonGlow   = useRef<THREE.Mesh>(null);
   const auraRef    = useRef<THREE.Mesh>(null);
-  const flashRef   = useRef<THREE.Mesh>(null);
   const { size }   = useThree();
 
   const [hovered, setHovered] = useState(false);
-  const [activeProgress, setActiveProgress] = useState(progress);
 
   // ── Textures (authoritative assets) ────────────────────────────────────────
   const realTex = useTexture('/models/REAL_AHMED.png');
@@ -252,26 +248,82 @@ export function AhmedCharacter({
   const pH = isMobile ? 3.0  : 4.1;
   const pY = isMobile ? 1.2  : 1.65; // plane center Y above dais
 
-  // ── Hover & Scroll Sync ───────────────────────────────────────────────────
+  // ── Hover Reveal Shader ───────────────────────────────────────────────────
+  const uMouse = useRef(new THREE.Vector2(-1, -1));
+  const uHover = useRef(0);
+
+  const shaderMaterial = useMemo(() => {
+    return new THREE.ShaderMaterial({
+      uniforms: {
+        tReal: { value: realTex },
+        tNeon: { value: neonTex },
+        uMouse: { value: uMouse.current },
+        uHover: { value: 0 },
+        uAspect: { value: 1.0 },
+        uRadius: { value: 0.35 },
+        uSmoothness: { value: 0.15 }
+      },
+      vertexShader: `
+        varying vec2 vUv;
+        void main() {
+          vUv = uv;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: `
+        uniform sampler2D tReal;
+        uniform sampler2D tNeon;
+        uniform vec2 uMouse;
+        uniform float uHover;
+        uniform float uRadius;
+        uniform float uSmoothness;
+        uniform float uAspect;
+
+        varying vec2 vUv;
+
+        void main() {
+          vec4 realColor = texture2D(tReal, vUv);
+          vec4 neonColor = texture2D(tNeon, vUv);
+
+          vec2 uv = vUv;
+          vec2 mouse = uMouse;
+          
+          uv.y /= uAspect;
+          mouse.y /= uAspect;
+
+          float dist = distance(uv, mouse);
+          float mask = 1.0 - smoothstep(uRadius - uSmoothness, uRadius, dist);
+          mask *= uHover;
+
+          vec4 finalColor = mix(realColor, neonColor, mask);
+          
+          if (finalColor.a < 0.05) discard;
+          gl_FragColor = finalColor;
+        }
+      `,
+      transparent: true,
+      side: THREE.DoubleSide,
+      depthWrite: false,
+      toneMapped: false,
+    });
+  }, [realTex, neonTex]);
+
+  useMemo(() => {
+    shaderMaterial.uniforms.uAspect.value = pW / pH;
+  }, [pW, pH, shaderMaterial]);
+
+  // Smoothly interpolate the hover uniform
   useFrame((_, delta) => {
-    // If hovered, force progress towards 1.0. Otherwise fall back to global scroll progress.
-    const target = hovered ? Math.max(progress, 1.0) : progress;
-    if (Math.abs(activeProgress - target) > 0.005) {
-      setActiveProgress(THREE.MathUtils.lerp(activeProgress, target, delta * 6.0));
-    } else if (activeProgress !== target) {
-      setActiveProgress(target);
-    }
+    const targetHover = hovered ? 1.0 : 0.0;
+    uHover.current = THREE.MathUtils.lerp(uHover.current, targetHover, delta * 8.0);
+    shaderMaterial.uniforms.uHover.value = uHover.current;
   });
 
   // ── Scroll stage derivations ───────────────────────────────────────────────
-  // Stage 1: Real  (0.00 → 0.20)  real=1, neon=0
-  // Stage 2: Dissolve (0.20 → 0.55) crossfade window
-  // Stage 3: Neon   (0.55 → 1.00)  real=0, neon=1
-  const dissolveT = easeInOut(clamp(invLerp(0.20, 0.55, activeProgress)));  // Real fades
-  const realOp    = 1.0 - dissolveT;
-  const neonOp    = easeInOut(clamp(invLerp(0.35, 0.65, activeProgress)));  // Neon emerges
-  const energyT   = easeInOut(clamp(invLerp(0.05, 0.35, activeProgress)));  // Aura buildup
-  const flashT    = Math.max(0, 1 - Math.abs(activeProgress - 0.50) / 0.09); // spike at 0.50
+  // ── Scroll stage derivations (For platform and environment) ────────────────
+  const dissolveT = easeInOut(clamp(invLerp(0.20, 0.55, progress)));
+  const energyT   = easeInOut(clamp(invLerp(0.05, 0.35, progress)));
+  const neonOp    = easeInOut(clamp(invLerp(0.35, 0.65, progress)));
   const auraOp    = energyT * (1 - dissolveT * 0.6) * 0.28;
 
   // ── Frame animation ────────────────────────────────────────────────────────
@@ -281,16 +333,10 @@ export function AhmedCharacter({
     const pX  = Math.sin(t * 0.55) * 0.035 * (1 + neonOp); // subtle parallax
 
     if (realRef.current)  { realRef.current.position.y  = pY + bY; realRef.current.position.x  = pX; }
-    if (neonRef.current)  { neonRef.current.position.y  = pY + bY; neonRef.current.position.x  = pX; }
-    if (neonGlow.current) { neonGlow.current.position.y = pY + bY; neonGlow.current.position.x = pX; }
     if (auraRef.current)  {
       auraRef.current.position.y = pY + bY;
       const s = 1 + Math.sin(t * 3.8) * 0.035 * energyT;
       auraRef.current.scale.set(s, s, s);
-    }
-    if (flashRef.current) {
-      const m = flashRef.current.material as THREE.MeshBasicMaterial;
-      m.opacity = flashT * 0.78;
     }
   });
 
@@ -310,13 +356,13 @@ export function AhmedCharacter({
       }}
     >
       {/* ── Platform ──────────────────────────────────────────────────────── */}
-      <CharacterPlatform progress={activeProgress} />
+      <CharacterPlatform progress={progress} />
 
       {/* ── Neon halo backdrop ────────────────────────────────────────────── */}
-      <NeonHalo progress={activeProgress} />
+      <NeonHalo progress={progress} />
 
       {/* ── Electric orbit arcs ───────────────────────────────────────────── */}
-      <ElectricArcs progress={activeProgress} />
+      <ElectricArcs progress={progress} />
 
       {/* ── Blue energy aura behind Real portrait ─────────────────────────── */}
       <mesh ref={auraRef} position={[0, pY, -0.05]}>
@@ -331,62 +377,24 @@ export function AhmedCharacter({
         />
       </mesh>
 
-      {/* ── REAL AHMED portrait ───────────────────────────────────────────── */}
-      <mesh ref={realRef} position={[0, pY, 0.01]} castShadow>
+      {/* ── INTERACTIVE REVEAL PORTRAIT ───────────────────────────────────── */}
+      <mesh 
+        ref={realRef} 
+        position={[0, pY, 0.01]} 
+        castShadow
+        onPointerMove={(e) => {
+          e.stopPropagation();
+          if (e.uv) {
+            uMouse.current.copy(e.uv);
+          }
+        }}
+      >
         <planeGeometry args={[pW, pH]} />
-        <meshBasicMaterial
-          map={realTex}
-          transparent
-          opacity={realOp}
-          alphaTest={0.01}
-          side={THREE.DoubleSide}
-          depthWrite={false}
-          toneMapped={false}
-        />
-      </mesh>
-
-      {/* ── Transformation white flash ────────────────────────────────────── */}
-      <mesh ref={flashRef} position={[0, pY, 0.06]}>
-        <planeGeometry args={[pW * 1.6, pH * 1.4]} />
-        <meshBasicMaterial
-          color="#ffffff"
-          transparent
-          opacity={0}
-          blending={THREE.AdditiveBlending}
-          depthWrite={false}
-          toneMapped={false}
-        />
-      </mesh>
-
-      {/* ── NEON AHMED portrait ───────────────────────────────────────────── */}
-      <mesh ref={neonRef} position={[0, pY, 0.02]} castShadow>
-        <planeGeometry args={[pW, pH]} />
-        <meshBasicMaterial
-          map={neonTex}
-          transparent
-          opacity={neonOp}
-          alphaTest={0.01}
-          side={THREE.DoubleSide}
-          depthWrite={false}
-          toneMapped={false}
-        />
-      </mesh>
-
-      {/* ── Neon blue glow over portrait ──────────────────────────────────── */}
-      <mesh ref={neonGlow} position={[0, pY, 0.015]}>
-        <planeGeometry args={[pW * 1.14, pH * 1.08]} />
-        <meshBasicMaterial
-          color="#00f0ff"
-          transparent
-          opacity={neonOp * 0.20}
-          blending={THREE.AdditiveBlending}
-          depthWrite={false}
-          toneMapped={false}
-        />
+        <primitive object={shaderMaterial} attach="material" />
       </mesh>
 
       {/* ── Transformation burst particles ────────────────────────────────── */}
-      <TransformBurst progress={activeProgress} count={isMobile ? 48 : 80} />
+      <TransformBurst progress={progress} count={isMobile ? 48 : 80} />
     </group>
   );
 }
