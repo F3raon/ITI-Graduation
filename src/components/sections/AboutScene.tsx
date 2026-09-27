@@ -33,11 +33,11 @@ function HolographicPortrait({ position = [2.8, 0, 0] }: { position?: [number, n
       {/* Outer Floating Carbon Frame */}
       <RoundedBox args={[3.2, 4.4, 0.25]} radius={0.14} smoothness={4} castShadow>
         <meshStandardMaterial
-          color="#0b1017"
-          metalness={0.9}
-          roughness={0.18}
-          emissive="#1e293b"
-          emissiveIntensity={0.3}
+          color="#1e293b"
+          metalness={0.4}
+          roughness={0.6}
+          emissive="#38bdf8"
+          emissiveIntensity={0.1}
         />
       </RoundedBox>
 
@@ -94,56 +94,59 @@ export function AboutScene({ position = [0, 0, -18] }: { position?: [number, num
   const scale = aspect < 0.9 ? 0.62 : aspect < 1.25 ? 0.78 : aspect < 1.6 ? 0.92 : 1.0;
 
   return (
-    <group position={position} scale={scale}>
-      {/* Section Header */}
-      <Text position={[-5.8, 3.2, 0]} fontSize={0.18} color="#94a3b8" anchorX="left" letterSpacing={0.22}>
-        // IDENTITY DOSSIER
-      </Text>
-      <Text position={[-5.8, 2.45, 0]} fontSize={0.72} color="#f8fafc" anchorX="left" fontWeight={900}>
-        WHO AM I?
-      </Text>
-
+    <group position={position} scale={scale * 0.85}>
       {/* 3D Glass Information Panel */}
-      <RoundedBox args={[6.8, 3.8, 0.28]} radius={0.14} smoothness={5} position={[-2.4, 0.1, -0.2]}>
-        <meshStandardMaterial
-          color="#0b121e"
-          metalness={0.75}
-          roughness={0.25}
-          emissive="#0369a1"
-          emissiveIntensity={0.15}
+      {/* Centered at X = 1.8 */}
+      <RoundedBox args={[6.2, 4.4, 0.28]} radius={0.14} smoothness={5} position={[1.8, 0.1, -0.2]}>
+        <meshPhysicalMaterial
+          color="#0f172a"
+          metalness={0.5}
+          roughness={0.5}
+          emissive="#0284c7"
+          emissiveIntensity={0.2}
+          transparent
+          opacity={0.8}
         />
       </RoundedBox>
 
+      {/* Section Header */}
+      <Text position={[-1.0, 1.8, 0.1]} fontSize={0.18} color="#94a3b8" anchorX="left" letterSpacing={0.22}>
+        // IDENTITY DOSSIER
+      </Text>
+      <Text position={[-1.0, 1.1, 0.1]} fontSize={0.72} color="#f8fafc" anchorX="left" fontWeight={900}>
+        WHO AM I?
+      </Text>
+
       {/* Real 3D Bio Typography */}
-      <Text position={[-5.4, 1.35, 0]} maxWidth={5.8} fontSize={0.22} color="#f8fafc" anchorX="left" lineHeight={1.4}>
+      <Text position={[-1.0, 0.2, 0.1]} maxWidth={5.4} fontSize={0.20} color="#f8fafc" anchorX="left" lineHeight={1.4}>
         {`I'm Ahmed Hamada, a .NET Backend Developer who loves building systems, solving complex problems, and turning ambitious ideas into resilient products.`}
       </Text>
 
-      <Text position={[-5.4, 0.25, 0]} maxWidth={5.8} fontSize={0.15} color="#94a3b8" anchorX="left" lineHeight={1.6}>
+      <Text position={[-1.0, -0.7, 0.1]} maxWidth={5.4} fontSize={0.15} color="#94a3b8" anchorX="left" lineHeight={1.6}>
         {`Specializing in high-performance .NET backend systems, Clean Architecture, SQL Server, and microservices—while integrating computer vision, ROS robotics, and intelligent IoT hardware.`}
       </Text>
 
-      <Text position={[-5.4, -0.85, 0]} maxWidth={5.8} fontSize={0.13} color="#67c9ff" anchorX="left" letterSpacing={0.06}>
+      <Text position={[-1.0, -1.6, 0.1]} maxWidth={5.4} fontSize={0.12} color="#67c9ff" anchorX="left" letterSpacing={0.06}>
         {'.NET  //  C#  //  PYTHON  //  SQL SERVER  //  AI & ROBOTICS  //  CLEAN ARCHITECTURE'}
       </Text>
 
       {/* Holographic 3D Portrait Frame */}
-      <HolographicPortrait position={[3.8, 0.1, 0]} />
+      {/* Centered at X = -3.2 */}
+      <HolographicPortrait position={[-3.2, 0.1, 0]} />
 
       {/* Floating 3D Stat Plates */}
-      <group position={[-4.5, -2.4, 0]}>
+      <group position={[-0.5, -3.2, 0]}>
         {PORTFOLIO_DATA.stats.map((s, i) => {
-          const col = i % 2;
-          const row = Math.floor(i / 2);
+          const xPos = i * 2.2 - 3.3; // Centered spread
           return (
-          <group key={s.label} position={[col * 2.2, -row * 1.2, 0]}>
+          <group key={s.label} position={[xPos, 0, 0]}>
             <RoundedBox args={[2.0, 1.0, 0.14]} radius={0.08} smoothness={3}>
               <meshStandardMaterial
-                color="#0f172a"
-                metalness={0.85}
-                roughness={0.2}
+                color="#1e293b"
+                metalness={0.3}
+                roughness={0.7}
                 emissive={i === 2 ? '#ff8a30' : '#38bdf8'}
-                emissiveIntensity={0.25}
+                emissiveIntensity={0.3}
               />
             </RoundedBox>
             <Text position={[0, 0.16, 0.1]} fontSize={0.28} color={i === 2 ? '#ff8a30' : '#f8fafc'} anchorX="center" fontWeight={800}>

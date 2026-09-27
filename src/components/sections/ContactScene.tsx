@@ -50,33 +50,41 @@ function ContactTerminal({
       }}
       onClick={handleClick}
     >
-      <RoundedBox args={[2.8, 1.35, 0.2]} radius={0.08} smoothness={4} castShadow>
-        <meshStandardMaterial
-          color="#080c14"
+      <RoundedBox args={[2.2, 1.0, 0.22]} radius={0.06} smoothness={3} castShadow>
+        <meshPhysicalMaterial
+          color="#05080c"
           metalness={0.9}
-          roughness={0.2}
+          roughness={0.15}
           emissive={color}
-          emissiveIntensity={hovered ? 0.5 : 0.1}
+          emissiveIntensity={hovered ? 0.3 : 0.05}
+          transparent
+          opacity={0.95}
         />
       </RoundedBox>
 
+      {/* Holographic Backing Plate */}
+      <mesh position={[0, 0, -0.12]}>
+        <planeGeometry args={[2.25, 1.05]} />
+        <meshBasicMaterial color={color} transparent opacity={hovered ? 0.4 : 0.1} />
+      </mesh>
+
       {/* Terminal Icon Symbol */}
-      <Text position={[-1.05, 0.22, 0.12]} fontSize={0.24} color={color} anchorX="center">
+      <Text position={[-0.8, 0.1, 0.12]} fontSize={0.24} color={color} anchorX="center">
         {icon}
       </Text>
 
       {/* Label */}
-      <Text position={[-0.7, 0.25, 0.12]} fontSize={0.14} color="#f8fafc" anchorX="left" fontWeight={800}>
+      <Text position={[-0.5, 0.15, 0.12]} fontSize={0.12} color="#f8fafc" anchorX="left" fontWeight={800}>
         {label}
       </Text>
 
       {/* Value */}
-      <Text position={[-0.7, -0.05, 0.12]} maxWidth={2.2} fontSize={0.078} color="#94a3b8" anchorX="left">
+      <Text position={[-0.5, -0.1, 0.12]} maxWidth={1.6} fontSize={0.065} color="#94a3b8" anchorX="left">
         {value}
       </Text>
 
       {/* Action CTA */}
-      <Text position={[1.15, -0.4, 0.12]} fontSize={0.095} color={hovered ? '#ffffff' : color} anchorX="right">
+      <Text position={[0.85, -0.3, 0.12]} fontSize={0.08} color={hovered ? '#ffffff' : color} anchorX="right">
         {hovered ? 'TRANSMIT ↗' : 'CONNECT →'}
       </Text>
     </group>
@@ -131,14 +139,14 @@ export function ContactScene({ position = [0, 0, -98] }: { position?: [number, n
         </Text>
       </group>
 
-      {/* 4 Interactive Contact Terminals - 2x2 Grid */}
-      <group position={[0, -1.2, 0]}>
+      {/* 4 Interactive Contact Terminals - Single Horizontal Line */}
+      <group position={[0, -0.6, 0]}>
         <ContactTerminal
           label="EMAIL"
           value={PORTFOLIO_DATA.identity.email}
           url={`mailto:${PORTFOLIO_DATA.identity.email}`}
           color="#ff8a30"
-          position={[-1.6, 1.6, 0]}
+          position={[-3.45, 0, 0]}
           icon="✉"
         />
         <ContactTerminal
@@ -146,7 +154,7 @@ export function ContactScene({ position = [0, 0, -98] }: { position?: [number, n
           value="/in/ahmed-hamada-saad"
           url={PORTFOLIO_DATA.identity.linkedin}
           color="#0284c7"
-          position={[1.6, 1.6, 0]}
+          position={[-1.15, 0, 0]}
           icon="in"
         />
         <ContactTerminal
@@ -154,7 +162,7 @@ export function ContactScene({ position = [0, 0, -98] }: { position?: [number, n
           value="github.com/F3raon"
           url={PORTFOLIO_DATA.identity.github}
           color="#a855f7"
-          position={[-1.6, -1.6, 0]}
+          position={[1.15, 0, 0]}
           icon="⌥"
         />
         <ContactTerminal
@@ -162,7 +170,7 @@ export function ContactScene({ position = [0, 0, -98] }: { position?: [number, n
           value={PORTFOLIO_DATA.identity.phone}
           url={PORTFOLIO_DATA.identity.whatsapp}
           color="#10b981"
-          position={[1.6, -1.6, 0]}
+          position={[3.45, 0, 0]}
           icon="✆"
         />
       </group>

@@ -40,15 +40,23 @@ function ExperienceNode({
       }}
     >
       {/* 3D Floating Glass Milestone Block */}
-      <RoundedBox args={[4.2, 1.2, 0.1]} radius={0.04} smoothness={2} castShadow>
-        <meshStandardMaterial
+      <RoundedBox args={[4.2, 1.2, 0.12]} radius={0.06} smoothness={3}>
+        <meshPhysicalMaterial
           color="#05080c"
-          metalness={0.88}
-          roughness={0.2}
+          metalness={0.9}
+          roughness={0.15}
           emissive={accentColor}
-          emissiveIntensity={hovered ? 0.3 : 0.05}
+          emissiveIntensity={hovered ? 0.25 : 0.02}
+          transparent
+          opacity={0.9}
         />
       </RoundedBox>
+
+      {/* Holographic Backing Plate */}
+      <mesh position={[0, 0, -0.07]}>
+        <planeGeometry args={[4.25, 1.25]} />
+        <meshBasicMaterial color={accentColor} transparent opacity={hovered ? 0.3 : 0.08} />
+      </mesh>
 
       {/* Date Marker Tag */}
       <Text position={[-1.9, 0.4, 0.06]} fontSize={0.09} color={accentColor} anchorX="left" fontWeight={700}>

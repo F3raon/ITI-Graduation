@@ -96,14 +96,22 @@ function AchievementPedestal({
       {/* Trophy Pedestal Display Stand */}
       <group position={[0, -0.9, 0]}>
         <RoundedBox args={[3.0, 1.7, 0.22]} radius={0.08} smoothness={4} castShadow>
-          <meshStandardMaterial
-            color="#080c14"
-            metalness={0.88}
-            roughness={0.2}
+          <meshPhysicalMaterial
+            color="#05080c"
+            metalness={0.9}
+            roughness={0.15}
             emissive={item.color}
-            emissiveIntensity={hovered ? 0.4 : 0.1}
+            emissiveIntensity={hovered ? 0.25 : 0.02}
+            transparent
+            opacity={0.9}
           />
         </RoundedBox>
+
+        {/* Holographic Backing Plate */}
+        <mesh position={[0, 0, -0.13]}>
+          <planeGeometry args={[3.05, 1.75]} />
+          <meshBasicMaterial color={item.color} transparent opacity={hovered ? 0.3 : 0.08} />
+        </mesh>
 
         {/* Badge / Rank Ribbon */}
         <Text position={[0, 0.55, 0.12]} fontSize={0.12} color={item.color} anchorX="center" fontWeight={800}>

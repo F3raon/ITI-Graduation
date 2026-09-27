@@ -6,6 +6,39 @@ import { PORTFOLIO_DATA } from '../../data/portfolio';
 import { soundEngine } from '../../utils/audio';
 import { scrollStore } from '../../context/ScrollContext';
 
+function PortalContent() {
+  const [visible, setVisible] = useState(false);
+
+  useFrame(() => {
+    // Only render iframe when user is in the Portal section (> 0.93)
+    const isVisible = scrollStore.current > 0.90;
+    if (visible !== isVisible) setVisible(isVisible);
+  });
+
+  if (!visible) return null;
+
+  return (
+    <div
+      style={{
+        width: '1280px',
+        height: '720px',
+        background: '#040810',
+        borderRadius: '16px',
+        border: '4px solid #38bdf8',
+        boxShadow: '0 0 40px rgba(56, 189, 248, 0.4)',
+        overflow: 'auto',
+        pointerEvents: 'auto',
+      }}
+    >
+      <iframe
+        src={PORTFOLIO_DATA.identity.oldPortfolioUrl}
+        style={{ width: '100%', height: '100%', border: 'none' }}
+        title="Old Portfolio"
+      />
+    </div>
+  );
+}
+
 export function PortfolioPortal({ position = [0, 0, -114] }: { position?: [number, number, number] }) {
   const { size } = useThree();
   const aspect = size.width / Math.max(1, size.height);
@@ -50,44 +83,39 @@ export function PortfolioPortal({ position = [0, 0, -114] }: { position?: [numbe
 
       {/* 3D Lab Monitor */}
       <group position={[0, -0.4, 0]}>
-        {/* Screen Bezel */}
-        <mesh position={[0, 0, -0.05]} castShadow>
-          <boxGeometry args={[7.2, 4.2, 0.1]} />
-          <meshStandardMaterial color="#0f172a" emissive="#020617" emissiveIntensity={0.5} metalness={0.5} roughness={0.5} />
-        </mesh>
-        
+      {/* Screen Bezel / Frame */}
+      <mesh position={[0, 0, -0.05]} castShadow>
+        <boxGeometry args={[7.4, 4.4, 0.1]} />
+        <meshPhysicalMaterial
+          color="#0b1221"
+          metalness={0.4}
+          roughness={0.6}
+          emissive="#38bdf8"
+          emissiveIntensity={0.2}
+          transparent
+          opacity={0.8}
+        />
+      </mesh>
+      
         {/* Screen Glow Rim */}
         <mesh position={[0, 0, -0.08]}>
-          <boxGeometry args={[7.4, 4.4, 0.05]} />
-          <meshBasicMaterial color="#38bdf8" transparent opacity={0.4} />
+          <boxGeometry args={[7.6, 4.6, 0.05]} />
+          <meshBasicMaterial color="#38bdf8" transparent opacity={0.15} />
         </mesh>
 
-        {/* The 3D Html embedded iframe */}
+        {/* The 3D Html embedded iframe - Only show when close to prevent background bleed */}
         <group position={[0, 0, 0.06]}>
           <Html
             transform
-            distanceFactor={1.5}
+            distanceFactor={2.5}
             position={[0, 0, 0]}
             zIndexRange={[100, 0]}
+            style={{
+              transition: 'opacity 0.5s',
+              opacity: 1, // We'll handle visibility inside
+            }}
           >
-            <div
-              style={{
-                width: '1000px',
-                height: '570px',
-                background: '#040810',
-                borderRadius: '16px',
-                border: '4px solid #38bdf8',
-                boxShadow: '0 0 40px rgba(56, 189, 248, 0.4)',
-                overflow: 'auto',
-                pointerEvents: 'auto',
-              }}
-            >
-              <iframe
-                src={PORTFOLIO_DATA.identity.oldPortfolioUrl}
-                style={{ width: '100%', height: '100%', border: 'none' }}
-                title="Old Portfolio"
-              />
-            </div>
+            <PortalContent />
           </Html>
         </group>
         
