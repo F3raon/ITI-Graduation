@@ -133,7 +133,7 @@ export function ProjectPodium({
 
         {/* SOLUTION / RESULT */}
         <Text position={[-1.5, -0.45, 0.09]} maxWidth={3.0} fontSize={0.075} color="#cbd5e1" anchorX="left" lineHeight={1.5}>
-          <tspan fill={project.color}>HIGHLIGHT:</tspan> {project.highlights[0]}
+          {`HIGHLIGHT: ${project.highlights[0]}`}
         </Text>
 
         {/* Action Button Label */}
