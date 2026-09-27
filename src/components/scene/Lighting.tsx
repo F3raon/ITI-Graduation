@@ -76,9 +76,7 @@ export function Lighting() {
       <pointLight position={[0, 2.5, -98]} intensity={38} distance={22} color="#ff8a30" />
       <pointLight position={[0, 0, -114]} intensity={42} distance={24} color="#67c9ff" />
 
-      {/* Atmospheric Volumetric Cones */}
-      <CinematicBeam position={[-3.2, 4.5, -0.5]} rotation={[0.3, -0.2, 0.2]} color="#67c9ff" opacity={0.06} scale={1.4} />
-      <CinematicBeam position={[3.5, 4.5, -0.5]} rotation={[0.32, 0.22, -0.25]} color="#ff8a30" opacity={0.07} scale={1.5} />
+      {/* Atmospheric Volumetric Cones — deep scene only */}
       <CinematicBeam position={[0, 5, -34]} rotation={[0.4, 0, 0]} color="#a855f7" opacity={0.05} scale={1.8} />
       <CinematicBeam position={[0, 6, -114]} rotation={[0.5, 0, 0]} color="#67c9ff" opacity={0.09} scale={2.2} />
     </group>

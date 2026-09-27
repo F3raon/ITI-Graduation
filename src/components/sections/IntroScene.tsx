@@ -1,122 +1,325 @@
-import { useRef } from 'react';
+import { useRef, useMemo } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import { Text } from '@react-three/drei';
 import * as THREE from 'three';
 import { PORTFOLIO_DATA } from '../../data/portfolio';
+import { scrollStore } from '../../context/ScrollContext';
 
-export function IntroScene({ position = [0, 0, 8] }: { position?: [number, number, number] }) {
-  const tunnelRef = useRef<THREE.Group>(null);
-  const coreRef = useRef<THREE.Group>(null);
-  const { viewport, size } = useThree();
+// ─── Atmospheric particle field ───────────────────────────────────────────────
+function IntroParticles({ count = 350 }: { count?: number }) {
+  const meshRef = useRef<THREE.InstancedMesh>(null);
+  const dummy  = useMemo(() => new THREE.Object3D(), []);
+  const seeds  = useMemo(
+    () =>
+      Array.from({ length: count }, () => ({
+        x:     (Math.random() - 0.5) * 22,
+        y:     (Math.random() - 0.5) * 14,
+        z:     (Math.random() - 0.5) * 8,
+        speed: 0.04 + Math.random() * 0.09,
+        phase: Math.random() * Math.PI * 2,
+        isAmber: Math.random() < 0.08,
+      })),
+    [count]
+  );
 
-  const aspect = size.width / Math.max(1, size.height);
-  const isMobile = aspect < 1.0 || size.width < 768;
-
-  // Responsive font sizes so name and titles never clip off-screen
-  const nameFontSize = isMobile ? Math.min(0.42, viewport.width * 0.08) : Math.min(0.56, viewport.width * 0.065);
-  const titleFontSize = isMobile ? 0.16 : 0.22;
-  const taglineFontSize = isMobile ? 0.095 : 0.125;
-
-  useFrame((state, delta) => {
-    if (tunnelRef.current) {
-      tunnelRef.current.rotation.z += delta * 0.15;
-    }
-    if (coreRef.current) {
-      const pulse = 1 + Math.sin(state.clock.elapsedTime * 2.5) * 0.08;
-      coreRef.current.scale.set(pulse, pulse, pulse);
-    }
+  useFrame((state) => {
+    if (!meshRef.current) return;
+    seeds.forEach((s, i) => {
+      const t = state.clock.elapsedTime;
+      dummy.position.set(
+        s.x + Math.sin(t * s.speed + s.phase) * 0.35,
+        s.y + Math.cos(t * s.speed * 0.7 + s.phase) * 0.28,
+        s.z
+      );
+      dummy.scale.setScalar(s.isAmber ? 0.018 : 0.012);
+      dummy.updateMatrix();
+      meshRef.current!.setMatrixAt(i, dummy.matrix);
+    });
+    meshRef.current.instanceMatrix.needsUpdate = true;
   });
 
   return (
+    <instancedMesh ref={meshRef} args={[undefined, undefined, count]}>
+      <sphereGeometry args={[1, 4, 4]} />
+      <meshBasicMaterial
+        color="#38bdf8"
+        transparent
+        opacity={0.45}
+        blending={THREE.AdditiveBlending}
+        depthWrite={false}
+        toneMapped={false}
+      />
+    </instancedMesh>
+  );
+}
+
+// ─── Digital Identity Core (behind Ahmed) ────────────────────────────────────
+function DigitalCore({ progress }: { progress: number }) {
+  const ring1Ref = useRef<THREE.Mesh>(null);
+  const ring2Ref = useRef<THREE.Mesh>(null);
+  const ring3Ref = useRef<THREE.Mesh>(null);
+  const dotGroupRef = useRef<THREE.Group>(null);
+
+  useFrame((state, delta) => {
+    if (ring1Ref.current) ring1Ref.current.rotation.z += delta * 0.18;
+    if (ring2Ref.current) ring2Ref.current.rotation.z -= delta * 0.11;
+    if (ring3Ref.current) ring3Ref.current.rotation.z += delta * 0.07;
+    if (dotGroupRef.current) {
+      dotGroupRef.current.rotation.z += delta * 0.22;
+      dotGroupRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.4) * 0.06;
+    }
+  });
+
+  const energyT = Math.max(0, Math.min(1, (progress - 0.15) / 0.4));
+
+  return (
+    <group position={[0, 1.6, -0.4]}>
+      {/* Outer arc ring — very thin, segmented appearance */}
+      <mesh ref={ring1Ref}>
+        <torusGeometry args={[3.2, 0.008, 8, 128, Math.PI * 1.6]} />
+        <meshBasicMaterial
+          color="#1e6fa8"
+          transparent
+          opacity={0.35 + energyT * 0.4}
+          blending={THREE.AdditiveBlending}
+          toneMapped={false}
+        />
+      </mesh>
+
+      {/* Mid arc ring */}
+      <mesh ref={ring2Ref}>
+        <torusGeometry args={[2.65, 0.006, 8, 96, Math.PI * 1.3]} />
+        <meshBasicMaterial
+          color="#00f0ff"
+          transparent
+          opacity={0.25 + energyT * 0.45}
+          blending={THREE.AdditiveBlending}
+          toneMapped={false}
+        />
+      </mesh>
+
+      {/* Inner accent ring */}
+      <mesh ref={ring3Ref}>
+        <torusGeometry args={[2.1, 0.005, 6, 64, Math.PI * 0.9]} />
+        <meshBasicMaterial
+          color="#38bdf8"
+          transparent
+          opacity={0.2 + energyT * 0.5}
+          blending={THREE.AdditiveBlending}
+          toneMapped={false}
+        />
+      </mesh>
+
+      {/* Data node dots orbiting the outer ring */}
+      <group ref={dotGroupRef}>
+        {Array.from({ length: 12 }).map((_, i) => {
+          const angle = (i / 12) * Math.PI * 2;
+          return (
+            <mesh
+              key={i}
+              position={[Math.cos(angle) * 3.2, Math.sin(angle) * 3.2, 0]}
+            >
+              <sphereGeometry args={[i % 3 === 0 ? 0.05 : 0.025, 6, 6]} />
+              <meshBasicMaterial
+                color={i % 4 === 0 ? '#f59e0b' : '#00f0ff'}
+                transparent
+                opacity={0.7 + energyT * 0.3}
+                toneMapped={false}
+              />
+            </mesh>
+          );
+        })}
+      </group>
+
+      {/* Subtle vertical emissive line */}
+      <mesh position={[0, 0, -0.1]}>
+        <planeGeometry args={[0.003, 6.5]} />
+        <meshBasicMaterial
+          color="#00f0ff"
+          transparent
+          opacity={0.12 + energyT * 0.18}
+          blending={THREE.AdditiveBlending}
+          toneMapped={false}
+        />
+      </mesh>
+
+      {/* Horizontal crosshair line */}
+      <mesh position={[0, 0, -0.1]}>
+        <planeGeometry args={[6.5, 0.003]} />
+        <meshBasicMaterial
+          color="#38bdf8"
+          transparent
+          opacity={0.08 + energyT * 0.12}
+          blending={THREE.AdditiveBlending}
+          toneMapped={false}
+        />
+      </mesh>
+    </group>
+  );
+}
+
+// ─── Premium Presentation Platform ───────────────────────────────────────────
+function Platform() {
+  return (
+    <group position={[0, -0.55, 0]}>
+      {/* Main dark metallic disc */}
+      <mesh receiveShadow>
+        <cylinderGeometry args={[2.8, 3.0, 0.12, 64]} />
+        <meshStandardMaterial
+          color="#0a0f18"
+          metalness={0.92}
+          roughness={0.18}
+          envMapIntensity={0.6}
+        />
+      </mesh>
+
+      {/* Beveled upper ring */}
+      <mesh position={[0, 0.07, 0]}>
+        <torusGeometry args={[2.8, 0.04, 8, 64]} />
+        <meshStandardMaterial
+          color="#111c2e"
+          metalness={0.95}
+          roughness={0.1}
+        />
+      </mesh>
+
+      {/* Cyan emissive outer glow ring */}
+      <mesh position={[0, 0.07, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <ringGeometry args={[2.74, 2.82, 128]} />
+        <meshBasicMaterial
+          color="#00f0ff"
+          transparent
+          opacity={0.75}
+          toneMapped={false}
+        />
+      </mesh>
+
+      {/* Subtle amber inner ring accent */}
+      <mesh position={[0, 0.065, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <ringGeometry args={[1.9, 1.94, 64]} />
+        <meshBasicMaterial
+          color="#f59e0b"
+          transparent
+          opacity={0.28}
+          toneMapped={false}
+        />
+      </mesh>
+
+      {/* Platform under-glow point light */}
+      <pointLight
+        position={[0, -0.1, 0]}
+        intensity={3}
+        distance={5}
+        color="#00f0ff"
+      />
+    </group>
+  );
+}
+
+// ─── Dark Grid Floor ──────────────────────────────────────────────────────────
+function GridFloor() {
+  // Single subtle grid plane extending far behind Ahmed
+  return (
+    <mesh position={[0, -0.68, -12]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
+      <planeGeometry args={[60, 60, 40, 40]} />
+      <meshStandardMaterial
+        color="#030810"
+        wireframe
+        transparent
+        opacity={0.06}
+        metalness={0.1}
+        roughness={1.0}
+      />
+    </mesh>
+  );
+}
+
+// ─── Main IntroScene ──────────────────────────────────────────────────────────
+export function IntroScene({ position = [0, 0, 10] }: { position?: [number, number, number] }) {
+  const { viewport, size } = useThree();
+  const isMobile = size.width / Math.max(1, size.height) < 1.0 || size.width < 768;
+
+  // Scroll progress for this section (0.0 at intro, rising as user scrolls)
+  const progressRef = useRef(0);
+  useFrame(() => {
+    progressRef.current = Math.max(0, Math.min(1, scrollStore.current * 5));
+  });
+
+  // Responsive typography sizing
+  const nameFontSize   = isMobile ? Math.min(0.38, viewport.width * 0.07) : Math.min(0.52, viewport.width * 0.06);
+  const titleFontSize  = isMobile ? 0.14 : 0.19;
+  const taglineFontSize = isMobile ? 0.085 : 0.11;
+
+  return (
     <group position={position}>
-      {/* Dark Futuristic Tunnel Portal Rings */}
-      <group ref={tunnelRef} position={[0, 0, -2]}>
-        {[0, 3, 6, 9, 12].map((z, i) => (
-          <group key={i} position={[0, 0, -z]}>
-            <mesh rotation={[Math.PI / 2, 0, 0]}>
-              <torusGeometry args={[3.2 - i * 0.16, 0.025, 16, 64]} />
-              <meshBasicMaterial
-                color={i % 2 === 0 ? '#ff8a30' : '#67c9ff'}
-                transparent
-                opacity={0.8 - i * 0.12}
-              />
-            </mesh>
-            <mesh rotation={[Math.PI / 2, 0, 0]} scale={1.05}>
-              <torusGeometry args={[3.2 - i * 0.16, 0.01, 12, 64]} />
-              <meshBasicMaterial
-                color={i % 2 === 0 ? '#ff8a30' : '#67c9ff'}
-                transparent
-                opacity={0.2}
-              />
-            </mesh>
-          </group>
-        ))}
-      </group>
+      {/* Dark atmospheric floor */}
+      <GridFloor />
 
-      {/* Central Light Pulse Core behind the text */}
-      <group ref={coreRef} position={[0, 0, -2.5]}>
-        <pointLight intensity={7} distance={8} color="#ff8a30" />
-        <mesh>
-          <sphereGeometry args={[0.22, 16, 16]} />
-          <meshBasicMaterial color="#ffffff" />
-        </mesh>
-      </group>
+      {/* Character presentation platform */}
+      <Platform />
 
-      {/* Hero 3D Typography inside the Scene with responsive bounds */}
-      <group position={[0, 0.6, 0.5]}>
+      {/* Digital identity core — behind Ahmed */}
+      <DigitalCore progress={0} />
+
+      {/* Sparse atmospheric particles */}
+      <IntroParticles count={isMobile ? 150 : 350} />
+
+      {/* ── HERO TYPOGRAPHY ── */}
+      <group position={[0, 0.65, 0.6]}>
+        {/* Eyebrow line */}
         <Text
-          position={[0, 1.45, 0]}
-          fontSize={isMobile ? 0.11 : 0.14}
+          position={[0, 1.55, 0]}
+          fontSize={isMobile ? 0.10 : 0.125}
           color="#94a3b8"
           anchorX="center"
-          letterSpacing={0.2}
+          letterSpacing={0.22}
         >
-          // CINEMATIC 3D EXPEDITION
+          // CINEMATIC 3D PORTFOLIO
         </Text>
 
-        {/* Ahmed Hamada Name - Responsively sized */}
+        {/* Name */}
         <Text
-          position={[0, 0.85, 0]}
+          position={[0, 0.9, 0]}
           fontSize={nameFontSize}
           color="#f8fafc"
           anchorX="center"
           fontWeight={900}
           letterSpacing={0.04}
-          maxWidth={viewport.width * 0.9}
+          maxWidth={viewport.width * 0.88}
         >
           {PORTFOLIO_DATA.identity.name}
         </Text>
 
         {/* Title */}
         <Text
-          position={[0, 0.32, 0]}
+          position={[0, 0.34, 0]}
           fontSize={titleFontSize}
           color="#ff8a30"
           anchorX="center"
           fontWeight={700}
-          letterSpacing={0.15}
-          maxWidth={viewport.width * 0.9}
+          letterSpacing={0.14}
+          maxWidth={viewport.width * 0.88}
         >
           {PORTFOLIO_DATA.identity.title}
         </Text>
 
         {/* Tagline */}
         <Text
-          position={[0, -0.18, 0]}
+          position={[0, -0.14, 0]}
           fontSize={taglineFontSize}
-          color="#67c9ff"
+          color="#38bdf8"
           anchorX="center"
-          letterSpacing={0.16}
-          maxWidth={viewport.width * 0.9}
+          letterSpacing={0.14}
+          maxWidth={viewport.width * 0.88}
         >
           {PORTFOLIO_DATA.identity.tagline}
         </Text>
 
-        {/* Scroll Call to Action */}
+        {/* Scroll CTA */}
         <Text
-          position={[0, -1.05, 0]}
-          fontSize={isMobile ? 0.09 : 0.11}
-          color="#94a3b8"
+          position={[0, -1.0, 0]}
+          fontSize={isMobile ? 0.085 : 0.10}
+          color="#475569"
           anchorX="center"
           letterSpacing={0.14}
         >

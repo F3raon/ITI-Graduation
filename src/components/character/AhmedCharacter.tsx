@@ -8,71 +8,71 @@ export interface AhmedCharacterProps {
   rotationY?: number;
   rotationX?: number;
   scale?: number;
-  progress?: number; // 0.0 Real Ahmed -> 1.0 Full Neon Ahmed
+  /** 0.0 = Real Ahmed, 1.0 = Full Neon Ahmed */
+  progress?: number;
   isInteractive?: boolean;
 }
 
-// ============================================================
-// Easing helpers
-// ============================================================
+// ─── Helpers ─────────────────────────────────────────────────────────────────
 function easeInOut(t: number) {
   return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
 }
-
-function clamp(v: number, lo: number, hi: number) {
+function clamp(v: number, lo = 0, hi = 1) {
   return Math.max(lo, Math.min(hi, v));
 }
-
 function invLerp(a: number, b: number, v: number) {
-  return clamp((v - a) / (b - a), 0, 1);
+  return clamp((v - a) / (b - a));
 }
 
-// ============================================================
-// Particle geometry for the transformation burst
-// ============================================================
-function TransformParticles({ progress, count = 80 }: { progress: number; count?: number }) {
+// ─── Burst particle ring — emitted during transformation ─────────────────────
+function TransformBurst({ progress, count = 72 }: { progress: number; count?: number }) {
   const meshRef = useRef<THREE.InstancedMesh>(null);
-  const dummy = useMemo(() => new THREE.Object3D(), []);
-  const seeds = useMemo(
+  const dummy   = useMemo(() => new THREE.Object3D(), []);
+  const seeds   = useMemo(
     () =>
-      Array.from({ length: count }, (_, i) => ({
-        t: Math.random() * Math.PI * 2,
-        ry: Math.random() * Math.PI * 2,
-        radius: 0.4 + Math.random() * 1.2,
-        yBase: -0.8 + Math.random() * 3.0,
-        speed: 0.5 + Math.random() * 1.0,
-        phase: Math.random() * Math.PI * 2,
-        size: 0.015 + Math.random() * 0.03,
+      Array.from({ length: count }, () => ({
+        angle:  Math.random() * Math.PI * 2,
+        radius: 0.35 + Math.random() * 1.3,
+        yBase:  -0.5 + Math.random() * 3.6,
+        speed:  0.3 + Math.random() * 0.7,
+        phase:  Math.random() * Math.PI * 2,
+        size:   0.012 + Math.random() * 0.022,
+        isAmber: Math.random() < 0.18,
       })),
     [count]
   );
 
-  useFrame((state) => {
-    if (!meshRef.current) return;
-    // burst window: progress 0.3 → 0.8
-    const burstT = clamp(invLerp(0.25, 0.85, progress), 0, 1);
-    const opacity = burstT < 0.5 ? easeInOut(burstT * 2) : easeInOut((1 - burstT) * 2);
+  // Burst window: 0.30 → 0.80
+  const burstT = easeInOut(clamp(invLerp(0.28, 0.78, progress)));
+  // Fade out after neon arrives
+  const fadeT  = burstT * (1 - clamp(invLerp(0.75, 0.95, progress)));
 
+  useFrame((state) => {
+    if (!meshRef.current || fadeT < 0.02) return;
     seeds.forEach((s, i) => {
-      const angle = s.ry + state.clock.elapsedTime * s.speed * 0.4;
-      const r = s.radius * (1 + burstT * 0.8);
-      dummy.position.set(Math.cos(angle) * r, s.yBase + Math.sin(state.clock.elapsedTime * s.speed + s.phase) * 0.25, Math.sin(angle) * r);
-      dummy.scale.setScalar(s.size * (0.5 + burstT * 1.5) * opacity);
+      const angle = s.angle + state.clock.elapsedTime * s.speed * 0.3;
+      const r     = s.radius * (1 + burstT * 0.6);
+      dummy.position.set(
+        Math.cos(angle) * r,
+        s.yBase + Math.sin(state.clock.elapsedTime * s.speed + s.phase) * 0.2,
+        Math.sin(angle) * r * 0.3
+      );
+      dummy.scale.setScalar(s.size * (0.4 + burstT * 1.6) * fadeT);
       dummy.updateMatrix();
       meshRef.current!.setMatrixAt(i, dummy.matrix);
     });
     meshRef.current.instanceMatrix.needsUpdate = true;
   });
 
-  if (progress < 0.1) return null;
+  if (fadeT < 0.02) return null;
 
   return (
     <instancedMesh ref={meshRef} args={[undefined, undefined, count]}>
       <dodecahedronGeometry args={[1, 0]} />
       <meshBasicMaterial
-        color={progress > 0.5 ? '#00f0ff' : '#ff8a30'}
+        color={progress > 0.55 ? '#00f0ff' : '#f59e0b'}
         transparent
-        opacity={0.9}
+        opacity={0.85}
         blending={THREE.AdditiveBlending}
         depthWrite={false}
         toneMapped={false}
@@ -81,52 +81,37 @@ function TransformParticles({ progress, count = 80 }: { progress: number; count?
   );
 }
 
-// ============================================================
-// Electric streak lines that trace the silhouette
-// ============================================================
-function ElectricStreaks({ progress }: { progress: number }) {
-  const groupRef = useRef<THREE.Group>(null);
+// ─── Electric orbit arcs (energy build-up & neon state) ──────────────────────
+function ElectricArcs({ progress }: { progress: number }) {
+  const r1 = useRef<THREE.Mesh>(null);
+  const r2 = useRef<THREE.Mesh>(null);
 
-  useFrame((state, delta) => {
-    if (groupRef.current) {
-      groupRef.current.rotation.z += delta * (0.6 + progress * 1.4);
-      groupRef.current.rotation.y = Math.sin(state.clock.elapsedTime * 2.2) * 0.15;
-    }
+  useFrame((_, delta) => {
+    if (r1.current) r1.current.rotation.z += delta * 0.55;
+    if (r2.current) r2.current.rotation.z -= delta * 0.38;
   });
 
-  const streakProgress = clamp(invLerp(0.2, 0.8, progress), 0, 1);
-  if (streakProgress < 0.05) return null;
+  const arcT = easeInOut(clamp(invLerp(0.18, 0.55, progress)));
+  if (arcT < 0.04) return null;
 
   return (
-    <group ref={groupRef} position={[0, 1.4, 0]}>
-      {/* Cyan orbital rings */}
-      <mesh rotation={[Math.PI / 3.2, 0, 0]}>
-        <torusGeometry args={[1.1, 0.008, 12, 64]} />
+    <group position={[0, 1.6, 0.02]}>
+      <mesh ref={r1}>
+        <torusGeometry args={[1.45, 0.007, 8, 128, Math.PI * 1.55]} />
         <meshBasicMaterial
           color="#00f0ff"
           transparent
-          opacity={streakProgress * 0.85}
+          opacity={arcT * 0.8}
           blending={THREE.AdditiveBlending}
           toneMapped={false}
         />
       </mesh>
-      <mesh rotation={[-Math.PI / 4, Math.PI / 5, 0]}>
-        <torusGeometry args={[1.3, 0.006, 12, 64]} />
+      <mesh ref={r2}>
+        <torusGeometry args={[1.72, 0.005, 6, 96, Math.PI * 1.1]} />
         <meshBasicMaterial
-          color="#a855f7"
+          color="#f59e0b"
           transparent
-          opacity={streakProgress * 0.7}
-          blending={THREE.AdditiveBlending}
-          toneMapped={false}
-        />
-      </mesh>
-      {/* Yellow accent ring (neon power) */}
-      <mesh rotation={[Math.PI / 5, Math.PI / 3, 0]}>
-        <torusGeometry args={[0.9, 0.005, 12, 48]} />
-        <meshBasicMaterial
-          color="#facc15"
-          transparent
-          opacity={clamp(invLerp(0.5, 0.9, progress), 0, 1) * 0.7}
+          opacity={arcT * 0.55}
           blending={THREE.AdditiveBlending}
           toneMapped={false}
         />
@@ -135,9 +120,101 @@ function ElectricStreaks({ progress }: { progress: number }) {
   );
 }
 
-// ============================================================
-// Main Component
-// ============================================================
+// ─── Neon glow halo ───────────────────────────────────────────────────────────
+function NeonHalo({ progress }: { progress: number }) {
+  const haloRef = useRef<THREE.Mesh>(null);
+  const neonT   = easeInOut(clamp(invLerp(0.60, 0.90, progress)));
+
+  useFrame((state) => {
+    if (!haloRef.current) return;
+    const s = 1 + Math.sin(state.clock.elapsedTime * 3.2) * 0.025 * neonT;
+    haloRef.current.scale.set(s, s, s);
+  });
+
+  if (neonT < 0.02) return null;
+
+  return (
+    <mesh ref={haloRef} position={[0, 1.6, -0.08]}>
+      {/* Large soft cyan disc behind portrait */}
+      <planeGeometry args={[4.5, 5.2]} />
+      <meshBasicMaterial
+        color="#0a3d5c"
+        transparent
+        opacity={neonT * 0.18}
+        blending={THREE.AdditiveBlending}
+        depthWrite={false}
+        toneMapped={false}
+      />
+    </mesh>
+  );
+}
+
+// ─── Cinematic platform ───────────────────────────────────────────────────────
+function CharacterPlatform({ progress }: { progress: number }) {
+  const energyT = easeInOut(clamp(invLerp(0.0, 0.4, progress)));
+
+  return (
+    <group>
+      {/* Main hex dais */}
+      <mesh position={[0, 0.08, 0]} receiveShadow>
+        <cylinderGeometry args={[2.4, 2.55, 0.15, 6]} />
+        <meshStandardMaterial color="#07101c" metalness={0.92} roughness={0.18} />
+      </mesh>
+
+      {/* Outer cyan emissive ring */}
+      <mesh position={[0, 0.16, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <ringGeometry args={[2.32, 2.40, 128]} />
+        <meshBasicMaterial
+          color={progress > 0.6 ? '#00f0ff' : '#ff8a30'}
+          transparent
+          opacity={0.82}
+          toneMapped={false}
+        />
+      </mesh>
+
+      {/* Subtle inner purple ring */}
+      <mesh position={[0, 0.165, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <ringGeometry args={[1.55, 1.60, 64]} />
+        <meshBasicMaterial
+          color="#a855f7"
+          transparent
+          opacity={0.35 + energyT * 0.45}
+          toneMapped={false}
+        />
+      </mesh>
+
+      {/* 6 corner conduit lights */}
+      {Array.from({ length: 6 }).map((_, i) => {
+        const a = (i / 6) * Math.PI * 2;
+        return (
+          <group key={i} position={[Math.cos(a) * 2.1, 0.22, Math.sin(a) * 2.1]}>
+            <mesh>
+              <boxGeometry args={[0.14, 0.10, 0.14]} />
+              <meshStandardMaterial color="#131f30" metalness={0.8} />
+            </mesh>
+            <mesh position={[0, 0.07, 0]}>
+              <sphereGeometry args={[0.038, 10, 10]} />
+              <meshBasicMaterial
+                color={energyT > 0.4 ? '#00f0ff' : '#a855f7'}
+                toneMapped={false}
+              />
+            </mesh>
+          </group>
+        );
+      })}
+
+      {/* Platform under-glow */}
+      <pointLight
+        position={[0, -0.1, 0]}
+        intensity={2.5 + energyT * 4}
+        distance={5}
+        color={progress > 0.55 ? '#00f0ff' : '#ff8a30'}
+      />
+    </group>
+  );
+}
+
+// ─── Main Character Component ─────────────────────────────────────────────────
 export function AhmedCharacter({
   position = [0, 0, 0],
   rotationY = 0,
@@ -145,181 +222,111 @@ export function AhmedCharacter({
   scale = 1,
   progress = 0.0,
 }: AhmedCharacterProps) {
-  const rootRef = useRef<THREE.Group>(null);
-  const realPlaneRef = useRef<THREE.Mesh>(null);
-  const neonPlaneRef = useRef<THREE.Mesh>(null);
-  const neonGlowRef = useRef<THREE.Mesh>(null);
-  const auraRef = useRef<THREE.Mesh>(null);
-  const ringsRef = useRef<THREE.Group>(null);
-  const flashRef = useRef<THREE.Mesh>(null);
-  const { size } = useThree();
+  const rootRef    = useRef<THREE.Group>(null);
+  const realRef    = useRef<THREE.Mesh>(null);
+  const neonRef    = useRef<THREE.Mesh>(null);
+  const neonGlow   = useRef<THREE.Mesh>(null);
+  const auraRef    = useRef<THREE.Mesh>(null);
+  const flashRef   = useRef<THREE.Mesh>(null);
+  const { size }   = useThree();
 
-  // Load the two authoritative portrait textures
-  const realTexture = useTexture('/models/REAL_AHMED.png');
-  const neonTexture = useTexture('/models/NEON_AHMED.png');
+  // ── Textures (authoritative assets) ────────────────────────────────────────
+  const realTex = useTexture('/models/REAL_AHMED.png');
+  const neonTex = useTexture('/models/NEON_AHMED.png');
 
-  // ---- Texture setup ----
   useMemo(() => {
-    [realTexture, neonTexture].forEach((t) => {
+    [realTex, neonTex].forEach((t) => {
       t.colorSpace = THREE.SRGBColorSpace;
-      t.premultiplyAlpha = false;
+      t.needsUpdate = true;
     });
-  }, [realTexture, neonTexture]);
+  }, [realTex, neonTex]);
 
-  // ---- Derived scroll-stage values ----
-  const isMobile = size.width / size.height < 1.0;
-  const planeW = isMobile ? 1.6 : 2.2;
-  const planeH = isMobile ? 3.0 : 4.0;
-  const planeY = isMobile ? 1.2 : 1.6;
+  // ── Responsive sizing ──────────────────────────────────────────────────────
+  const aspect   = size.width / Math.max(1, size.height);
+  const isMobile = aspect < 1.0;
 
-  // Stage breakpoints (0→1 global progress)
-  const energyT   = easeInOut(clamp(invLerp(0.15, 0.35, progress), 0, 1)); // energy buildup
-  const dissolveT = easeInOut(clamp(invLerp(0.35, 0.65, progress), 0, 1)); // crossfade
-  const neonT     = easeInOut(clamp(invLerp(0.55, 0.80, progress), 0, 1)); // neon hero
+  // Portrait plane dimensions — keep face + shoulders always visible
+  const pW = isMobile ? 1.55 : 2.15;
+  const pH = isMobile ? 3.0  : 4.1;
+  const pY = isMobile ? 1.2  : 1.65; // plane center Y above dais
 
-  // Flash: bright spike around midpoint
-  const flashT = Math.max(0, 1 - Math.abs(progress - 0.52) / 0.08);
+  // ── Scroll stage derivations ───────────────────────────────────────────────
+  // Stage 1: Real  (0.00 → 0.35)  real=1, neon=0
+  // Stage 2: Dissolve (0.35 → 0.65) crossfade
+  // Stage 3: Neon   (0.65 → 1.00)  real=0, neon=1
+  const dissolveT = easeInOut(clamp(invLerp(0.33, 0.65, progress)));
+  const realOp    = 1.0 - dissolveT;
+  const neonOp    = easeInOut(clamp(invLerp(0.52, 0.80, progress)));
+  const energyT   = easeInOut(clamp(invLerp(0.15, 0.45, progress)));
+  const flashT    = Math.max(0, 1 - Math.abs(progress - 0.50) / 0.09); // spike at 0.50
+  const auraOp    = energyT * (1 - dissolveT * 0.6) * 0.28;
 
-  // Real image: opaque 0→0.35, dissolves 0.35→0.65
-  const realOpacity = 1.0 - dissolveT;
-  // Neon image: invisible until 0.5, fully visible at 0.75
-  const neonOpacity = neonT;
-  // Aura glow expands with energy
-  const auraOpacity = energyT * (1 - dissolveT * 0.5) * 0.3;
+  // ── Frame animation ────────────────────────────────────────────────────────
+  useFrame((state) => {
+    const t   = state.clock.elapsedTime;
+    const bY  = Math.sin(t * 2.2) * 0.012; // idle breath
+    const pX  = Math.sin(t * 0.55) * 0.035 * (1 + neonOp); // subtle parallax
 
-  useFrame((state, delta) => {
-    // Dais ring rotation
-    if (ringsRef.current) {
-      ringsRef.current.rotation.y += delta * (0.2 + progress * 0.9);
-    }
-
-    // Idle breathing on the character planes
-    const breath = Math.sin(state.clock.elapsedTime * 2.2) * 0.015;
-    const parallaxX = Math.sin(state.clock.elapsedTime * 0.6) * 0.04 * (1 + neonT);
-    if (realPlaneRef.current) {
-      realPlaneRef.current.position.y = planeY + breath;
-      realPlaneRef.current.position.x = parallaxX;
-    }
-    if (neonPlaneRef.current) {
-      neonPlaneRef.current.position.y = planeY + breath;
-      neonPlaneRef.current.position.x = parallaxX;
-    }
-    if (neonGlowRef.current) {
-      neonGlowRef.current.position.y = planeY + breath;
-      neonGlowRef.current.position.x = parallaxX;
-    }
-    if (auraRef.current) {
-      const s = 1.0 + Math.sin(state.clock.elapsedTime * 3.8) * 0.04 * energyT;
+    if (realRef.current)  { realRef.current.position.y  = pY + bY; realRef.current.position.x  = pX; }
+    if (neonRef.current)  { neonRef.current.position.y  = pY + bY; neonRef.current.position.x  = pX; }
+    if (neonGlow.current) { neonGlow.current.position.y = pY + bY; neonGlow.current.position.x = pX; }
+    if (auraRef.current)  {
+      auraRef.current.position.y = pY + bY;
+      const s = 1 + Math.sin(t * 3.8) * 0.035 * energyT;
       auraRef.current.scale.set(s, s, s);
     }
-    // Flash intensity
     if (flashRef.current) {
-      const mat = flashRef.current.material as THREE.MeshBasicMaterial;
-      mat.opacity = flashT * 0.85;
+      const m = flashRef.current.material as THREE.MeshBasicMaterial;
+      m.opacity = flashT * 0.78;
     }
   });
 
   return (
-    <group ref={rootRef} position={position} rotation={[rotationX, rotationY, 0]} scale={[scale, scale, scale]}>
-      {/* ── PEDESTAL ─────────────────────────────────────────── */}
-      <group>
-        {/* Hex base */}
-        <mesh position={[0, 0.08, 0]} receiveShadow>
-          <cylinderGeometry args={[2.3, 2.5, 0.18, 6]} />
-          <meshStandardMaterial color="#080e18" metalness={0.9} roughness={0.2} />
-        </mesh>
-        {/* Outer neon floor ring */}
-        <mesh position={[0, 0.18, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-          <ringGeometry args={[2.2, 2.28, 48]} />
-          <meshBasicMaterial
-            color={progress > 0.5 ? '#00f0ff' : '#ff8a30'}
-            transparent
-            opacity={0.85}
-            toneMapped={false}
-          />
-        </mesh>
-        {/* Inner purple emitter ring */}
-        <mesh position={[0, 0.19, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-          <ringGeometry args={[1.5, 1.56, 48]} />
-          <meshBasicMaterial
-            color="#a855f7"
-            transparent
-            opacity={0.4 + energyT * 0.5}
-            toneMapped={false}
-          />
-        </mesh>
-        {/* 6 conduit nodes */}
-        {Array.from({ length: 6 }).map((_, i) => {
-          const a = (i / 6) * Math.PI * 2;
-          return (
-            <group key={i} position={[Math.cos(a) * 2.05, 0.22, Math.sin(a) * 2.05]}>
-              <mesh>
-                <boxGeometry args={[0.16, 0.12, 0.16]} />
-                <meshStandardMaterial color="#1e293b" metalness={0.8} />
-              </mesh>
-              <mesh position={[0, 0.08, 0]}>
-                <sphereGeometry args={[0.045, 12, 12]} />
-                <meshBasicMaterial color={energyT > 0.4 ? '#00f0ff' : '#a855f7'} toneMapped={false} />
-              </mesh>
-            </group>
-          );
-        })}
-      </group>
+    <group
+      ref={rootRef}
+      position={position}
+      rotation={[rotationX, rotationY, 0]}
+      scale={[scale, scale, scale]}
+    >
+      {/* ── Platform ──────────────────────────────────────────────────────── */}
+      <CharacterPlatform progress={progress} />
 
-      {/* ── DAIS ROTATION RINGS ───────────────────────────────── */}
-      <group ref={ringsRef} position={[0, planeY, 0]}>
-        <mesh rotation={[Math.PI / 3.5, 0, 0]}>
-          <torusGeometry args={[isMobile ? 1.0 : 1.35, 0.01, 16, 64]} />
-          <meshBasicMaterial
-            color="#00f0ff"
-            transparent
-            opacity={0.2 + energyT * 0.7}
-            blending={THREE.AdditiveBlending}
-            toneMapped={false}
-          />
-        </mesh>
-        <mesh rotation={[-Math.PI / 4, Math.PI / 5, 0]}>
-          <torusGeometry args={[isMobile ? 1.15 : 1.5, 0.008, 16, 64]} />
-          <meshBasicMaterial
-            color="#a855f7"
-            transparent
-            opacity={0.15 + energyT * 0.55}
-            blending={THREE.AdditiveBlending}
-            toneMapped={false}
-          />
-        </mesh>
-      </group>
+      {/* ── Neon halo backdrop ────────────────────────────────────────────── */}
+      <NeonHalo progress={progress} />
 
-      {/* ── REAL AHMED PORTRAIT ───────────────────────────────── */}
-      <mesh ref={realPlaneRef} position={[0, planeY, 0.01]} castShadow>
-        <planeGeometry args={[planeW, planeH]} />
-        <meshBasicMaterial
-          map={realTexture}
-          transparent
-          opacity={realOpacity}
-          alphaTest={0.01}
-          side={THREE.DoubleSide}
-          toneMapped={false}
-          depthWrite={false}
-        />
-      </mesh>
+      {/* ── Electric orbit arcs ───────────────────────────────────────────── */}
+      <ElectricArcs progress={progress} />
 
-      {/* ── ELECTRIC AURA over REAL (energy buildup) ─────────── */}
-      <mesh ref={auraRef} position={[0, planeY, 0.015]}>
-        <planeGeometry args={[planeW * 1.08, planeH * 1.04]} />
+      {/* ── Blue energy aura behind Real portrait ─────────────────────────── */}
+      <mesh ref={auraRef} position={[0, pY, -0.05]}>
+        <planeGeometry args={[pW * 1.1, pH * 1.05]} />
         <meshBasicMaterial
           color="#00f0ff"
           transparent
-          opacity={auraOpacity}
+          opacity={auraOp}
           blending={THREE.AdditiveBlending}
           depthWrite={false}
           toneMapped={false}
         />
       </mesh>
 
-      {/* ── TRANSFORMATION FLASH ──────────────────────────────── */}
-      <mesh ref={flashRef} position={[0, planeY, 0.05]}>
-        <planeGeometry args={[planeW * 1.5, planeH * 1.3]} />
+      {/* ── REAL AHMED portrait ───────────────────────────────────────────── */}
+      <mesh ref={realRef} position={[0, pY, 0.01]} castShadow>
+        <planeGeometry args={[pW, pH]} />
+        <meshBasicMaterial
+          map={realTex}
+          transparent
+          opacity={realOp}
+          alphaTest={0.01}
+          side={THREE.DoubleSide}
+          depthWrite={false}
+          toneMapped={false}
+        />
+      </mesh>
+
+      {/* ── Transformation white flash ────────────────────────────────────── */}
+      <mesh ref={flashRef} position={[0, pY, 0.06]}>
+        <planeGeometry args={[pW * 1.6, pH * 1.4]} />
         <meshBasicMaterial
           color="#ffffff"
           transparent
@@ -330,38 +337,35 @@ export function AhmedCharacter({
         />
       </mesh>
 
-      {/* ── NEON AHMED PORTRAIT ───────────────────────────────── */}
-      <mesh ref={neonPlaneRef} position={[0, planeY, 0.02]} castShadow>
-        <planeGeometry args={[planeW, planeH]} />
+      {/* ── NEON AHMED portrait ───────────────────────────────────────────── */}
+      <mesh ref={neonRef} position={[0, pY, 0.02]} castShadow>
+        <planeGeometry args={[pW, pH]} />
         <meshBasicMaterial
-          map={neonTexture}
+          map={neonTex}
           transparent
-          opacity={neonOpacity}
+          opacity={neonOp}
           alphaTest={0.01}
           side={THREE.DoubleSide}
-          toneMapped={false}
           depthWrite={false}
+          toneMapped={false}
         />
       </mesh>
 
-      {/* ── NEON GLOW BLOOM OVERLAY ───────────────────────────── */}
-      <mesh ref={neonGlowRef} position={[0, planeY, 0.01]}>
-        <planeGeometry args={[planeW * 1.12, planeH * 1.06]} />
+      {/* ── Neon blue glow over portrait ──────────────────────────────────── */}
+      <mesh ref={neonGlow} position={[0, pY, 0.015]}>
+        <planeGeometry args={[pW * 1.14, pH * 1.08]} />
         <meshBasicMaterial
           color="#00f0ff"
           transparent
-          opacity={neonOpacity * 0.22}
+          opacity={neonOp * 0.20}
           blending={THREE.AdditiveBlending}
           depthWrite={false}
           toneMapped={false}
         />
       </mesh>
 
-      {/* ── ELECTRIC ORBIT STREAKS ────────────────────────────── */}
-      <ElectricStreaks progress={progress} />
-
-      {/* ── BURST PARTICLES ───────────────────────────────────── */}
-      <TransformParticles progress={progress} count={isMobile ? 50 : 90} />
+      {/* ── Transformation burst particles ────────────────────────────────── */}
+      <TransformBurst progress={progress} count={isMobile ? 48 : 80} />
     </group>
   );
 }
