@@ -54,9 +54,10 @@ export function ProjectsScene({ position = [0, 0, WORLD.PROJECTS_Z] }: { positio
         PHYSICAL 3D DIORAMAS & PRODUCTION ARCHITECTURES // SCROLL TO BROWSE // CLICK TO OPEN
       </Text>
 
-      {/* Rotating Carousel of Projects (Moved to the left) */}
-      <group position={[-2.5, -0.2, -radius + 1]}>
-        <group ref={carouselRef}>
+      {/* Rotating Carousel of Projects (Moved left and scaled down) */}
+      <group position={[-3.2, 0, 0]} scale={0.75}>
+        <group position={[0, -0.2, -radius + 1]}>
+          <group ref={carouselRef}>
           {allProjects.map((project, i) => {
             const angle = -(i / total) * Math.PI * 2;
             const x = Math.sin(angle) * radius;
@@ -73,10 +74,13 @@ export function ProjectsScene({ position = [0, 0, WORLD.PROJECTS_Z] }: { positio
             );
           })}
         </group>
+        </group>
       </group>
 
-      {/* ITI Academic Projects Branch (Right side) */}
-      <ITIProjectsBranch position={[4.0, -0.2, 0]} />
+      {/* ITI Academic Projects Branch (Right side, scaled down) */}
+      <group position={[3.6, 0.4, 0]} scale={0.8}>
+        <ITIProjectsBranch position={[0, 0, 0]} />
+      </group>
     </group>
   );
 }
