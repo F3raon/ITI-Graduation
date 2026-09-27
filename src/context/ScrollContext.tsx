@@ -3,6 +3,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 export interface ScrollStore {
   current: number;
   target: number;
+  locked: boolean;
   scrollTo: (target: number) => void;
   listeners: Set<(val: number) => void>;
   subscribe: (fn: (val: number) => void) => () => void;
@@ -12,6 +13,7 @@ export interface ScrollStore {
 export const scrollStore: ScrollStore = {
   current: 0,
   target: 0,
+  locked: false,
   listeners: new Set(),
   scrollTo(target: number) {
     this.target = Math.max(0, Math.min(1, target));
@@ -39,6 +41,7 @@ export function ScrollProvider({ children }: { children: React.ReactNode }) {
 
     // Mouse wheel handler - smooth controlled speed & reliable bi-directional scrolling
     const handleWheel = (e: WheelEvent) => {
+      if (scrollStore.locked) return;
       // Reduced sensitivity for smoother, cinematic, controlled pacing
       const sensitivity = 0.00038;
       const next = Math.max(0, Math.min(1, scrollStore.target + e.deltaY * sensitivity));
@@ -53,6 +56,7 @@ export function ScrollProvider({ children }: { children: React.ReactNode }) {
     };
 
     const handleTouchMove = (e: TouchEvent) => {
+      if (scrollStore.locked) return;
       if (e.touches.length > 0) {
         const touchY = e.touches[0].clientY;
         const deltaY = touchStartY - touchY;
@@ -67,6 +71,7 @@ export function ScrollProvider({ children }: { children: React.ReactNode }) {
 
     // Keyboard navigation (Arrow keys, PageUp/Down, Space, Home, End)
     const handleKeyDown = (e: KeyboardEvent) => {
+      if (scrollStore.locked) return;
       if (['ArrowDown', 'PageDown', ' '].includes(e.key)) {
         e.preventDefault();
         const step = e.key === ' ' || e.key === 'PageDown' ? 0.08 : 0.03;

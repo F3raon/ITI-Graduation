@@ -82,44 +82,45 @@ function ExperienceNode({
 export function ExperienceScene({ position = [0, 0, -48] }: { position?: [number, number, number] }) {
   const { size } = useThree();
   const aspect = size.width / Math.max(1, size.height);
-  const scale = aspect < 0.9 ? 0.58 : aspect < 1.25 ? 0.74 : aspect < 1.6 ? 0.9 : 1.0;
+  const scale = aspect < 0.9 ? 0.55 : aspect < 1.25 ? 0.74 : aspect < 1.6 ? 0.9 : 1.0;
 
   return (
     <group position={position} scale={scale}>
       {/* Chamber Architectural Dark Backdrop */}
-      <mesh position={[0, 0.8, -2.2]} receiveShadow>
+      <mesh position={[0, 0.8, -1.2]} receiveShadow>
         <planeGeometry args={[28, 14]} />
         <meshStandardMaterial color="#030508" roughness={0.95} metalness={0.1} />
       </mesh>
 
       {/* Section Header */}
-      <Text position={[-6.2, 3.6, 0]} fontSize={0.18} color="#94a3b8" anchorX="left" letterSpacing={0.22}>
+      <Text position={[-6.2, 3.8, 0]} fontSize={0.18} color="#94a3b8" anchorX="left" letterSpacing={0.22}>
         // CHRONOLOGICAL TRAJECTORY
       </Text>
-      <Text position={[-6.2, 2.85, 0]} fontSize={0.72} color="#f8fafc" anchorX="left" fontWeight={900}>
+      <Text position={[-6.2, 3.0, 0]} fontSize={0.72} color="#f8fafc" anchorX="left" fontWeight={900}>
         EXPERIENCE HALL
       </Text>
-      <Text position={[-6.2, 2.2, 0]} fontSize={0.14} color="#67c9ff" anchorX="left" letterSpacing={0.08}>
+      <Text position={[-6.2, 2.35, 0]} fontSize={0.14} color="#67c9ff" anchorX="left" letterSpacing={0.08}>
         PROFESSIONAL MILESTONES & ACHIEVEMENTS
       </Text>
 
-      {/* Glowing Central Timeline Rail (Z-axis) */}
-      <mesh position={[0, -0.6, -4]}>
-        <boxGeometry args={[0.04, 0.04, 9]} />
+      {/* Glowing Central Timeline Rail (Y-axis now) */}
+      <mesh position={[0, -0.6, 0]}>
+        <boxGeometry args={[0.04, 6, 0.04]} />
         <meshBasicMaterial color="#38bdf8" transparent opacity={0.3} />
       </mesh>
 
-      {/* Timeline Milestones along Z axis */}
-      <group position={[0, 0, 0]}>
+      {/* Timeline Milestones along Y axis */}
+      <group position={[0, 1.2, 0]}>
         {PORTFOLIO_DATA.experience.map((item, i) => {
           const isLeft = i % 2 === 0;
           const isMobile = aspect < 0.9;
-          const x = isMobile ? 0 : (isLeft ? -2.8 : 2.8);
+          const x = isMobile ? 0 : (isLeft ? -2.6 : 2.6);
+          const y = -i * 1.5;
           return (
             <ExperienceNode
               key={item.company + item.period}
               item={item}
-              position={[x, -0.2, -i * 2.2]}
+              position={[x, y, 0]}
               index={i}
             />
           );
