@@ -6,38 +6,6 @@ import { PORTFOLIO_DATA } from '../../data/portfolio';
 import { soundEngine } from '../../utils/audio';
 import { scrollStore } from '../../context/ScrollContext';
 
-function PortalContent() {
-  const [visible, setVisible] = useState(false);
-
-  useFrame(() => {
-    // Only render iframe when user is in the Portal section (> 0.93)
-    const isVisible = scrollStore.current > 0.90;
-    if (visible !== isVisible) setVisible(isVisible);
-  });
-
-  if (!visible) return null;
-
-  return (
-    <div
-      style={{
-        width: '1280px',
-        height: '720px',
-        background: '#040810',
-        borderRadius: '16px',
-        border: '4px solid #38bdf8',
-        boxShadow: '0 0 40px rgba(56, 189, 248, 0.4)',
-        overflow: 'auto',
-        pointerEvents: 'auto',
-      }}
-    >
-      <iframe
-        src={PORTFOLIO_DATA.identity.oldPortfolioUrl}
-        style={{ width: '100%', height: '100%', border: 'none' }}
-        title="Old Portfolio"
-      />
-    </div>
-  );
-}
 
 export function PortfolioPortal({ position = [0, 0, -114] }: { position?: [number, number, number] }) {
   const { size } = useThree();
@@ -103,19 +71,32 @@ export function PortfolioPortal({ position = [0, 0, -114] }: { position?: [numbe
           <meshBasicMaterial color="#38bdf8" transparent opacity={0.15} />
         </mesh>
 
-        {/* The 3D Html embedded iframe - Only show when close to prevent background bleed */}
+        {/* The 3D Html embedded iframe */}
         <group position={[0, 0, 0.06]}>
           <Html
             transform
             distanceFactor={2.5}
             position={[0, 0, 0]}
             zIndexRange={[100, 0]}
-            style={{
-              transition: 'opacity 0.5s',
-              opacity: 1, // We'll handle visibility inside
-            }}
           >
-            <PortalContent />
+            <div
+              style={{
+                width: '1280px',
+                height: '720px',
+                background: '#040810',
+                borderRadius: '16px',
+                border: '4px solid #38bdf8',
+                boxShadow: '0 0 40px rgba(56, 189, 248, 0.4)',
+                overflow: 'auto',
+                pointerEvents: 'auto',
+              }}
+            >
+              <iframe
+                src={PORTFOLIO_DATA.identity.oldPortfolioUrl}
+                style={{ width: '100%', height: '100%', border: 'none' }}
+                title="Old Portfolio"
+              />
+            </div>
           </Html>
         </group>
         
