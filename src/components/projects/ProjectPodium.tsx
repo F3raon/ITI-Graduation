@@ -97,54 +97,61 @@ export function ProjectPodium({
       {/* 3D Diorama or Cyber Model */}
       <group position={[0, 0.45, 0]}>{renderDiorama()}</group>
 
-      {/* Futuristic Project Information Slab */}
-      <group ref={baseRef} position={[0, -1.2, 0]}>
-        <RoundedBox args={[3.2, 1.45, 0.22]} radius={0.08} smoothness={4} castShadow>
-          <meshStandardMaterial
-            color="#05070a"
+      {/* Futuristic Project Information Slab (Premium Dark Glass) */}
+      <group ref={baseRef} position={[0, -1.4, 0]}>
+        <RoundedBox args={[3.4, 1.8, 0.15]} radius={0.06} smoothness={4} castShadow>
+          <meshPhysicalMaterial
+            color="#05080c"
             metalness={0.9}
-            roughness={0.15}
+            roughness={0.1}
+            clearcoat={1.0}
+            transmission={0.4}
+            transparent
+            opacity={0.9}
             emissive={project.color}
-            emissiveIntensity={hovered ? 0.35 : 0.08}
+            emissiveIntensity={hovered ? 0.35 : 0.05}
           />
         </RoundedBox>
 
         {/* Index Tag & Title */}
-        <Text position={[-1.4, 0.45, 0.13]} fontSize={0.09} color={project.color} anchorX="left" letterSpacing={0.1}>
+        <Text position={[-1.5, 0.65, 0.09]} fontSize={0.08} color={project.color} anchorX="left" letterSpacing={0.15}>
           {project.id.toUpperCase()} // {project.category.toUpperCase()}
         </Text>
-        <Text position={[-1.4, 0.22, 0.13]} fontSize={0.16} color="#ffffff" anchorX="left" fontWeight={800}>
+        <Text position={[-1.5, 0.42, 0.09]} fontSize={0.18} color="#f8fafc" anchorX="left" fontWeight={900}>
           {project.title}
         </Text>
 
         {/* TECHNOLOGIES */}
-        <Text position={[-1.4, 0.02, 0.13]} fontSize={0.07} color="#38bdf8" anchorX="left" letterSpacing={0.1}>
-          TECH: {project.tags.join(' • ')}
+        <Text position={[-1.5, 0.15, 0.09]} maxWidth={3.0} fontSize={0.075} color="#38bdf8" anchorX="left" letterSpacing={0.12} lineHeight={1.3}>
+          {project.tags.join(' • ')}
         </Text>
 
         {/* PROBLEM / PURPOSE */}
-        <Text position={[-1.4, -0.22, 0.13]} maxWidth={2.8} fontSize={0.065} color="#94a3b8" anchorX="left" lineHeight={1.4}>
-          PURPOSE: {project.description}
+        <Text position={[-1.5, -0.15, 0.09]} maxWidth={3.0} fontSize={0.075} color="#94a3b8" anchorX="left" lineHeight={1.5}>
+          {project.description}
         </Text>
 
         {/* SOLUTION / RESULT */}
-        <Text position={[-1.4, -0.42, 0.13]} maxWidth={2.8} fontSize={0.065} color="#cbd5e1" anchorX="left" lineHeight={1.4}>
-          SOLUTION: {project.highlights[0]}
+        <Text position={[-1.5, -0.45, 0.09]} maxWidth={3.0} fontSize={0.075} color="#cbd5e1" anchorX="left" lineHeight={1.5}>
+          <tspan fill={project.color}>HIGHLIGHT:</tspan> {project.highlights[0]}
         </Text>
 
         {/* Action Button Label */}
-        <Text
-          position={[1.35, -0.5, 0.13]}
-          fontSize={0.08}
-          color={hovered ? '#ffffff' : project.color}
-          anchorX="right"
-          letterSpacing={0.1}
-        >
-          {hovered ? 'ENTER WORLD ↗' : 'VIEW PROJECT →'}
-        </Text>
+        <group position={[1.4, -0.7, 0.09]}>
+          <Text
+            position={[0, 0, 0]}
+            fontSize={0.085}
+            color={hovered ? '#ffffff' : project.color}
+            anchorX="right"
+            letterSpacing={0.15}
+            fontWeight={700}
+          >
+            {hovered ? 'ENTER SYSTEM ↗' : 'VIEW PROJECT →'}
+          </Text>
+        </group>
 
         {/* Under-glow light */}
-        <pointLight position={[0, -0.5, 0.3]} intensity={hovered ? 5 : 1.5} distance={4} color={project.color} />
+        <pointLight position={[0, -0.8, 0.3]} intensity={hovered ? 4 : 1} distance={4} color={project.color} />
       </group>
     </group>
   );
