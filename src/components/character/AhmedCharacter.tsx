@@ -42,10 +42,10 @@ function TransformBurst({ progress, count = 72 }: { progress: number; count?: nu
     [count]
   );
 
-  // Burst window: 0.30 → 0.80
-  const burstT = easeInOut(clamp(invLerp(0.28, 0.78, progress)));
+  // Burst window: 0.15 → 0.70
+  const burstT = easeInOut(clamp(invLerp(0.15, 0.65, progress)));
   // Fade out after neon arrives
-  const fadeT  = burstT * (1 - clamp(invLerp(0.75, 0.95, progress)));
+  const fadeT  = burstT * (1 - clamp(invLerp(0.65, 0.85, progress)));
 
   useFrame((state) => {
     if (!meshRef.current || fadeT < 0.02) return;
@@ -91,7 +91,7 @@ function ElectricArcs({ progress }: { progress: number }) {
     if (r2.current) r2.current.rotation.z -= delta * 0.38;
   });
 
-  const arcT = easeInOut(clamp(invLerp(0.18, 0.55, progress)));
+  const arcT = easeInOut(clamp(invLerp(0.08, 0.45, progress)));
   if (arcT < 0.04) return null;
 
   return (
@@ -123,7 +123,7 @@ function ElectricArcs({ progress }: { progress: number }) {
 // ─── Neon glow halo ───────────────────────────────────────────────────────────
 function NeonHalo({ progress }: { progress: number }) {
   const haloRef = useRef<THREE.Mesh>(null);
-  const neonT   = easeInOut(clamp(invLerp(0.60, 0.90, progress)));
+  const neonT   = easeInOut(clamp(invLerp(0.50, 0.78, progress)));
 
   useFrame((state) => {
     if (!haloRef.current) return;
@@ -251,13 +251,13 @@ export function AhmedCharacter({
   const pY = isMobile ? 1.2  : 1.65; // plane center Y above dais
 
   // ── Scroll stage derivations ───────────────────────────────────────────────
-  // Stage 1: Real  (0.00 → 0.35)  real=1, neon=0
-  // Stage 2: Dissolve (0.35 → 0.65) crossfade
-  // Stage 3: Neon   (0.65 → 1.00)  real=0, neon=1
-  const dissolveT = easeInOut(clamp(invLerp(0.33, 0.65, progress)));
+  // Stage 1: Real  (0.00 → 0.20)  real=1, neon=0
+  // Stage 2: Dissolve (0.20 → 0.55) crossfade window
+  // Stage 3: Neon   (0.55 → 1.00)  real=0, neon=1
+  const dissolveT = easeInOut(clamp(invLerp(0.20, 0.55, progress)));  // Real fades
   const realOp    = 1.0 - dissolveT;
-  const neonOp    = easeInOut(clamp(invLerp(0.52, 0.80, progress)));
-  const energyT   = easeInOut(clamp(invLerp(0.15, 0.45, progress)));
+  const neonOp    = easeInOut(clamp(invLerp(0.35, 0.65, progress)));  // Neon emerges
+  const energyT   = easeInOut(clamp(invLerp(0.05, 0.35, progress)));  // Aura buildup
   const flashT    = Math.max(0, 1 - Math.abs(progress - 0.50) / 0.09); // spike at 0.50
   const auraOp    = energyT * (1 - dissolveT * 0.6) * 0.28;
 

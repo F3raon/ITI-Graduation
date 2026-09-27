@@ -79,17 +79,17 @@ export function CameraRig() {
       [0.16, 0.062],  // Office
       [0.24, 0.125],  // Approaching Ahmed
       [0.28, 0.187],  // Real Ahmed face
-      [0.35, 0.250],  // Neon transformation
-      [0.44, 0.312],  // Arc right
-      [0.51, 0.375],  // Arc exit
-      [0.56, 0.437],  // Journey to About
-      [0.62, 0.500],  // About Me
-      [0.68, 0.562],  // Skills Lab
-      [0.74, 0.625],  // Projects Lab entry
-      [0.77, 0.687],  // Projects settled
-      [0.81, 0.750],  // Experience Timeline
-      [0.86, 0.812],  // Achievements
-      [0.91, 0.875],  // Contact Room
+      [0.42, 0.250],  // Neon transformation — camera stays here longer
+      [0.55, 0.312],  // Arc right
+      [0.60, 0.375],  // Arc exit
+      [0.64, 0.437],  // Journey to About
+      [0.68, 0.500],  // About Me
+      [0.74, 0.562],  // Skills Lab
+      [0.79, 0.625],  // Projects Lab entry
+      [0.82, 0.687],  // Projects settled
+      [0.86, 0.750],  // Experience Timeline
+      [0.90, 0.812],  // Achievements
+      [0.94, 0.875],  // Contact Room
       [1.00, 1.000],  // Final Portal
     ];
     for (let i = 0; i < kf.length - 1; i++) {

@@ -46,8 +46,8 @@ export function World() {
       {/* Post Processing Effects */}
       <Effects />
 
-      {/* Dust/Atmospheric Particles */}
-      <FloatingParticles count={1500} />
+      {/* Dust/Atmospheric Particles — sparse, subtle */}
+      <FloatingParticles count={600} />
 
       {/* 3D World Journey Sections */}
       <Suspense fallback={null}>

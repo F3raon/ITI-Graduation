@@ -12,10 +12,10 @@ export interface CharacterSceneProps {
 }
 
 // Scroll window for the character transformation:
-// global scroll 0.24 → real Ahmed visible
-// global scroll 0.24 → 0.51 full transformation arc
+// global scroll 0.24 → real Ahmed appears
+// global scroll 0.24 → 0.60 full transformation arc  
 const SCROLL_START = 0.24;
-const SCROLL_END   = 0.51;
+const SCROLL_END   = 0.60;
 
 export function CharacterScene({
   position = [0, -0.6, -9.5],

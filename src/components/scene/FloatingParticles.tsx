@@ -1,50 +1,52 @@
-import { useRef } from 'react';
+import { useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 
-export function FloatingParticles({ count = 800 }) {
+export function FloatingParticles({ count = 600 }) {
   const mesh = useRef<THREE.InstancedMesh>(null);
-  const lightMesh = useRef<THREE.InstancedMesh>(null);
-  const dummy = new THREE.Object3D();
+  const dummy = useMemo(() => new THREE.Object3D(), []);
+
   const particles = useRef(
     Array.from({ length: count }, () => ({
-      t: Math.random() * 100,
-      factor: 0.2 + Math.random() * 0.8,
-      speed: 0.01 + Math.random() * 0.015,
-      x: (Math.random() - 0.5) * 40,
-      y: (Math.random() - 0.5) * 20,
-      z: (Math.random() - 0.5) * 120 - 20,
+      t:      Math.random() * 100,
+      speed:  0.006 + Math.random() * 0.012,
+      x:      (Math.random() - 0.5) * 40,
+      y:      (Math.random() - 0.5) * 20,
+      z:      (Math.random() - 0.5) * 120 - 20,
+      // Tiny fixed scale — never large enough to look like blocks
+      size:   0.014 + Math.random() * 0.018,
+      drift:  (Math.random() - 0.5) * 0.4,
     }))
   );
 
   useFrame((state) => {
-    if (!mesh.current || !lightMesh.current) return;
-    particles.current.forEach((particle, i) => {
-      particle.t += particle.speed;
+    if (!mesh.current) return;
+    particles.current.forEach((p, i) => {
+      p.t += p.speed;
       dummy.position.set(
-        particle.x + Math.sin(particle.t) * particle.factor,
-        particle.y + Math.cos(particle.t) * particle.factor,
-        particle.z
+        p.x + Math.sin(p.t + p.drift) * 0.3,
+        p.y + Math.cos(p.t * 0.7) * 0.25,
+        p.z
       );
-      dummy.scale.setScalar(particle.factor);
+      dummy.scale.setScalar(p.size); // always tiny
       dummy.updateMatrix();
       mesh.current!.setMatrixAt(i, dummy.matrix);
-      lightMesh.current!.setMatrixAt(i, dummy.matrix);
     });
     mesh.current.instanceMatrix.needsUpdate = true;
-    lightMesh.current.instanceMatrix.needsUpdate = true;
   });
 
   return (
-    <>
-      <instancedMesh ref={mesh} args={[undefined, undefined, count]}>
-        <dodecahedronGeometry args={[0.02, 0]} />
-        <meshBasicMaterial color="#38bdf8" transparent opacity={0.15} />
-      </instancedMesh>
-      <instancedMesh ref={lightMesh} args={[undefined, undefined, Math.floor(count / 4)]}>
-        <dodecahedronGeometry args={[0.04, 0]} />
-        <meshBasicMaterial color="#ff8a30" transparent opacity={0.3} />
-      </instancedMesh>
-    </>
+    // Single mesh: mostly blue-white, subtle, no color variety
+    <instancedMesh ref={mesh} args={[undefined, undefined, count]}>
+      <sphereGeometry args={[1, 4, 4]} />
+      <meshBasicMaterial
+        color="#38bdf8"
+        transparent
+        opacity={0.18}
+        depthWrite={false}
+        blending={THREE.AdditiveBlending}
+        toneMapped={false}
+      />
+    </instancedMesh>
   );
 }
