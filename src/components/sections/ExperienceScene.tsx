@@ -4,6 +4,7 @@ import { RoundedBox, Text } from '@react-three/drei';
 import * as THREE from 'three';
 import { PORTFOLIO_DATA, ExperienceItem } from '../../data/portfolio';
 import { soundEngine } from '../../utils/audio';
+import { scrollStore } from '../../context/ScrollContext';
 
 function ExperienceNode({
   item,
@@ -91,6 +92,15 @@ export function ExperienceScene({ position = [0, 0, -48] }: { position?: [number
   const { size } = useThree();
   const aspect = size.width / Math.max(1, size.height);
   const scale = aspect < 0.9 ? 0.55 : aspect < 1.25 ? 0.74 : aspect < 1.6 ? 0.9 : 1.0;
+
+  const [visible, setVisible] = useState(false);
+
+  useFrame(() => {
+    const isVisible = scrollStore.current > 0.65 && scrollStore.current < 0.95;
+    if (visible !== isVisible) setVisible(isVisible);
+  });
+
+  if (!visible) return null;
 
   return (
     <group position={position} scale={scale}>
