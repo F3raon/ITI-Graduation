@@ -44,18 +44,18 @@ export function ProjectsScene({ position = [0, 0, WORLD.PROJECTS_Z] }: { positio
   return (
     <group position={position} scale={scale}>
       {/* Section Header */}
-      <Text position={[-5.8, 3.8, 0]} fontSize={0.18} color="#94a3b8" anchorX="left" letterSpacing={0.22}>
+      <Text position={[0, 3.8, 0]} fontSize={0.16} color="#67c9ff" anchorX="center" letterSpacing={0.22}>
         // 3D RESEARCH & PRODUCTION SYSTEMS
       </Text>
-      <Text position={[-5.8, 3.0, 0]} fontSize={0.72} color="#f8fafc" anchorX="left" fontWeight={900}>
+      <Text position={[0, 3.1, 0]} fontSize={0.65} color="#f8fafc" anchorX="center" fontWeight={900}>
         PROJECT LAB
       </Text>
-      <Text position={[-5.8, 2.35, 0]} fontSize={0.15} color="#67c9ff" anchorX="left" letterSpacing={0.08}>
+      <Text position={[0, 2.5, 0]} fontSize={0.13} color="#94a3b8" anchorX="center" letterSpacing={0.08}>
         PHYSICAL 3D DIORAMAS & PRODUCTION ARCHITECTURES // SCROLL TO BROWSE // CLICK TO OPEN
       </Text>
 
-      {/* Rotating Carousel of Projects (Moved left and scaled down) */}
-      <group position={[-4.0, 0, 0]} scale={0.75}>
+      {/* Rotating Carousel of Projects (Left side) */}
+      <group position={[-2.6, 0, 0]} scale={0.68}>
         <group position={[0, -0.2, -radius + 1]}>
           <group ref={carouselRef}>
           {allProjects.map((project, i) => {
@@ -77,8 +77,8 @@ export function ProjectsScene({ position = [0, 0, WORLD.PROJECTS_Z] }: { positio
         </group>
       </group>
 
-      {/* ITI Academic Projects Branch (Right side, scaled down) */}
-      <group position={[2.2, 0.4, 0]} scale={0.75}>
+      {/* ITI Academic Projects Branch (Right side) */}
+      <group position={[2.8, 0.4, 0]} scale={0.68}>
         <ITIProjectsBranch position={[0, 0, 0]} />
       </group>
     </group>

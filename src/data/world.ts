@@ -35,9 +35,9 @@ export const WORLD = {
   CAM_ARC_R:      -7,     // Gentle right arc
   CAM_EXIT:       -8,     // Camera exits character area
   CAM_ABOUT:     -17,
-  CAM_SKILLS:    -29,
-  CAM_PROJECTS:  -41,
-  CAM_PROJECTS2: -44,
+  CAM_SKILLS:    -26,
+  CAM_PROJECTS:  -38,
+  CAM_PROJECTS2: -39,
   CAM_EXPERIENCE:-65,
   CAM_ACHIEVEMENTS:-77,
   CAM_CONTACT:   -89,

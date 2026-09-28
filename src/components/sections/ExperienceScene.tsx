@@ -111,13 +111,13 @@ export function ExperienceScene({ position = [0, 0, -48] }: { position?: [number
       </mesh>
 
       {/* Section Header */}
-      <Text position={[-6.2, 3.8, 0]} fontSize={0.18} color="#94a3b8" anchorX="left" letterSpacing={0.22}>
+      <Text position={[0, 3.8, 0]} fontSize={0.16} color="#67c9ff" anchorX="center" letterSpacing={0.22}>
         // CHRONOLOGICAL TRAJECTORY
       </Text>
-      <Text position={[-6.2, 3.0, 0]} fontSize={0.72} color="#f8fafc" anchorX="left" fontWeight={900}>
+      <Text position={[0, 3.1, 0]} fontSize={0.65} color="#f8fafc" anchorX="center" fontWeight={900}>
         EXPERIENCE HALL
       </Text>
-      <Text position={[-6.2, 2.35, 0]} fontSize={0.14} color="#67c9ff" anchorX="left" letterSpacing={0.08}>
+      <Text position={[0, 2.5, 0]} fontSize={0.13} color="#94a3b8" anchorX="center" letterSpacing={0.08}>
         PROFESSIONAL MILESTONES & ACHIEVEMENTS
       </Text>
 

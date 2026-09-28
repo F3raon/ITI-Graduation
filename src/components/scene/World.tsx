@@ -35,8 +35,8 @@ export function World() {
     <>
       {/* Scene background & fog */}
       <color attach="background" args={['#020507']} />
-      {/* Fog starts at 6 units, fully opaque at 15 units — strictly isolates the current section (dist 5) and hides the next section (dist 17) */}
-      <fog attach="fog" args={['#020507', 6, 15]} />
+      {/* Fog starts at 10 units, fully opaque at 22 units — ensures the current section is 100% visible and vibrant, isolating the next section smoothly */}
+      <fog attach="fog" args={['#020507', 10, 22]} />
 
       {/* Global lighting */}
       <Lighting />

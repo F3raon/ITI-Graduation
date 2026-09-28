@@ -152,23 +152,23 @@ export function ITIProjectsBranch({ position = [0, 0, 0] }: { position?: [number
       {/* Main Container Glass Panel */}
       <RoundedBox args={[5.2, 5.0, 0.1]} radius={0.08} smoothness={4} position={[0, -0.2, -0.1]} castShadow>
         <meshPhysicalMaterial
-          color="#060202"
-          metalness={0.9}
-          roughness={0.2}
+          color="#1e293b"
+          metalness={0.6}
+          roughness={0.25}
           clearcoat={1.0}
           transparent
-          opacity={0.7}
+          opacity={0.85}
         />
       </RoundedBox>
 
       {/* Header Text */}
-      <Text position={[-2.2, 1.8, 0.0]} fontSize={0.14} color="#f87171" anchorX="left" letterSpacing={0.2}>
+      <Text position={[0, 1.9, 0.0]} fontSize={0.14} color="#f87171" anchorX="center" letterSpacing={0.2}>
         // ACADEMIC BRANCH
       </Text>
-      <Text position={[-2.2, 1.4, 0.0]} fontSize={0.4} color="#f8fafc" anchorX="left" fontWeight={900}>
+      <Text position={[0, 1.45, 0.0]} fontSize={0.4} color="#f8fafc" anchorX="center" fontWeight={900}>
         ITI ASSIGNMENTS
       </Text>
-      <Text position={[-2.2, 1.05, 0.0]} maxWidth={4.0} fontSize={0.09} color="#94a3b8" anchorX="left" lineHeight={1.5}>
+      <Text position={[0, 1.05, 0.0]} maxWidth={4.8} fontSize={0.1} color="#94a3b8" anchorX="center" lineHeight={1.5}>
         REACT.JS TRACK • CLICK ANY FOLDER TO VIEW INTERNAL PROJECTS
       </Text>
 

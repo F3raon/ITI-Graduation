@@ -95,9 +95,9 @@ export function AboutScene({ position = [0, 0, -18] }: { position?: [number, num
   const scale = aspect < 0.9 ? 0.62 : aspect < 1.25 ? 0.78 : aspect < 1.6 ? 0.92 : 1.0;
 
   return (
-    <group position={position} scale={scale * 0.85}>
+    <group position={position} scale={scale * 0.80}>
       {/* 3D Glass Information Panel (Premium Dark Glass) */}
-      <RoundedBox args={[7.4, 4.4, 0.1]} radius={0.08} smoothness={5} position={[2.4, 0, -0.2]}>
+      <RoundedBox args={[7.8, 4.4, 0.1]} radius={0.08} smoothness={5} position={[1.8, 0, -0.2]}>
         <meshPhysicalMaterial
           color="#05080c"
           metalness={0.9}
@@ -109,27 +109,27 @@ export function AboutScene({ position = [0, 0, -18] }: { position?: [number, num
       </RoundedBox>
 
       {/* Section Header */}
-      <Text position={[-0.8, 1.6, 0.0]} fontSize={0.16} color="#67c9ff" anchorX="left" letterSpacing={0.24}>
+      <Text position={[-0.4, 1.6, 0.0]} fontSize={0.16} color="#67c9ff" anchorX="left" letterSpacing={0.24}>
         // IDENTITY DOSSIER
       </Text>
-      <Text position={[-0.8, 0.9, 0.0]} fontSize={0.78} color="#f8fafc" anchorX="left" fontWeight={900} letterSpacing={0.02}>
+      <Text position={[-0.4, 0.85, 0.0]} fontSize={0.72} color="#f8fafc" anchorX="left" fontWeight={900} letterSpacing={0.02}>
         WHO AM I?
       </Text>
 
       {/* Real 3D Bio Typography */}
-      <Text position={[-0.8, -0.1, 0.0]} maxWidth={6.4} fontSize={0.22} color="#f8fafc" anchorX="left" lineHeight={1.5} fontWeight={500}>
+      <Text position={[-0.4, -0.15, 0.0]} maxWidth={5.8} fontSize={0.20} color="#f8fafc" anchorX="left" lineHeight={1.5} fontWeight={500}>
         {`I'm Ahmed Hamada, a .NET Backend Developer who loves building systems, solving complex problems, and turning ambitious ideas into resilient products.`}
       </Text>
 
-      <Text position={[-0.8, -1.0, 0.0]} maxWidth={6.4} fontSize={0.16} color="#94a3b8" anchorX="left" lineHeight={1.6}>
+      <Text position={[-0.4, -1.05, 0.0]} maxWidth={5.8} fontSize={0.148} color="#94a3b8" anchorX="left" lineHeight={1.6}>
         {`Specializing in high-performance .NET backend systems, Clean Architecture, SQL Server, and microservices—while integrating computer vision, ROS robotics, and intelligent IoT hardware.`}
       </Text>
 
       {/* Holographic 3D Portrait Frame */}
-      <HolographicPortrait position={[-3.6, 0, 0]} />
+      <HolographicPortrait position={[-3.4, 0, 0]} />
 
       {/* Floating 3D Stat Plates (Sleek Dark Glass) */}
-      <group position={[2.4, -2.8, 0]}>
+      <group position={[1.8, -2.8, 0]}>
         {PORTFOLIO_DATA.stats.map((s, i) => {
           const xPos = (i - 1.5) * 1.9; // Centered spread across 4 items
           return (

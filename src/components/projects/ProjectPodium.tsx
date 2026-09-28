@@ -101,15 +101,15 @@ export function ProjectPodium({
       <group ref={baseRef} position={[0, -1.4, 0]}>
         <RoundedBox args={[3.4, 1.8, 0.15]} radius={0.06} smoothness={4} castShadow>
           <meshPhysicalMaterial
-            color="#05080c"
-            metalness={0.9}
-            roughness={0.1}
+            color="#1a2235"
+            metalness={0.5}
+            roughness={0.2}
             clearcoat={1.0}
-            transmission={0.4}
+            transmission={0.6}
             transparent
-            opacity={0.9}
+            opacity={0.8}
             emissive={project.color}
-            emissiveIntensity={hovered ? 0.35 : 0.05}
+            emissiveIntensity={hovered ? 0.4 : 0.15}
           />
         </RoundedBox>
 

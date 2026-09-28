@@ -97,7 +97,8 @@ export function SkillsScene({ position = [0, 0, -34] }: { position?: [number, nu
   const ringRef = useRef<THREE.Group>(null);
   const { size } = useThree();
   const aspect = size.width / Math.max(1, size.height);
-  const scale = aspect < 0.9 ? 0.6 : aspect < 1.25 ? 0.76 : aspect < 1.6 ? 0.92 : 1.0;
+  // Tighter scale so nodes are always within view distance from camera
+  const scale = aspect < 0.9 ? 0.55 : aspect < 1.25 ? 0.70 : aspect < 1.6 ? 0.85 : 0.95;
 
   useFrame((state, delta) => {
     if (coreRef.current) {
@@ -111,11 +112,11 @@ export function SkillsScene({ position = [0, 0, -34] }: { position?: [number, nu
 
   return (
     <group position={position} scale={scale}>
-      {/* Section Header */}
-      <Text position={[-6.2, 3.4, 0]} fontSize={0.18} color="#94a3b8" anchorX="left" letterSpacing={0.22}>
+      {/* Section Header — centered so it's always visible */}
+      <Text position={[0, 3.8, 0]} fontSize={0.16} color="#67c9ff" anchorX="center" letterSpacing={0.22}>
         // SYSTEM CORE // SKILLS REACTOR
       </Text>
-      <Text position={[-6.2, 2.65, 0]} fontSize={0.72} color="#f8fafc" anchorX="left" fontWeight={900}>
+      <Text position={[0, 3.15, 0]} fontSize={0.65} color="#f8fafc" anchorX="center" fontWeight={900}>
         SKILLS LAB
       </Text>
 
@@ -173,8 +174,9 @@ export function SkillsScene({ position = [0, 0, -34] }: { position?: [number, nu
         const total = PORTFOLIO_DATA.skills.length;
         const angle = (i / total) * Math.PI * 2;
         const isMobile = aspect < 0.9;
-        const radiusX = isMobile ? 2.8 : 5.2;
-        const radiusY = isMobile ? 4.8 : 2.8;
+        // Reduced radii so nodes stay within camera view
+        const radiusX = isMobile ? 2.2 : 4.0;
+        const radiusY = isMobile ? 3.2 : 2.2;
         const x = Math.cos(angle) * radiusX;
         const y = Math.sin(angle) * radiusY;
         return (
@@ -183,7 +185,7 @@ export function SkillsScene({ position = [0, 0, -34] }: { position?: [number, nu
       })}
 
       {/* Bottom Subtitle */}
-      <Text position={[0, -3.2, 0]} fontSize={0.14} color="#94a3b8" anchorX="center" letterSpacing={0.18}>
+      <Text position={[0, -2.8, 0]} fontSize={0.14} color="#94a3b8" anchorX="center" letterSpacing={0.18}>
         ARCHITECTURAL INTEGRATION MATRIX
       </Text>
     </group>

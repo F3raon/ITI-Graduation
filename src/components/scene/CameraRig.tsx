@@ -40,7 +40,7 @@ export function CameraRig() {
       // idx 7  — Exit arc
       [-0.8, 0.85, WORLD.CAM_EXIT],
       // idx 8  — Glide toward About
-      [0.0, 0.8,  WORLD.CAM_ABOUT - 2],
+      [0.0, 0.8,  WORLD.CAM_ABOUT + 2],
       // idx 9  — About Me settled
       [0.0, 0.75, WORLD.CAM_ABOUT],
       // idx 10 — Skills Lab
@@ -75,9 +75,9 @@ export function CameraRig() {
       [0.0,  1.0,  WORLD.CHARACTER_Z],     // Arc exit
       [0.0,  0.2,  WORLD.ABOUT_Z],         // About glide
       [0.0,  0.0,  WORLD.ABOUT_Z],         // About settled
-      [0.0,  0.0,  WORLD.SKILLS_Z],        // Skills
-      [0.0,  0.0,  WORLD.PROJECTS_Z],      // Projects entry
-      [-0.3, 0.0,  WORLD.PROJECTS_Z],      // Projects settled
+      [0.0,  0.5,  WORLD.SKILLS_Z],        // Skills
+      [0.0,  0.5,  WORLD.PROJECTS_Z],      // Projects entry
+      [0.4,  0.2,  WORLD.PROJECTS_Z],      // Projects settled
       [0.4,  0.0,  WORLD.EXPERIENCE_Z],    // Experience
       [0.0,  0.2,  WORLD.ACHIEVEMENTS_Z],  // Achievements
       [0.0,  0.5,  WORLD.CONTACT_Z],       // Contact
@@ -159,7 +159,7 @@ export function CameraRig() {
     // Responsive pullback for narrow viewports
     const aspect = state.size.width / Math.max(1, state.size.height);
     if (aspect < 1.5) {
-      const pullback = (1.5 - aspect) * 1.6;
+      const pullback = (1.5 - aspect) * 1.0;
       const dir = desiredPos.current.clone().sub(lookAtPos.current).normalize();
       desiredPos.current.add(dir.multiplyScalar(pullback));
     }

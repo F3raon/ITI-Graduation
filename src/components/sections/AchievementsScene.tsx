@@ -167,13 +167,13 @@ export function AchievementsScene({ position = [0, 0, -82] }: { position?: [numb
       </mesh>
 
       {/* Section Header */}
-      <Text position={[-6.2, 3.6, 0]} fontSize={0.18} color="#94a3b8" anchorX="left" letterSpacing={0.22}>
+      <Text position={[0, 3.6, 0]} fontSize={0.16} color="#ffc83b" anchorX="center" letterSpacing={0.22}>
         // HONORS & RECOGNITION
       </Text>
-      <Text position={[-6.2, 2.85, 0]} fontSize={0.72} color="#f8fafc" anchorX="left" fontWeight={900}>
+      <Text position={[0, 2.9, 0]} fontSize={0.58} color="#f8fafc" anchorX="center" fontWeight={900}>
         ACHIEVEMENTS CHAMBER
       </Text>
-      <Text position={[-6.2, 2.2, 0]} fontSize={0.14} color="#ffc83b" anchorX="left" letterSpacing={0.08}>
+      <Text position={[0, 2.3, 0]} fontSize={0.12} color="#94a3b8" anchorX="center" letterSpacing={0.08}>
         COMPETITIVE ROBOTICS, CLOUD COMPUTING & SPACE INNOVATION AWARDS
       </Text>
 
