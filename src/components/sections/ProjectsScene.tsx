@@ -43,7 +43,7 @@ export function ProjectsScene({ position = [0, 0, WORLD.PROJECTS_Z] }: { positio
     );
     if (rootRef.current) {
       // Show projects scene between 0.60 and 0.88
-      const pGlobal = scrollStore.progress;
+      const pGlobal = scrollStore.current;
       const isVisible = pGlobal > 0.60 && pGlobal < 0.88;
       const targetScale = isVisible ? scale : 0.001;
       rootRef.current.scale.setScalar(

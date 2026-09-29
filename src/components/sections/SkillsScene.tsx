@@ -4,6 +4,7 @@ import { RoundedBox, Text, Float, Line, Html } from '@react-three/drei';
 import * as THREE from 'three';
 import { PORTFOLIO_DATA, SkillNode } from '../../data/portfolio';
 import { soundEngine } from '../../utils/audio';
+import { scrollStore } from '../../context/ScrollContext';
 
 function SpinningLogo({ iconUrl, iconUrls, color, hovered, invertIcon }: { iconUrl?: string; iconUrls?: string[]; color: string; hovered: boolean, invertIcon?: boolean }) {
   const ref = useRef<THREE.Group>(null);
@@ -158,7 +159,7 @@ export function SkillsScene({ position = [0, 0, -34] }: { position?: [number, nu
     }
 
     if (rootRef.current) {
-      const p = scrollStore.progress;
+      const p = scrollStore.current;
       // Section is active roughly between 0.45 and 0.82
       const isVisible = p > 0.45 && p < 0.82;
       const targetScale = isVisible ? scale : 0.001;

@@ -92,7 +92,7 @@ export function ProjectPodium({
                 >
                   {hovered ? (
                     <iframe
-                      src={project.link}
+                      src={project.demoUrl || project.githubUrl || ''}
                       style={{
                         width: '100%',
                         height: '100%',
