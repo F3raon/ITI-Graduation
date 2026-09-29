@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { RoundedBox, Text } from '@react-three/drei';
+import { RoundedBox, Text, Html } from '@react-three/drei';
 import * as THREE from 'three';
 import { ProjectItem } from '../../data/portfolio';
 import { SmartGarage } from './SmartGarage';
@@ -48,24 +48,73 @@ export function ProjectPodium({
       default:
         // Production system cyber core pedestal
         return (
-          <group position={[0, 0, 0]} scale={0.72}>
-            <mesh position={[0, -0.6, 0]}>
-              <cylinderGeometry args={[1.4, 1.5, 0.15, 24]} />
+          <group position={[0, 0.2, 0]}>
+            {/* Base platform */}
+            <mesh position={[0, -1.0, 0]}>
+              <cylinderGeometry args={[1.6, 1.7, 0.15, 32]} />
               <meshStandardMaterial color="#090d14" metalness={0.9} roughness={0.2} />
             </mesh>
-            <mesh position={[0, 0, 0]}>
-              <octahedronGeometry args={[0.75, 0]} />
-              <meshStandardMaterial
-                color="#0f172a"
-                emissive={project.color}
-                emissiveIntensity={hovered ? 1.5 : 0.6}
-                wireframe
-              />
+            
+            {/* Screen Bezel */}
+            <mesh position={[0, 0.4, 0]}>
+              <boxGeometry args={[3.2, 2.0, 0.1]} />
+              <meshStandardMaterial color="#0b1221" metalness={0.8} roughness={0.3} />
             </mesh>
-            <mesh position={[0, 0, 0]} rotation={[0.4, 0.8, 0]}>
-              <boxGeometry args={[0.5, 0.5, 0.5]} />
-              <meshStandardMaterial color={project.color} metalness={0.8} roughness={0.2} />
+            
+            {/* Screen Glass/Glow */}
+            <mesh position={[0, 0.4, 0.06]}>
+              <planeGeometry args={[3.1, 1.9]} />
+              <meshBasicMaterial color={project.color} transparent opacity={hovered ? 0.05 : 0.2} />
             </mesh>
+
+            {/* 3D Iframe Screen */}
+            <group position={[0, 0.4, 0.07]}>
+              <Html
+                transform
+                distanceFactor={2.8}
+                position={[0, 0, 0]}
+                zIndexRange={[100, 0]}
+              >
+                <div
+                  style={{
+                    width: '620px',
+                    height: '380px',
+                    background: '#040810',
+                    border: `2px solid ${hovered ? project.color : '#1e293b'}`,
+                    borderRadius: '8px',
+                    overflow: 'hidden',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    boxShadow: hovered ? `0 0 30px ${project.color}40` : 'none',
+                    transition: 'all 0.3s ease',
+                  }}
+                >
+                  {hovered ? (
+                    <iframe
+                      src={project.link}
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        border: 'none',
+                        background: '#fff',
+                      }}
+                      title={project.title}
+                      loading="lazy"
+                    />
+                  ) : (
+                    <div style={{ textAlign: 'center', color: '#94a3b8' }}>
+                      <div style={{ fontSize: '24px', fontWeight: 'bold', color: project.color, marginBottom: '10px' }}>
+                        {project.title}
+                      </div>
+                      <div style={{ fontSize: '14px', letterSpacing: '2px' }}>
+                        HOVER TO INITIALIZE LIVE PREVIEW
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </Html>
+            </group>
           </group>
         );
     }

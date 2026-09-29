@@ -25,15 +25,16 @@ export function ProjectsScene({ position = [0, 0, WORLD.PROJECTS_Z] }: { positio
   const total = allProjects.length;
   const radius = 8.5; // Increased radius to fit all 11+ projects without overlapping
 
-  useFrame(() => {
+  useFrame((state) => {
     if (!carouselRef.current) return;
     
     // Local progress for this section (0 -> 1)
     const p = sectionProgress(scrollStore.current, WORLD.SCROLL_PROJECTS[0], WORLD.SCROLL_PROJECTS[1]);
     
-    // As we scroll through the section, rotate the carousel to show different projects
-    // p=0 shows the first project, p=1 shows the last project
-    const targetRotation = p * (Math.PI * 2 * ((total - 1) / total));
+    // Continuous 360 rotation + scroll influence
+    const autoRotate = state.clock.elapsedTime * 0.15;
+    const scrollRotate = p * (Math.PI * 2);
+    const targetRotation = autoRotate + scrollRotate;
     
     carouselRef.current.rotation.y = THREE.MathUtils.lerp(
       carouselRef.current.rotation.y,
