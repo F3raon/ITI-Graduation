@@ -286,7 +286,10 @@ export function AhmedCharacter({
           uProgress: { value: 0 },
           uAspect: { value: 1.0 },
           uRadius: { value: 0.35 },
-          uSmoothness: { value: 0.15 }
+          uSmoothness: { value: 0.15 },
+          // Estimated adjustments: scale < 1 enlarges the image, negative offset shifts the image down/left
+          uNeonScale: { value: 0.88 },
+          uNeonOffset: { value: new THREE.Vector2(-0.015, -0.04) }
         }
       ]),
       vertexShader: `
@@ -308,6 +311,10 @@ export function AhmedCharacter({
         uniform float uRadius;
         uniform float uSmoothness;
         uniform float uAspect;
+        
+        // Manual alignment offsets for Neon texture
+        uniform vec2 uNeonOffset;
+        uniform float uNeonScale;
 
         varying vec2 vUv;
         
@@ -315,7 +322,11 @@ export function AhmedCharacter({
 
         void main() {
           vec4 realColor = texture2D(tReal, vUv);
-          vec4 neonColor = texture2D(tNeon, vUv);
+          
+          // Apply scale and offset to neon UVs to align with real image
+          // Center the UVs before scaling, then un-center
+          vec2 neonUv = (vUv - 0.5) * uNeonScale + 0.5 + uNeonOffset;
+          vec4 neonColor = texture2D(tNeon, neonUv);
 
           vec2 uv = vUv;
           vec2 mouse = uMouse;
