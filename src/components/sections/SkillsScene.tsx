@@ -140,6 +140,7 @@ function TechNode({
 }
 
 export function SkillsScene({ position = [0, 0, -34] }: { position?: [number, number, number] }) {
+  const rootRef = useRef<THREE.Group>(null);
   const coreRef = useRef<THREE.Group>(null);
   const ringRef = useRef<THREE.Group>(null);
   const { size } = useThree();
@@ -155,10 +156,20 @@ export function SkillsScene({ position = [0, 0, -34] }: { position?: [number, nu
     if (ringRef.current) {
       ringRef.current.rotation.z += delta * 0.2;
     }
+
+    if (rootRef.current) {
+      const p = scrollStore.progress;
+      // Section is active roughly between 0.45 and 0.82
+      const isVisible = p > 0.45 && p < 0.82;
+      const targetScale = isVisible ? scale : 0.001;
+      rootRef.current.scale.setScalar(
+        THREE.MathUtils.lerp(rootRef.current.scale.x, targetScale, 0.05)
+      );
+    }
   });
 
   return (
-    <group position={position} scale={scale}>
+    <group position={position} ref={rootRef} scale={scale}>
       {/* Section Header — centered so it's always visible */}
       <Text position={[0, 3.8, 0]} fontSize={0.16} color="#67c9ff" anchorX="center" letterSpacing={0.22}>
         // SYSTEM CORE // SKILLS REACTOR
