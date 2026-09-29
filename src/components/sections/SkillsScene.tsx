@@ -15,11 +15,6 @@ function SpinningLogo({ iconUrl, iconUrls, color, hovered, invertIcon }: { iconU
       // spin continuously
       ref.current.rotation.y += delta * (hovered ? 2.5 : 0.8);
     }
-    if (divRef.current) {
-      const p = scrollStore.current;
-      const isVisible = p > 0.45 && p < 0.82;
-      divRef.current.style.display = isVisible ? 'flex' : 'none';
-    }
   });
 
   const urls = iconUrls || (iconUrl ? [iconUrl] : []);
@@ -27,8 +22,8 @@ function SpinningLogo({ iconUrl, iconUrls, color, hovered, invertIcon }: { iconU
   return (
     <group ref={ref} position={[0, 0.45, 0]}>
       {urls.length > 0 ? (
-        <Html transform center distanceFactor={2.5}>
-          <div ref={divRef} style={{
+        <Html transform center scale={0.012}>
+          <div style={{
             minWidth: '60px',
             padding: '0 10px',
             height: '60px',
