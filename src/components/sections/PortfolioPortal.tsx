@@ -83,7 +83,7 @@ export function PortfolioPortal({ position = [0, 0, -114] }: { position?: [numbe
           <Html
             transform
             center
-            distanceFactor={2.5}
+            scale={0.0059} // 7.6 units / 1280px = 0.0059
             position={[0, 0, 0]}
             zIndexRange={[100, 0]}
           >

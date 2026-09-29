@@ -80,7 +80,7 @@ export function ProjectPodium({
               <Html
                 transform
                 center
-                distanceFactor={2.8}
+                scale={0.0051} // 3.2 units / 620px = 0.00516
                 position={[0, 0, 0]}
                 zIndexRange={[100, 0]}
               >
@@ -98,6 +98,8 @@ export function ProjectPodium({
                     justifyContent: 'center',
                     boxShadow: hovered ? `0 0 30px ${project.color}40` : 'none',
                     transition: 'all 0.3s ease',
+                    backfaceVisibility: 'hidden',
+                    WebkitBackfaceVisibility: 'hidden',
                   }}
                 >
                   {hovered && (project.demoUrl || project.githubUrl) ? (

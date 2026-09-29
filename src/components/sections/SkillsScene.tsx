@@ -42,6 +42,8 @@ function SpinningLogo({ iconUrl, iconUrls, color, hovered, invertIcon }: { iconU
             borderRadius: '12px',
             boxShadow: hovered ? `0 0 15px ${color}` : '0 4px 6px rgba(0,0,0,0.5)',
             transition: 'all 0.3s ease',
+            backfaceVisibility: 'hidden',
+            WebkitBackfaceVisibility: 'hidden',
           }}>
             {urls.map((url, i) => (
               <img key={i} src={url} alt="icon" style={{ 
