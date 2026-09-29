@@ -45,17 +45,19 @@ export function CameraRig() {
       [0.0, 0.75, WORLD.CAM_ABOUT],
       // idx 10 — Skills Lab
       [0.0, 0.85, WORLD.CAM_SKILLS],
-      // idx 11 — Projects entry
+      // idx 11 — Arc around Skills Core
+      [3.5, 1.2, WORLD.CAM_SKILLS - 6],
+      // idx 12 — Projects entry
       [0.0, 0.95, WORLD.CAM_PROJECTS],
-      // idx 12 — Projects settled (slight left)
+      // idx 13 — Projects settled (slight left)
       [-0.5, 0.8, WORLD.CAM_PROJECTS2],
-      // idx 13 — Experience timeline
+      // idx 14 — Experience timeline
       [0.3, 0.7,  WORLD.CAM_EXPERIENCE],
-      // idx 14 — Achievements chamber
+      // idx 15 — Achievements chamber
       [0.0, 0.85, WORLD.CAM_ACHIEVEMENTS],
-      // idx 15 — Contact terminals
+      // idx 16 — Contact terminals
       [0.0, 0.8,  WORLD.CAM_CONTACT],
-      // idx 16 — Final Portal
+      // idx 17 — Final Portal
       [0.0, 0.2,  WORLD.CAM_PORTAL],
     ],
     []
@@ -76,6 +78,7 @@ export function CameraRig() {
       [0.0,  0.2,  WORLD.ABOUT_Z],         // About glide
       [0.0,  0.0,  WORLD.ABOUT_Z],         // About settled
       [0.0,  0.5,  WORLD.SKILLS_Z],        // Skills
+      [0.0,  0.5,  WORLD.SKILLS_Z],        // Arc around Skills Core (keep looking at it)
       [0.0,  0.5,  WORLD.PROJECTS_Z],      // Projects entry
       [0.4,  0.2,  WORLD.PROJECTS_Z],      // Projects settled
       [0.4,  0.0,  WORLD.EXPERIENCE_Z],    // Experience
@@ -90,23 +93,24 @@ export function CameraRig() {
   // [scrollProgress, splineT] pairs. splineT is normalized to 0..1 over N-1 points.
   const scrollKeyframes: [number, number][] = useMemo(
     () => [
-      [0.00, 0 / 16],   // Intro entry
-      [0.08, 1 / 16],   // Office approach
-      [0.16, 2 / 16],   // Office desk
-      [0.24, 3 / 16],   // Archway to Ahmed
-      [0.29, 4 / 16],   // Real Ahmed front
-      [0.38, 5 / 16],   // Neon transformation
-      [0.44, 6 / 16],   // Arc right
-      [0.48, 7 / 16],   // Arc exit
-      [0.52, 8 / 16],   // Glide toward About
-      [0.58, 9 / 16],   // About Me
-      [0.65, 10 / 16],  // Skills
-      [0.72, 11 / 16],  // Projects entry
-      [0.76, 12 / 16],  // Projects settled
-      [0.82, 13 / 16],  // Experience
-      [0.87, 14 / 16],  // Achievements
-      [0.93, 15 / 16],  // Contact
-      [1.00, 16 / 16],  // Portal
+      [0.00, 0 / 17],   // Intro entry
+      [0.08, 1 / 17],   // Office approach
+      [0.16, 2 / 17],   // Office desk
+      [0.24, 3 / 17],   // Archway to Ahmed
+      [0.29, 4 / 17],   // Real Ahmed front
+      [0.38, 5 / 17],   // Neon transformation
+      [0.44, 6 / 17],   // Arc right
+      [0.48, 7 / 17],   // Arc exit
+      [0.52, 8 / 17],   // Glide toward About
+      [0.58, 9 / 17],   // About Me
+      [0.65, 10 / 17],  // Skills
+      [0.68, 11 / 17],  // Arc around Skills Core
+      [0.72, 12 / 17],  // Projects entry
+      [0.76, 13 / 17],  // Projects settled
+      [0.82, 14 / 17],  // Experience
+      [0.87, 15 / 17],  // Achievements
+      [0.93, 16 / 17],  // Contact
+      [1.00, 17 / 17],  // Portal
     ],
     []
   );
