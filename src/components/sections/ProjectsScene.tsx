@@ -13,7 +13,6 @@ export function ProjectsScene({ position = [0, 0, WORLD.PROJECTS_Z] }: { positio
   const aspect = size.width / Math.max(1, size.height);
   const scale = aspect < 0.9 ? 0.6 : aspect < 1.25 ? 0.75 : aspect < 1.6 ? 0.9 : 1.0;
   
-  const rootRef = useRef<THREE.Group>(null);
   const carouselRef = useRef<THREE.Group>(null);
   
   // Combine all projects (no cap to show everything)
@@ -31,29 +30,18 @@ export function ProjectsScene({ position = [0, 0, WORLD.PROJECTS_Z] }: { positio
     // Local progress for this section (0 -> 1)
     const p = sectionProgress(scrollStore.current, WORLD.SCROLL_PROJECTS[0], WORLD.SCROLL_PROJECTS[1]);
     
-    // Continuous 360 rotation + scroll influence
-    const autoRotate = state.clock.elapsedTime * 0.15;
-    const scrollRotate = p * (Math.PI * 2);
-    const targetRotation = autoRotate + scrollRotate;
+    // Continuous smooth 360 rotation
+    const targetRotation = state.clock.elapsedTime * 0.12;
     
     carouselRef.current.rotation.y = THREE.MathUtils.lerp(
       carouselRef.current.rotation.y,
       targetRotation,
       0.1
     );
-    if (rootRef.current) {
-      // Show projects scene between 0.60 and 0.88
-      const pGlobal = scrollStore.current;
-      const isVisible = pGlobal > 0.60 && pGlobal < 0.88;
-      const targetScale = isVisible ? scale : 0.001;
-      rootRef.current.scale.setScalar(
-        THREE.MathUtils.lerp(rootRef.current.scale.x, targetScale, 0.05)
-      );
-    }
   });
 
   return (
-    <group position={position} ref={rootRef} scale={scale}>
+    <group position={position} scale={scale}>
       {/* Section Header */}
       <Text position={[0, 3.8, 0]} fontSize={0.16} color="#67c9ff" anchorX="center" letterSpacing={0.22}>
         // 3D RESEARCH & PRODUCTION SYSTEMS

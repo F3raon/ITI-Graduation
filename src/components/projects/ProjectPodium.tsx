@@ -21,6 +21,7 @@ export function ProjectPodium({
   const [hovered, setHovered] = useState(false);
   const groupRef = useRef<THREE.Group>(null);
   const baseRef = useRef<THREE.Group>(null);
+  const divRef = useRef<HTMLDivElement>(null);
 
   useFrame((_, delta) => {
     if (!groupRef.current) return;
@@ -33,6 +34,12 @@ export function ProjectPodium({
       hovered ? (index % 2 === 0 ? 0.12 : -0.12) : 0,
       1 - Math.exp(-6 * delta)
     );
+    if (divRef.current) {
+      // @ts-ignore - reaching out to global window.__scrollStore since we can't easily import it without circular deps here, or we can just import it
+      const p = (window as any).__scrollStore?.current || 0.7; // default visible
+      const isVisible = p > 0.60 && p < 0.88;
+      divRef.current.style.display = isVisible ? 'flex' : 'none';
+    }
   });
 
   const renderDiorama = () => {
@@ -76,6 +83,7 @@ export function ProjectPodium({
                 zIndexRange={[100, 0]}
               >
                 <div
+                  ref={divRef}
                   style={{
                     width: '620px',
                     height: '380px',

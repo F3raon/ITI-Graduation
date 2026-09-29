@@ -8,11 +8,17 @@ import { scrollStore } from '../../context/ScrollContext';
 
 function SpinningLogo({ iconUrl, iconUrls, color, hovered, invertIcon }: { iconUrl?: string; iconUrls?: string[]; color: string; hovered: boolean, invertIcon?: boolean }) {
   const ref = useRef<THREE.Group>(null);
+  const divRef = useRef<HTMLDivElement>(null);
   
   useFrame((_, delta) => {
     if (ref.current) {
       // spin continuously
       ref.current.rotation.y += delta * (hovered ? 2.5 : 0.8);
+    }
+    if (divRef.current) {
+      const p = scrollStore.current;
+      const isVisible = p > 0.45 && p < 0.82;
+      divRef.current.style.display = isVisible ? 'flex' : 'none';
     }
   });
 
@@ -22,7 +28,7 @@ function SpinningLogo({ iconUrl, iconUrls, color, hovered, invertIcon }: { iconU
     <group ref={ref} position={[0, 0.45, 0]}>
       {urls.length > 0 ? (
         <Html transform center distanceFactor={2.5}>
-          <div style={{
+          <div ref={divRef} style={{
             minWidth: '60px',
             padding: '0 10px',
             height: '60px',
@@ -141,7 +147,6 @@ function TechNode({
 }
 
 export function SkillsScene({ position = [0, 0, -34] }: { position?: [number, number, number] }) {
-  const rootRef = useRef<THREE.Group>(null);
   const coreRef = useRef<THREE.Group>(null);
   const ringRef = useRef<THREE.Group>(null);
   const { size } = useThree();
@@ -157,20 +162,10 @@ export function SkillsScene({ position = [0, 0, -34] }: { position?: [number, nu
     if (ringRef.current) {
       ringRef.current.rotation.z += delta * 0.2;
     }
-
-    if (rootRef.current) {
-      const p = scrollStore.current;
-      // Section is active roughly between 0.45 and 0.82
-      const isVisible = p > 0.45 && p < 0.82;
-      const targetScale = isVisible ? scale : 0.001;
-      rootRef.current.scale.setScalar(
-        THREE.MathUtils.lerp(rootRef.current.scale.x, targetScale, 0.05)
-      );
-    }
   });
 
   return (
-    <group position={position} ref={rootRef} scale={scale}>
+    <group position={position} scale={scale}>
       {/* Section Header — centered so it's always visible */}
       <Text position={[0, 3.8, 0]} fontSize={0.16} color="#67c9ff" anchorX="center" letterSpacing={0.22}>
         // SYSTEM CORE // SKILLS REACTOR
