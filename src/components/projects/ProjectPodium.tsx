@@ -8,6 +8,7 @@ import { RoboticsSystem } from './RoboticsSystem';
 import { CinaVerse } from './CinaVerse';
 import { SmartNursery } from './SmartNursery';
 import { soundEngine } from '../../utils/audio';
+import { scrollStore } from '../../context/ScrollContext';
 
 export function ProjectPodium({
   project,
@@ -35,8 +36,7 @@ export function ProjectPodium({
       1 - Math.exp(-6 * delta)
     );
     if (divRef.current) {
-      // @ts-ignore - reaching out to global window.__scrollStore since we can't easily import it without circular deps here, or we can just import it
-      const p = (window as any).__scrollStore?.current || 0.7; // default visible
+      const p = scrollStore.current;
       const isVisible = p > 0.60 && p < 0.88;
       divRef.current.style.display = isVisible ? 'flex' : 'none';
     }
