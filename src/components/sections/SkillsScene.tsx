@@ -5,7 +5,7 @@ import * as THREE from 'three';
 import { PORTFOLIO_DATA, SkillNode } from '../../data/portfolio';
 import { soundEngine } from '../../utils/audio';
 
-function SpinningLogo({ iconUrl, iconUrls, color, hovered }: { iconUrl?: string; iconUrls?: string[]; color: string; hovered: boolean }) {
+function SpinningLogo({ iconUrl, iconUrls, color, hovered, invertIcon }: { iconUrl?: string; iconUrls?: string[]; color: string; hovered: boolean, invertIcon?: boolean }) {
   const ref = useRef<THREE.Group>(null);
   
   useFrame((_, delta) => {
@@ -36,7 +36,12 @@ function SpinningLogo({ iconUrl, iconUrls, color, hovered }: { iconUrl?: string;
             transition: 'all 0.3s ease',
           }}>
             {urls.map((url, i) => (
-              <img key={i} src={url} alt="icon" style={{ width: '40px', height: '40px', objectFit: 'contain', filter: hovered ? 'drop-shadow(0 0 8px rgba(255,255,255,0.5))' : 'none' }} />
+              <img key={i} src={url} alt="icon" style={{ 
+                width: '40px', 
+                height: '40px', 
+                objectFit: 'contain', 
+                filter: `${invertIcon ? 'invert(1) brightness(2) ' : ''}${hovered ? 'drop-shadow(0 0 8px rgba(255,255,255,0.5))' : ''}`.trim() || 'none' 
+              }} />
             ))}
           </div>
         </Html>
@@ -92,7 +97,7 @@ function TechNode({
       }}
     >
       {/* 3D Spinning Logo Object for Technology */}
-      <SpinningLogo iconUrl={skill.iconUrl} iconUrls={skill.iconUrls} color={skill.color} hovered={hovered} />
+      <SpinningLogo iconUrl={skill.iconUrl} iconUrls={skill.iconUrls} color={skill.color} hovered={hovered} invertIcon={skill.invertIcon} />
 
       {/* Floating 3D Base Badge */}
       <RoundedBox args={[1.7, 0.52, 0.12]} radius={0.08} smoothness={3}>

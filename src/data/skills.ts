@@ -6,6 +6,7 @@ export interface SkillNode {
   description: string;
   iconUrl?: string;
   iconUrls?: string[]; // Added to support multiple logos in one card
+  invertIcon?: boolean;
 }
 
 export const SKILLS_DATA: SkillNode[] = [
@@ -47,7 +48,8 @@ export const SKILLS_DATA: SkillNode[] = [
     category: 'backend',
     color: '#00f0ff',
     description: 'Live Tracking & Sockets',
-    iconUrl: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/socketio/socketio-original.svg'
+    iconUrl: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/socketio/socketio-original.svg',
+    invertIcon: true
   },
   {
     name: 'CQRS & MediatR',
@@ -152,6 +154,7 @@ export const SKILLS_DATA: SkillNode[] = [
     category: 'frontend',
     color: '#ffffff',
     description: 'SSR & Fullstack React',
-    iconUrl: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nextjs/nextjs-original.svg'
+    iconUrl: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nextjs/nextjs-original.svg',
+    invertIcon: true
   },
 ];
