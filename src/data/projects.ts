@@ -13,6 +13,22 @@ export interface ProjectItem {
 
 export const PROJECTS_DATA: ProjectItem[] = [
   {
+    id: 'careerlink-ai',
+    title: 'CAREERLINK — AI-POWERED PLATFORM',
+    category: 'production',
+    tags: ['ASP.NET Core 8', 'FastAPI', 'Groq LLM', 'SQL Server', 'React'],
+    description:
+      'A full-stack career platform connecting students, companies, and universities. Features a floating AI Career Assistant (FastAPI + Groq Llama 3.3 70B) for dynamic Egyptian Arabic career recommendations and adaptive roadmaps.',
+    highlights: [
+      'Dual-engine AI Chatbot: Career 1.4 (Arabic NLP roadmaps) & Career Max 1.6 (Llama 3.3 70B for salary/market insights)',
+      'Full analytics pipeline tracking AI sessions, models used, and career tracks, visualized in an Admin dashboard',
+      'Robust backend with JWT, BCrypt, Google OAuth, real-time messaging, and role-based access'
+    ],
+    demoUrl: 'https://career-link-navy.vercel.app/',
+    githubUrl: 'https://careerlink.runasp.net/swagger/index.html', // API Docs
+    color: '#eab308',
+  },
+  {
     id: 'axon-erp-api',
     title: 'AXON ERP SYSTEM',
     category: 'production',
