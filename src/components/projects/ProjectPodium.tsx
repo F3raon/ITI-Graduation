@@ -100,7 +100,7 @@ export function ProjectPodium({
                     transition: 'all 0.3s ease',
                   }}
                 >
-                  {hovered ? (
+                  {hovered && (project.demoUrl || project.githubUrl) ? (
                     <iframe
                       src={project.demoUrl || project.githubUrl || ''}
                       style={{
@@ -113,12 +113,15 @@ export function ProjectPodium({
                       loading="lazy"
                     />
                   ) : (
-                    <div style={{ textAlign: 'center', color: '#94a3b8' }}>
-                      <div style={{ fontSize: '24px', fontWeight: 'bold', color: project.color, marginBottom: '10px' }}>
+                    <div style={{ textAlign: 'center', padding: '40px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+                      <div style={{ fontSize: '26px', fontWeight: 'bold', color: project.color, marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '2px' }}>
                         {project.title}
                       </div>
-                      <div style={{ fontSize: '14px', letterSpacing: '2px' }}>
-                        HOVER TO INITIALIZE LIVE PREVIEW
+                      <div style={{ fontSize: '15px', color: '#cbd5e1', marginBottom: '25px', maxWidth: '85%', lineHeight: '1.6' }}>
+                        {project.description}
+                      </div>
+                      <div style={{ fontSize: '12px', color: '#64748b', fontWeight: 'bold', letterSpacing: '2px', background: 'rgba(255,255,255,0.05)', padding: '8px 16px', borderRadius: '20px' }}>
+                        {(project.demoUrl || project.githubUrl) ? "HOVER TO INITIALIZE LIVE PREVIEW" : "INTERNAL / PRIVATE REPOSITORY"}
                       </div>
                     </div>
                   )}

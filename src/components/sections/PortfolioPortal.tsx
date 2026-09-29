@@ -82,6 +82,7 @@ export function PortfolioPortal({ position = [0, 0, -114] }: { position?: [numbe
         <group position={[0, 0, 0.06]}>
           <Html
             transform
+            center
             distanceFactor={2.5}
             position={[0, 0, 0]}
             zIndexRange={[100, 0]}

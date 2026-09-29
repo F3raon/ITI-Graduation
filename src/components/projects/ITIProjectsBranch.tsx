@@ -150,7 +150,7 @@ export function ITIProjectsBranch({ position = [0, 0, 0] }: { position?: [number
   return (
     <group position={position}>
       {/* Main Container Glass Panel */}
-      <RoundedBox args={[5.2, 5.0, 0.1]} radius={0.08} smoothness={4} position={[0, -0.2, -0.1]} castShadow>
+      <RoundedBox args={[5.2, 6.0, 0.1]} radius={0.08} smoothness={4} position={[0, -1.0, -0.1]} castShadow>
         <meshPhysicalMaterial
           color="#1e293b"
           metalness={0.6}
