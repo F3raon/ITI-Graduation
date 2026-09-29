@@ -35,6 +35,12 @@ export function ProjectPodium({
       hovered ? (index % 2 === 0 ? 0.12 : -0.12) : 0,
       1 - Math.exp(-6 * delta)
     );
+    if (divRef.current) {
+      const p = scrollStore.current;
+      // Show from the start, only hide when camera passes it (behind camera)
+      const isVisible = p < 0.80; // Camera passes Projects around 0.76
+      divRef.current.style.display = isVisible ? 'flex' : 'none';
+    }
   });
 
   const renderDiorama = () => {
@@ -73,11 +79,12 @@ export function ProjectPodium({
             <group position={[0, 0.4, 0.07]}>
               <Html
                 transform
-                scale={0.005} // 3.2 units / 620px width = 0.0051
+                distanceFactor={2.8}
                 position={[0, 0, 0]}
                 zIndexRange={[100, 0]}
               >
                 <div
+                  ref={divRef}
                   style={{
                     width: '620px',
                     height: '380px',

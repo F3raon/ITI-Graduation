@@ -15,6 +15,12 @@ function SpinningLogo({ iconUrl, iconUrls, color, hovered, invertIcon }: { iconU
       // spin continuously
       ref.current.rotation.y += delta * (hovered ? 2.5 : 0.8);
     }
+    if (divRef.current) {
+      // Show from the start, only hide when camera passes it (behind camera)
+      const p = scrollStore.current;
+      const isVisible = p < 0.65; // Camera passes Skills around 0.62
+      divRef.current.style.display = isVisible ? 'flex' : 'none';
+    }
   });
 
   const urls = iconUrls || (iconUrl ? [iconUrl] : []);
@@ -22,8 +28,8 @@ function SpinningLogo({ iconUrl, iconUrls, color, hovered, invertIcon }: { iconU
   return (
     <group ref={ref} position={[0, 0.45, 0]}>
       {urls.length > 0 ? (
-        <Html transform center scale={0.012}>
-          <div style={{
+        <Html transform center distanceFactor={2.5}>
+          <div ref={divRef} style={{
             minWidth: '60px',
             padding: '0 10px',
             height: '60px',
