@@ -19,11 +19,11 @@ export const WORLD = {
   CHARACTER_Z:   -10,     // Ahmed portrait dais center
   ABOUT_Z:       -22,     // About Me bio + portrait
   SKILLS_Z:      -34,     // Skills reactor
-  PROJECTS_Z:    -46,     // Project podiums
-  EXPERIENCE_Z:  -70,     // Experience timeline (shifted -12 to clear Projects carousel)
-  ACHIEVEMENTS_Z:-82,     // Achievements chamber
-  CONTACT_Z:     -94,     // Contact terminals
-  PORTAL_Z:      -106,    // Final portal
+  PROJECTS_Z:    -56,     // Project podiums
+  EXPERIENCE_Z:  -80,     // Experience timeline (shifted -12 to clear Projects carousel)
+  ACHIEVEMENTS_Z:-92,     // Achievements chamber
+  CONTACT_Z:     -104,    // Contact terminals
+  PORTAL_Z:      -116,    // Final portal
 
   // ── Camera Z when focused on each section ─────────────────────────────────
   // Camera sits ~4-6 units in front (+Z) of the section origin
@@ -36,12 +36,12 @@ export const WORLD = {
   CAM_EXIT:       -8,     // Camera exits character area
   CAM_ABOUT:     -17,
   CAM_SKILLS:    -26,
-  CAM_PROJECTS:  -38,
-  CAM_PROJECTS2: -39,
-  CAM_EXPERIENCE:-65,
-  CAM_ACHIEVEMENTS:-77,
-  CAM_CONTACT:   -89,
-  CAM_PORTAL:    -101,
+  CAM_PROJECTS:  -48,
+  CAM_PROJECTS2: -49,
+  CAM_EXPERIENCE:-75,
+  CAM_ACHIEVEMENTS:-87,
+  CAM_CONTACT:   -99,
+  CAM_PORTAL:    -111,
 
   // ── Scroll progress mapped to each section ────────────────────────────────
   // Changing these also requires updating CameraRig keyframes
