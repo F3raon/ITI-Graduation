@@ -1,9 +1,55 @@
 import { useState, useRef } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
-import { RoundedBox, Text, Float, Line } from '@react-three/drei';
+import { RoundedBox, Text, Float, Line, Html } from '@react-three/drei';
 import * as THREE from 'three';
 import { PORTFOLIO_DATA, SkillNode } from '../../data/portfolio';
 import { soundEngine } from '../../utils/audio';
+
+function SpinningLogo({ iconUrl, color, hovered }: { iconUrl?: string; color: string; hovered: boolean }) {
+  const ref = useRef<THREE.Group>(null);
+  
+  useFrame((_, delta) => {
+    if (ref.current) {
+      // spin continuously
+      ref.current.rotation.y += delta * (hovered ? 2.5 : 0.8);
+    }
+  });
+
+  return (
+    <group ref={ref} position={[0, 0.45, 0]}>
+      {iconUrl ? (
+        <Html transform center distanceFactor={2.5}>
+          <div style={{
+            width: '60px',
+            height: '60px',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            background: 'rgba(5, 10, 15, 0.8)',
+            border: `2px solid ${hovered ? color : 'rgba(255,255,255,0.1)'}`,
+            borderRadius: '12px',
+            boxShadow: hovered ? `0 0 15px ${color}` : '0 4px 6px rgba(0,0,0,0.5)',
+            transition: 'all 0.3s ease',
+            // To make it double-sided, we can use backface-visibility or just let standard CSS 3D handle it
+          }}>
+            <img src={iconUrl} alt="icon" style={{ width: '40px', height: '40px', objectFit: 'contain', filter: hovered ? 'drop-shadow(0 0 8px rgba(255,255,255,0.5))' : 'none' }} />
+          </div>
+        </Html>
+      ) : (
+        <mesh>
+          <octahedronGeometry args={[0.32, 0]} />
+          <meshStandardMaterial
+            color="#0f172a"
+            emissive={color}
+            emissiveIntensity={hovered ? 1.6 : 0.4}
+            roughness={0.2}
+            wireframe={!hovered}
+          />
+        </mesh>
+      )}
+    </group>
+  );
+}
 
 function TechNode({
   skill,
@@ -40,17 +86,8 @@ function TechNode({
         setHovered(false);
       }}
     >
-      {/* 3D Polyhedral Object for Technology */}
-      <mesh position={[0, 0.45, 0]}>
-        <octahedronGeometry args={[0.32, 0]} />
-        <meshStandardMaterial
-          color="#0f172a"
-          emissive={skill.color}
-          emissiveIntensity={hovered ? 1.6 : 0.4}
-          roughness={0.2}
-          wireframe={!hovered}
-        />
-      </mesh>
+      {/* 3D Spinning Logo Object for Technology */}
+      <SpinningLogo iconUrl={skill.iconUrl} color={skill.color} hovered={hovered} />
 
       {/* Floating 3D Base Badge */}
       <RoundedBox args={[1.7, 0.52, 0.12]} radius={0.08} smoothness={3}>
