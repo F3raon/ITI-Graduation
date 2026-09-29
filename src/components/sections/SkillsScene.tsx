@@ -5,7 +5,7 @@ import * as THREE from 'three';
 import { PORTFOLIO_DATA, SkillNode } from '../../data/portfolio';
 import { soundEngine } from '../../utils/audio';
 
-function SpinningLogo({ iconUrl, color, hovered }: { iconUrl?: string; color: string; hovered: boolean }) {
+function SpinningLogo({ iconUrl, iconUrls, color, hovered }: { iconUrl?: string; iconUrls?: string[]; color: string; hovered: boolean }) {
   const ref = useRef<THREE.Group>(null);
   
   useFrame((_, delta) => {
@@ -15,14 +15,18 @@ function SpinningLogo({ iconUrl, color, hovered }: { iconUrl?: string; color: st
     }
   });
 
+  const urls = iconUrls || (iconUrl ? [iconUrl] : []);
+
   return (
     <group ref={ref} position={[0, 0.45, 0]}>
-      {iconUrl ? (
+      {urls.length > 0 ? (
         <Html transform center distanceFactor={2.5}>
           <div style={{
-            width: '60px',
+            minWidth: '60px',
+            padding: '0 10px',
             height: '60px',
             display: 'flex',
+            gap: '12px',
             justifyContent: 'center',
             alignItems: 'center',
             background: 'rgba(5, 10, 15, 0.8)',
@@ -30,9 +34,10 @@ function SpinningLogo({ iconUrl, color, hovered }: { iconUrl?: string; color: st
             borderRadius: '12px',
             boxShadow: hovered ? `0 0 15px ${color}` : '0 4px 6px rgba(0,0,0,0.5)',
             transition: 'all 0.3s ease',
-            // To make it double-sided, we can use backface-visibility or just let standard CSS 3D handle it
           }}>
-            <img src={iconUrl} alt="icon" style={{ width: '40px', height: '40px', objectFit: 'contain', filter: hovered ? 'drop-shadow(0 0 8px rgba(255,255,255,0.5))' : 'none' }} />
+            {urls.map((url, i) => (
+              <img key={i} src={url} alt="icon" style={{ width: '40px', height: '40px', objectFit: 'contain', filter: hovered ? 'drop-shadow(0 0 8px rgba(255,255,255,0.5))' : 'none' }} />
+            ))}
           </div>
         </Html>
       ) : (
@@ -87,7 +92,7 @@ function TechNode({
       }}
     >
       {/* 3D Spinning Logo Object for Technology */}
-      <SpinningLogo iconUrl={skill.iconUrl} color={skill.color} hovered={hovered} />
+      <SpinningLogo iconUrl={skill.iconUrl} iconUrls={skill.iconUrls} color={skill.color} hovered={hovered} />
 
       {/* Floating 3D Base Badge */}
       <RoundedBox args={[1.7, 0.52, 0.12]} radius={0.08} smoothness={3}>

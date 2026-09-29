@@ -5,6 +5,7 @@ export interface SkillNode {
   color: string;
   description: string;
   iconUrl?: string;
+  iconUrls?: string[]; // Added to support multiple logos in one card
 }
 
 export const SKILLS_DATA: SkillNode[] = [
@@ -60,25 +61,42 @@ export const SKILLS_DATA: SkillNode[] = [
     name: 'Python',
     level: 'Proficient',
     category: 'ai-robotics',
-    color: '#ffffff',
-    description: 'Automation & AI',
+    color: '#38bdf8',
+    description: 'Data & Scripting',
     iconUrl: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg'
   },
   {
-    name: 'Robotics (ROS)',
+    name: 'AI in Robotics',
+    level: 'Experienced',
+    category: 'ai-robotics',
+    color: '#f97316',
+    description: 'Computer Vision & LLMs',
+    iconUrls: [
+      'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tensorflow/tensorflow-original.svg',
+      'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/pytorch/pytorch-original.svg'
+    ]
+  },
+  {
+    name: 'Robotics & ROS',
     level: 'Experienced',
     category: 'ai-robotics',
     color: '#a855f7',
-    description: 'Hardware/Software Interfacing',
-    iconUrl: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/ubuntu/ubuntu-original.svg'
+    description: 'Ubuntu, ROS & Hardware',
+    iconUrls: [
+      'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/ubuntu/ubuntu-original.svg',
+      'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/raspberrypi/raspberrypi-original.svg'
+    ]
   },
   {
-    name: 'IoT',
+    name: 'IoT Systems',
     level: 'Experienced',
     category: 'ai-robotics',
-    color: '#38bdf8',
-    description: 'Smart Systems & Sensors',
-    iconUrl: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/raspberrypi/raspberrypi-original.svg'
+    color: '#00f0ff',
+    description: 'Smart Embedded Sensors',
+    iconUrls: [
+      'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/arduino/arduino-original.svg',
+      'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/c/c-original.svg'
+    ]
   },
   {
     name: 'Git & GitOps',
