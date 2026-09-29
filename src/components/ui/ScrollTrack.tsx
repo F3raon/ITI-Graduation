@@ -3,17 +3,17 @@ import { useScrollProgress } from '../../context/ScrollContext';
 import { soundEngine } from '../../utils/audio';
 
 const SECTORS = [
-  { name: 'ENTRY', target: 0.07 },
-  { name: '3D OFFICE', target: 0.20 },
-  { name: 'REAL AHMED', target: 0.30 },
-  { name: 'NEON MORPH', target: 0.40 },
-  { name: 'ABOUT ME', target: 0.53 },
-  { name: 'SKILLS LAB', target: 0.62 },
-  { name: 'PROJECT LAB', target: 0.71 },
-  { name: 'TIMELINE', target: 0.80 },
+  { name: 'ENTRY', target: 0.00 },
+  { name: '3D OFFICE', target: 0.16 },
+  { name: 'REAL AHMED', target: 0.29 },
+  { name: 'NEON MORPH', target: 0.38 },
+  { name: 'ABOUT ME', target: 0.58 },
+  { name: 'SKILLS LAB', target: 0.65 },
+  { name: 'PROJECT LAB', target: 0.74 },
+  { name: 'TIMELINE', target: 0.82 },
   { name: 'HONORS', target: 0.87 },
   { name: 'CONTACT', target: 0.93 },
-  { name: 'LIVE PORTAL', target: 0.98 },
+  { name: 'LIVE PORTAL', target: 1.00 },
 ];
 
 export function ScrollTrack() {
