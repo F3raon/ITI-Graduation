@@ -79,6 +79,7 @@ export function ProjectPodium({
             <group position={[0, 0.4, 0.07]}>
               <Html
                 transform
+                center
                 distanceFactor={2.8}
                 position={[0, 0, 0]}
                 zIndexRange={[100, 0]}
