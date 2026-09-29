@@ -15,14 +15,14 @@ export function ProjectsScene({ position = [0, 0, WORLD.PROJECTS_Z] }: { positio
   
   const carouselRef = useRef<THREE.Group>(null);
   
-  // Combine all projects
+  // Combine all projects (no cap to show everything)
   const allProjects = [
     ...PORTFOLIO_DATA.projects.filter((p) => p.category === 'miniature'),
     ...PORTFOLIO_DATA.projects.filter((p) => p.category === 'production')
-  ].slice(0, 6); // Cap at 6 for presentation stability
+  ];
 
   const total = allProjects.length;
-  const radius = 4.5; // Reduced radius so it doesn't overlap with ITI Branch on the right
+  const radius = 8.5; // Increased radius to fit all 11+ projects without overlapping
 
   useFrame(() => {
     if (!carouselRef.current) return;
@@ -55,7 +55,7 @@ export function ProjectsScene({ position = [0, 0, WORLD.PROJECTS_Z] }: { positio
       </Text>
 
       {/* Rotating Carousel of Projects (Left side) */}
-      <group position={[-2.6, 0, 0]} scale={0.68}>
+      <group position={[-7.5, 0, 0]} scale={0.68}>
         <group position={[0, -0.2, -radius + 1]}>
           <group ref={carouselRef}>
           {allProjects.map((project, i) => {

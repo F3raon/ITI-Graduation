@@ -75,7 +75,9 @@ export function ProjectPodium({
     e.stopPropagation();
     soundEngine.playSelect();
     if (project.demoUrl) {
-      window.open(project.demoUrl, '_blank', 'noopener,noreferrer');
+      window.dispatchEvent(new CustomEvent('open-iframe', { detail: project.demoUrl }));
+    } else if (project.githubUrl) {
+      window.open(project.githubUrl, '_blank', 'noopener,noreferrer');
     }
   };
 
