@@ -93,49 +93,49 @@ function AchievementPedestal({
       {/* 3D Illuminated Rotating Trophy */}
       <TrophyObject rank={item.rank} color={item.color} hovered={hovered} />
 
-      {/* Trophy Pedestal Display Stand */}
-      <group position={[0, -0.9, 0]}>
-        <RoundedBox args={[3.0, 1.7, 0.22]} radius={0.08} smoothness={4} castShadow>
+      {/* Trophy Pedestal Display Stand (Sleeker and attached to base) */}
+      <group position={[0, -0.8, 0]}>
+        <RoundedBox args={[2.8, 1.4, 0.06]} radius={0.05} smoothness={4} castShadow>
           <meshPhysicalMaterial
             color="#05080c"
-            metalness={0.9}
-            roughness={0.15}
+            metalness={0.8}
+            roughness={0.2}
             emissive={item.color}
-            emissiveIntensity={hovered ? 0.25 : 0.02}
+            emissiveIntensity={hovered ? 0.3 : 0.05}
             transparent
-            opacity={0.9}
+            opacity={0.85}
           />
         </RoundedBox>
 
-        {/* Holographic Backing Plate */}
-        <mesh position={[0, 0, -0.13]}>
-          <planeGeometry args={[3.05, 1.75]} />
-          <meshBasicMaterial color={item.color} transparent opacity={hovered ? 0.3 : 0.08} />
+        {/* Holographic Backing Plate (Sleeker border) */}
+        <mesh position={[0, 0, -0.04]}>
+          <planeGeometry args={[2.85, 1.45]} />
+          <meshBasicMaterial color={item.color} transparent opacity={hovered ? 0.25 : 0.05} />
         </mesh>
 
         {/* Badge / Rank Ribbon */}
-        <Text position={[0, 0.55, 0.12]} fontSize={0.12} color={item.color} anchorX="center" fontWeight={800}>
-          {item.rank} // {item.year}
+        <Text position={[0, 0.45, 0.04]} fontSize={0.11} color={item.color} anchorX="center" fontWeight={900} letterSpacing={0.05}>
+          {item.rank.toUpperCase()} // {item.year}
         </Text>
 
         {/* Title */}
-        <Text position={[0, 0.28, 0.12]} fontSize={0.165} color="#f8fafc" anchorX="center" fontWeight={800}>
-          {item.title}
+        <Text position={[0, 0.2, 0.04]} fontSize={0.15} color="#f8fafc" anchorX="center" fontWeight={900} letterSpacing={0.02}>
+          {item.title.toUpperCase()}
         </Text>
 
         {/* Competition */}
-        <Text position={[0, 0.0, 0.12]} fontSize={0.1} color="#67c9ff" anchorX="center">
+        <Text position={[0, 0.0, 0.04]} fontSize={0.09} color="#67c9ff" anchorX="center" fontWeight="bold">
           {item.competition}
         </Text>
 
         {/* Description */}
         <Text
-          position={[0, -0.35, 0.12]}
-          maxWidth={2.7}
-          fontSize={0.08}
+          position={[0, -0.3, 0.04]}
+          maxWidth={2.5}
+          fontSize={0.075}
           color="#94a3b8"
           anchorX="center"
-          lineHeight={1.45}
+          lineHeight={1.5}
         >
           {item.description}
         </Text>
@@ -187,10 +187,10 @@ export function AchievementsScene({ position = [0, 0, -82] }: { position?: [numb
           const row = Math.floor(i / 2);
           
           const xSpacing = isMobile ? 3.0 : 3.4;
-          const ySpacing = isMobile ? 4.0 : 3.8;
+          const ySpacing = isMobile ? 2.9 : 2.6; // Tighter vertical spacing so they don't clip floor
           
           const x = (col - 0.5) * xSpacing;
-          const y = (0.5 - row) * ySpacing - (isMobile ? 1.0 : 1.2);
+          const y = (0.5 - row) * ySpacing + 0.6; // Center the grid at Y = 0.6
 
           return (
             <AchievementPedestal
