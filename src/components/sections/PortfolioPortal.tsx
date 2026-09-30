@@ -105,7 +105,7 @@ export function PortfolioPortal({ position = [0, 0, -114] }: { position?: [numbe
           <Html
             transform
             center
-            distanceFactor={5.0}
+            distanceFactor={5.0 * scale}
             position={[0, 0, 0]}
             zIndexRange={[100, 0]}
           >
