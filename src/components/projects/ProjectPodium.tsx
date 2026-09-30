@@ -35,12 +35,6 @@ export function ProjectPodium({
       hovered ? (index % 2 === 0 ? 0.12 : -0.12) : 0,
       1 - Math.exp(-6 * delta)
     );
-    if (divRef.current) {
-      const p = scrollStore.current;
-      // Show from the start, only hide when camera passes it (behind camera)
-      const isVisible = p < 0.80; // Camera passes Projects around 0.76
-      divRef.current.style.display = isVisible ? 'flex' : 'none';
-    }
   });
 
   const renderDiorama = () => {
@@ -75,9 +69,41 @@ export function ProjectPodium({
               <meshBasicMaterial color={project.color} transparent opacity={hovered ? 0.05 : 0.2} />
             </mesh>
 
-            {/* 3D Iframe Screen */}
-            <group position={[0, 0.4, 0.07]}>
-              {hovered && (
+            {/* WebGL Fallback UI (Always visible unless an iframe is currently active) */}
+            {(!hovered || (!project.demoUrl && !project.githubUrl)) && (
+              <group position={[0, 0.4, 0.08]}>
+                {/* Background Box for Fallback */}
+                <mesh>
+                  <planeGeometry args={[3.0, 1.8]} />
+                  <meshBasicMaterial color="#040810" />
+                </mesh>
+                
+                {/* Title */}
+                <Text position={[0, 0.4, 0.01]} fontSize={0.16} color={project.color} anchorX="center" fontWeight={900} letterSpacing={0.05}>
+                  {project.title.toUpperCase()}
+                </Text>
+                
+                {/* Description */}
+                <Text position={[0, 0, 0.01]} fontSize={0.08} color="#cbd5e1" anchorX="center" maxWidth={2.6} textAlign="center" lineHeight={1.6}>
+                  {project.description}
+                </Text>
+                
+                {/* Button/Status Badge */}
+                <group position={[0, -0.6, 0.01]}>
+                  <mesh>
+                    <planeGeometry args={[2.0, 0.25]} />
+                    <meshBasicMaterial color="#ffffff" transparent opacity={0.05} />
+                  </mesh>
+                  <Text position={[0, 0, 0.01]} fontSize={0.065} color="#64748b" anchorX="center" fontWeight="bold" letterSpacing={0.05}>
+                    {(project.demoUrl || project.githubUrl) ? "HOVER TO INITIALIZE LIVE PREVIEW" : "INTERNAL / PRIVATE REPOSITORY"}
+                  </Text>
+                </group>
+              </group>
+            )}
+
+            {/* 3D Iframe Screen (ONLY when hovered AND has URL) */}
+            {hovered && (project.demoUrl || project.githubUrl) && (
+              <group position={[0, 0.4, 0.07]}>
                 <Html
                   transform
                   center
@@ -85,25 +111,23 @@ export function ProjectPodium({
                   position={[0, 0, 0]}
                   zIndexRange={[100, 0]}
                 >
-                <div
-                  ref={divRef}
-                  style={{
-                    width: '620px',
-                    height: '380px',
-                    background: '#040810',
-                    border: `2px solid ${hovered ? project.color : '#1e293b'}`,
-                    borderRadius: '8px',
-                    overflow: 'hidden',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    boxShadow: hovered ? `0 0 30px ${project.color}40` : 'none',
-                    transition: 'all 0.3s ease',
-                    backfaceVisibility: 'hidden',
-                    WebkitBackfaceVisibility: 'hidden',
-                  }}
-                >
-                  {hovered && (project.demoUrl || project.githubUrl) ? (
+                  <div
+                    style={{
+                      width: '620px',
+                      height: '380px',
+                      background: '#040810',
+                      border: `2px solid ${project.color}`,
+                      borderRadius: '8px',
+                      overflow: 'hidden',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      boxShadow: `0 0 30px ${project.color}40`,
+                      transition: 'all 0.3s ease',
+                      backfaceVisibility: 'hidden',
+                      WebkitBackfaceVisibility: 'hidden',
+                    }}
+                  >
                     <iframe
                       src={project.demoUrl || project.githubUrl || ''}
                       style={{
@@ -115,23 +139,10 @@ export function ProjectPodium({
                       title={project.title}
                       loading="lazy"
                     />
-                  ) : (
-                    <div style={{ textAlign: 'center', padding: '40px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
-                      <div style={{ fontSize: '26px', fontWeight: 'bold', color: project.color, marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '2px' }}>
-                        {project.title}
-                      </div>
-                      <div style={{ fontSize: '15px', color: '#cbd5e1', marginBottom: '25px', maxWidth: '85%', lineHeight: '1.6' }}>
-                        {project.description}
-                      </div>
-                      <div style={{ fontSize: '12px', color: '#64748b', fontWeight: 'bold', letterSpacing: '2px', background: 'rgba(255,255,255,0.05)', padding: '8px 16px', borderRadius: '20px' }}>
-                        {(project.demoUrl || project.githubUrl) ? "HOVER TO INITIALIZE LIVE PREVIEW" : "INTERNAL / PRIVATE REPOSITORY"}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </Html>
+                  </div>
+                </Html>
+              </group>
             )}
-            </group>
           </group>
         );
     }
