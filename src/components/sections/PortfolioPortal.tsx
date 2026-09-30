@@ -23,7 +23,7 @@ export function PortfolioPortal({ position = [0, 0, -114] }: { position?: [numbe
       });
     }
     // Only render the iframe when we are near the end of the scroll to prevent CSS3D overlap
-    const isVisible = scrollStore.current > 0.97;
+    const isVisible = scrollStore.current > 0.85;
     if (visible !== isVisible) setVisible(isVisible);
   });
 
