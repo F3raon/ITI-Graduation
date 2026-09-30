@@ -32,13 +32,13 @@ export function PortfolioPortal({ position = [0, 0, -114] }: { position?: [numbe
   return (
     <group position={position} scale={scale}>
       {/* Section Header */}
-      <Text position={[0, 2.8, 0]} fontSize={0.12} color="#94a3b8" anchorX="center" letterSpacing={0.25}>
+      <Text position={[0, 3.4, 0]} fontSize={0.12} color="#94a3b8" anchorX="center" letterSpacing={0.25}>
         // THE PREVIOUS CHAPTER
       </Text>
-      <Text position={[0, 2.3, 0]} fontSize={0.5} color="#ffffff" anchorX="center" fontWeight={900}>
+      <Text position={[0, 2.9, 0]} fontSize={0.5} color="#ffffff" anchorX="center" fontWeight={900}>
         ORIGINAL PORTFOLIO
       </Text>
-      <Text position={[0, 1.9, 0]} fontSize={0.11} color="#38bdf8" anchorX="center" letterSpacing={0.1}>
+      <Text position={[0, 2.5, 0]} fontSize={0.11} color="#38bdf8" anchorX="center" letterSpacing={0.1}>
         INTERACTIVE 3D TERMINAL // SCROLL INSIDE THE SCREEN
       </Text>
 
@@ -56,26 +56,48 @@ export function PortfolioPortal({ position = [0, 0, -114] }: { position?: [numbe
         ))}
       </group>
 
-      {/* 3D Lab Monitor */}
+      {/* 3D Lab Monitor Chassis */}
       <group position={[0, -0.4, 0]}>
-      {/* Screen Bezel / Frame */}
-      <mesh position={[0, 0, -0.05]} castShadow>
-        <boxGeometry args={[7.4, 4.4, 0.1]} />
-        <meshPhysicalMaterial
-          color="#0b1221"
-          metalness={0.4}
-          roughness={0.6}
-          emissive="#38bdf8"
-          emissiveIntensity={0.2}
-          transparent
-          opacity={0.8}
-        />
-      </mesh>
-      
+        
+        {/* Outer Heavy Beveled Chassis */}
+        <mesh position={[0, 0.15, -0.1]} castShadow>
+          <boxGeometry args={[8.0, 5.1, 0.2]} />
+          <meshPhysicalMaterial
+            color="#070b12"
+            metalness={0.9}
+            roughness={0.2}
+            emissive="#38bdf8"
+            emissiveIntensity={0.1}
+          />
+        </mesh>
+
+        {/* Browser Top Navigation Bar Area */}
+        <mesh position={[0, 2.5, -0.05]}>
+          <planeGeometry args={[7.8, 0.4]} />
+          <meshBasicMaterial color="#0f172a" />
+        </mesh>
+
+        {/* Browser Window Action Dots (Mac Style) */}
+        {[-3.6, -3.4, -3.2].map((x, i) => (
+          <mesh key={i} position={[x, 2.5, -0.04]}>
+            <circleGeometry args={[0.04, 16]} />
+            <meshBasicMaterial color={['#ef4444', '#eab308', '#10b981'][i]} />
+          </mesh>
+        ))}
+
+        {/* URL Pill Bar */}
+        <mesh position={[0, 2.5, -0.04]}>
+          <planeGeometry args={[4.5, 0.2]} />
+          <meshBasicMaterial color="#1e293b" />
+        </mesh>
+        <Text position={[0, 2.49, -0.03]} fontSize={0.07} color="#67c9ff" anchorX="center">
+          https://ahmed-hamada-eta.vercel.app
+        </Text>
+
         {/* Screen Glow Rim */}
         <mesh position={[0, 0, -0.08]}>
-          <boxGeometry args={[7.6, 4.6, 0.05]} />
-          <meshBasicMaterial color="#38bdf8" transparent opacity={0.15} />
+          <boxGeometry args={[7.8, 4.8, 0.05]} />
+          <meshBasicMaterial color="#38bdf8" transparent opacity={0.12} />
         </mesh>
 
         {/* The 3D Html embedded iframe */}
