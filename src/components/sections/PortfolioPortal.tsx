@@ -13,8 +13,8 @@ export function PortfolioPortal({ position = [0, 0, -114] }: { position?: [numbe
   const scale = aspect < 0.9 ? 0.55 : aspect < 1.25 ? 0.72 : aspect < 1.6 ? 0.88 : 1.0;
 
   const portalRingsRef = useRef<THREE.Group>(null);
-
   const [visible, setVisible] = useState(false);
+  const [hovered, setHovered] = useState(false);
 
   useFrame((state, delta) => {
     if (portalRingsRef.current) {
@@ -57,7 +57,11 @@ export function PortfolioPortal({ position = [0, 0, -114] }: { position?: [numbe
       </group>
 
       {/* 3D Lab Monitor Chassis */}
-      <group position={[0, -0.4, 0]}>
+      <group 
+        position={[0, -0.4, 0]}
+        onPointerEnter={() => setHovered(true)}
+        onPointerLeave={() => setHovered(false)}
+      >
         
         {/* Outer Heavy Beveled Chassis */}
         <mesh position={[0, 0.15, -0.1]} castShadow>
@@ -100,8 +104,32 @@ export function PortfolioPortal({ position = [0, 0, -114] }: { position?: [numbe
           <meshBasicMaterial color="#38bdf8" transparent opacity={0.12} />
         </mesh>
 
-        {/* The 3D Html embedded iframe */}
-        <group position={[0, 0, 0.06]}>
+        {/* Lightweight WebGL Fallback UI (Shown when not hovered) */}
+        {!hovered && (
+          <group position={[0, 0, 0.06]}>
+            <mesh>
+              <planeGeometry args={[7.6, 4.6]} />
+              <meshBasicMaterial color="#040810" />
+            </mesh>
+            <Text position={[0, 0.5, 0.01]} fontSize={0.3} color="#38bdf8" anchorX="center" fontWeight={900}>
+              LEGACY SYSTEM
+            </Text>
+            <Text position={[0, -0.2, 0.01]} fontSize={0.15} color="#94a3b8" anchorX="center" letterSpacing={0.1}>
+              HOVER TO INITIALIZE LIVE PREVIEW
+            </Text>
+            <mesh position={[0, -1.0, 0.01]}>
+              <planeGeometry args={[2.5, 0.4]} />
+              <meshBasicMaterial color="#38bdf8" transparent opacity={0.1} />
+            </mesh>
+            <Text position={[0, -1.0, 0.02]} fontSize={0.1} color="#67c9ff" anchorX="center" fontWeight="bold">
+              STANDBY MODE
+            </Text>
+          </group>
+        )}
+
+        {/* The 3D Html embedded iframe (Mounted ONLY when hovered for max performance) */}
+        {hovered && (
+          <group position={[0, 0, 0.06]}>
           <Html
             transform
             center
@@ -129,6 +157,7 @@ export function PortfolioPortal({ position = [0, 0, -114] }: { position?: [numbe
             </div>
           </Html>
         </group>
+        )}
 
         {/* Floating Action Button to Visit Site */}
         <group position={[0, -3.2, 0.1]}>
