@@ -57,11 +57,7 @@ export function PortfolioPortal({ position = [0, 0, -114] }: { position?: [numbe
       </group>
 
       {/* 3D Lab Monitor Chassis */}
-      <group 
-        position={[0, -0.4, 0]}
-        onPointerEnter={() => setHovered(true)}
-        onPointerLeave={() => setHovered(false)}
-      >
+      <group position={[0, -0.4, 0]}>
         
         {/* Outer Heavy Beveled Chassis */}
         <mesh position={[0, 0.15, -0.1]} castShadow>
@@ -104,38 +100,45 @@ export function PortfolioPortal({ position = [0, 0, -114] }: { position?: [numbe
           <meshBasicMaterial color="#38bdf8" transparent opacity={0.12} />
         </mesh>
 
-        {/* Lightweight WebGL Fallback UI (Shown when not hovered) */}
-        {!hovered && (
-          <group position={[0, 0, 0.06]}>
+        {/* WebGL Glass Pane (Catches clicks and allows 3D scrolling) */}
+        <mesh 
+          position={[0, 0, 0.07]} 
+          onClick={() => window.open(PORTFOLIO_DATA.identity.oldPortfolioUrl, '_blank')}
+          onPointerEnter={(e) => {
+            document.body.style.cursor = 'pointer';
+            setHovered(true);
+          }}
+          onPointerLeave={(e) => {
+            document.body.style.cursor = 'auto';
+            setHovered(false);
+          }}
+        >
+          <planeGeometry args={[7.6, 4.6]} />
+          <meshBasicMaterial transparent opacity={0} color="#000" />
+        </mesh>
+
+        {/* Hover overlay hint */}
+        {hovered && (
+          <group position={[0, 0, 0.08]}>
             <mesh>
               <planeGeometry args={[7.6, 4.6]} />
-              <meshBasicMaterial color="#040810" />
+              <meshBasicMaterial color="#0b1221" transparent opacity={0.7} />
             </mesh>
-            <Text position={[0, 0.5, 0.01]} fontSize={0.3} color="#38bdf8" anchorX="center" fontWeight={900}>
-              LEGACY SYSTEM
-            </Text>
-            <Text position={[0, -0.2, 0.01]} fontSize={0.15} color="#94a3b8" anchorX="center" letterSpacing={0.1}>
-              HOVER TO INITIALIZE LIVE PREVIEW
-            </Text>
-            <mesh position={[0, -1.0, 0.01]}>
-              <planeGeometry args={[2.5, 0.4]} />
-              <meshBasicMaterial color="#38bdf8" transparent opacity={0.1} />
-            </mesh>
-            <Text position={[0, -1.0, 0.02]} fontSize={0.1} color="#67c9ff" anchorX="center" fontWeight="bold">
-              STANDBY MODE
+            <Text position={[0, 0, 0.01]} fontSize={0.25} color="#38bdf8" anchorX="center" fontWeight={900}>
+              CLICK TO OPEN LIVE PORTFOLIO
             </Text>
           </group>
         )}
 
-        {/* The 3D Html embedded iframe (Mounted ONLY when hovered for max performance) */}
-        {hovered && (
-          <group position={[0, 0, 0.06]}>
+        {/* The 3D Html embedded iframe (Always visible, but pointer-events disabled) */}
+        <group position={[0, 0, 0.06]}>
           <Html
             transform
             center
             distanceFactor={5.0 * scale}
             position={[0, 0, 0]}
             zIndexRange={[100, 0]}
+            style={{ pointerEvents: 'none' }}
           >
             <div
               style={{
@@ -146,60 +149,20 @@ export function PortfolioPortal({ position = [0, 0, -114] }: { position?: [numbe
                 border: '4px solid #38bdf8',
                 boxShadow: '0 0 40px rgba(56, 189, 248, 0.4)',
                 overflow: 'hidden',
-                pointerEvents: 'none', // Disables iframe scroll trapping so 3D scroll works perfectly!
+                pointerEvents: 'none',
               }}
             >
               <iframe
                 src={PORTFOLIO_DATA.identity.oldPortfolioUrl}
-                style={{ width: '100%', height: '100%', border: 'none' }}
+                style={{ width: '100%', height: '100%', border: 'none', pointerEvents: 'none' }}
                 title="Old Portfolio"
+                loading="lazy"
               />
             </div>
           </Html>
         </group>
-        )}
 
-        {/* Floating Action Button to Visit Site */}
-        <group position={[0, -3.2, 0.1]}>
-          <Html transform center distanceFactor={4.0}>
-            <a
-              href={PORTFOLIO_DATA.identity.oldPortfolioUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                display: 'inline-block',
-                padding: '16px 32px',
-                background: 'rgba(56, 189, 248, 0.15)',
-                border: '2px solid #38bdf8',
-                borderRadius: '30px',
-                color: '#fff',
-                fontFamily: 'sans-serif',
-                fontWeight: 'bold',
-                fontSize: '18px',
-                textDecoration: 'none',
-                textTransform: 'uppercase',
-                letterSpacing: '2px',
-                backdropFilter: 'blur(10px)',
-                boxShadow: '0 0 20px rgba(56, 189, 248, 0.4)',
-                cursor: 'pointer',
-                pointerEvents: 'auto',
-                transition: 'all 0.3s ease',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = 'rgba(56, 189, 248, 0.4)';
-                e.currentTarget.style.boxShadow = '0 0 40px rgba(56, 189, 248, 0.8)';
-                e.currentTarget.style.transform = 'scale(1.05)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'rgba(56, 189, 248, 0.15)';
-                e.currentTarget.style.boxShadow = '0 0 20px rgba(56, 189, 248, 0.4)';
-                e.currentTarget.style.transform = 'scale(1.0)';
-              }}
-            >
-              VISIT LIVE PORTFOLIO ↗
-            </a>
-          </Html>
-        </group>
+
         
         {/* Ambient Portal illumination */}
         <pointLight position={[0, 0, 2.0]} intensity={15} distance={15} color="#38bdf8" />
