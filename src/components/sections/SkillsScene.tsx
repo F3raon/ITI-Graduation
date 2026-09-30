@@ -8,18 +8,17 @@ import { scrollStore } from '../../context/ScrollContext';
 
 function SpinningLogo({ iconUrl, iconUrls, color, hovered, invertIcon }: { iconUrl?: string; iconUrls?: string[]; color: string; hovered: boolean, invertIcon?: boolean }) {
   const ref = useRef<THREE.Group>(null);
-  const divRef = useRef<HTMLDivElement>(null);
+  const [isVisible, setIsVisible] = useState(true);
   
   useFrame((_, delta) => {
     if (ref.current) {
       // spin continuously
       ref.current.rotation.y += delta * (hovered ? 2.5 : 0.8);
     }
-    if (divRef.current) {
-      // Show from the start, only hide when camera passes it (behind camera)
-      const p = scrollStore.current;
-      const isVisible = p < 0.65; // Camera passes Skills around 0.62
-      divRef.current.style.display = isVisible ? 'flex' : 'none';
+    const p = scrollStore.current;
+    const shouldBeVisible = p < 0.65; // Camera passes Skills around 0.62
+    if (isVisible !== shouldBeVisible) {
+      setIsVisible(shouldBeVisible);
     }
   });
 
@@ -28,10 +27,11 @@ function SpinningLogo({ iconUrl, iconUrls, color, hovered, invertIcon }: { iconU
   return (
     <group ref={ref} position={[0, 0.45, 0]}>
       {urls.length > 0 ? (
-        <Html transform center distanceFactor={2.5}>
-          <div ref={divRef} style={{
-            minWidth: '60px',
-            padding: '0 10px',
+        isVisible && (
+          <Html transform center distanceFactor={2.5}>
+            <div style={{
+              minWidth: '60px',
+              padding: '0 10px',
             height: '60px',
             display: 'flex',
             gap: '12px',
@@ -54,7 +54,8 @@ function SpinningLogo({ iconUrl, iconUrls, color, hovered, invertIcon }: { iconU
               }} />
             ))}
           </div>
-        </Html>
+          </Html>
+        )
       ) : (
         <mesh>
           <octahedronGeometry args={[0.32, 0]} />

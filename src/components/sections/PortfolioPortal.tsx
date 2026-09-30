@@ -39,7 +39,7 @@ export function PortfolioPortal({ position = [0, 0, -114] }: { position?: [numbe
         ORIGINAL PORTFOLIO
       </Text>
       <Text position={[0, 2.5, 0]} fontSize={0.11} color="#38bdf8" anchorX="center" letterSpacing={0.1}>
-        INTERACTIVE 3D TERMINAL // SCROLL INSIDE THE SCREEN
+        LIVE 3D PREVIEW // FULLY RESPONSIVE LEGACY CODEBASE
       </Text>
 
       {/* Massive Concentric Energy Portal Rings Framing the Screen */}
@@ -117,8 +117,8 @@ export function PortfolioPortal({ position = [0, 0, -114] }: { position?: [numbe
                 borderRadius: '16px',
                 border: '4px solid #38bdf8',
                 boxShadow: '0 0 40px rgba(56, 189, 248, 0.4)',
-                overflow: 'auto',
-                pointerEvents: 'auto',
+                overflow: 'hidden',
+                pointerEvents: 'none', // Disables iframe scroll trapping so 3D scroll works perfectly!
               }}
             >
               <iframe
@@ -127,6 +127,48 @@ export function PortfolioPortal({ position = [0, 0, -114] }: { position?: [numbe
                 title="Old Portfolio"
               />
             </div>
+          </Html>
+        </group>
+
+        {/* Floating Action Button to Visit Site */}
+        <group position={[0, -3.2, 0.1]}>
+          <Html transform center distanceFactor={4.0}>
+            <a
+              href={PORTFOLIO_DATA.identity.oldPortfolioUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: 'inline-block',
+                padding: '16px 32px',
+                background: 'rgba(56, 189, 248, 0.15)',
+                border: '2px solid #38bdf8',
+                borderRadius: '30px',
+                color: '#fff',
+                fontFamily: 'sans-serif',
+                fontWeight: 'bold',
+                fontSize: '18px',
+                textDecoration: 'none',
+                textTransform: 'uppercase',
+                letterSpacing: '2px',
+                backdropFilter: 'blur(10px)',
+                boxShadow: '0 0 20px rgba(56, 189, 248, 0.4)',
+                cursor: 'pointer',
+                pointerEvents: 'auto',
+                transition: 'all 0.3s ease',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'rgba(56, 189, 248, 0.4)';
+                e.currentTarget.style.boxShadow = '0 0 40px rgba(56, 189, 248, 0.8)';
+                e.currentTarget.style.transform = 'scale(1.05)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'rgba(56, 189, 248, 0.15)';
+                e.currentTarget.style.boxShadow = '0 0 20px rgba(56, 189, 248, 0.4)';
+                e.currentTarget.style.transform = 'scale(1.0)';
+              }}
+            >
+              VISIT LIVE PORTFOLIO ↗
+            </a>
           </Html>
         </group>
         
