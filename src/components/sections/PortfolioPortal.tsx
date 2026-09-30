@@ -1,9 +1,8 @@
-import { useState, useRef, useEffect } from 'react';
+﻿import { useState, useRef } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
-import { Text, Html } from '@react-three/drei';
+import { Text, useTexture } from '@react-three/drei';
 import * as THREE from 'three';
 import { PORTFOLIO_DATA } from '../../data/portfolio';
-import { soundEngine } from '../../utils/audio';
 import { scrollStore } from '../../context/ScrollContext';
 
 
@@ -16,13 +15,14 @@ export function PortfolioPortal({ position = [0, 0, -114] }: { position?: [numbe
   const [visible, setVisible] = useState(false);
   const [hovered, setHovered] = useState(false);
 
-  useFrame((state, delta) => {
+  const previewTexture = useTexture('/images/portfolio-preview.jpg');
+
+  useFrame((_, delta) => {
     if (portalRingsRef.current) {
       portalRingsRef.current.children.forEach((child, i) => {
         child.rotation.z += delta * (0.15 + i * 0.08) * (i % 2 === 0 ? 1 : -1);
       });
     }
-    // Only render the iframe when we are exactly at the final Portal section to prevent it from rendering over the Contact section
     const isVisible = scrollStore.current > 0.95;
     if (visible !== isVisible) setVisible(isVisible);
   });
@@ -31,7 +31,6 @@ export function PortfolioPortal({ position = [0, 0, -114] }: { position?: [numbe
 
   return (
     <group position={position} scale={scale}>
-      {/* Section Header */}
       <Text position={[0, 3.4, 0]} fontSize={0.12} color="#94a3b8" anchorX="center" letterSpacing={0.25}>
         // THE PREVIOUS CHAPTER
       </Text>
@@ -39,53 +38,33 @@ export function PortfolioPortal({ position = [0, 0, -114] }: { position?: [numbe
         ORIGINAL PORTFOLIO
       </Text>
       <Text position={[0, 2.5, 0]} fontSize={0.11} color="#38bdf8" anchorX="center" letterSpacing={0.1}>
-        LIVE 3D PREVIEW // FULLY RESPONSIVE LEGACY CODEBASE
+        CLICK SCREEN TO VISIT LIVE // LEGACY CODEBASE
       </Text>
 
-      {/* Massive Concentric Energy Portal Rings Framing the Screen */}
       <group ref={portalRingsRef} position={[0, -0.3, -1.0]}>
         {[5.8, 5.4, 5.0].map((r, i) => (
           <mesh key={i}>
             <torusGeometry args={[r, 0.03, 16, 64]} />
-            <meshBasicMaterial
-              color={i % 2 === 0 ? '#ff8a30' : '#67c9ff'}
-              transparent
-              opacity={0.8 - i * 0.15}
-            />
+            <meshBasicMaterial color={i % 2 === 0 ? '#ff8a30' : '#67c9ff'} transparent opacity={0.8 - i * 0.15} />
           </mesh>
         ))}
       </group>
 
-      {/* 3D Lab Monitor Chassis */}
       <group position={[0, -0.4, 0]}>
-        
-        {/* Outer Heavy Beveled Chassis */}
         <mesh position={[0, 0.15, -0.1]} castShadow>
           <boxGeometry args={[8.0, 5.1, 0.2]} />
-          <meshPhysicalMaterial
-            color="#070b12"
-            metalness={0.9}
-            roughness={0.2}
-            emissive="#38bdf8"
-            emissiveIntensity={0.1}
-          />
+          <meshPhysicalMaterial color="#070b12" metalness={0.9} roughness={0.2} emissive="#38bdf8" emissiveIntensity={0.1} />
         </mesh>
-
-        {/* Browser Top Navigation Bar Area */}
         <mesh position={[0, 2.5, -0.05]}>
           <planeGeometry args={[7.8, 0.4]} />
           <meshBasicMaterial color="#0f172a" />
         </mesh>
-
-        {/* Browser Window Action Dots (Mac Style) */}
         {[-3.6, -3.4, -3.2].map((x, i) => (
           <mesh key={i} position={[x, 2.5, -0.04]}>
             <circleGeometry args={[0.04, 16]} />
-            <meshBasicMaterial color={['#ef4444', '#eab308', '#10b981'][i]} />
+            <meshBasicMaterial color={(['#ef4444', '#eab308', '#10b981'] as string[])[i]} />
           </mesh>
         ))}
-
-        {/* URL Pill Bar */}
         <mesh position={[0, 2.5, -0.04]}>
           <planeGeometry args={[4.5, 0.2]} />
           <meshBasicMaterial color="#1e293b" />
@@ -93,78 +72,37 @@ export function PortfolioPortal({ position = [0, 0, -114] }: { position?: [numbe
         <Text position={[0, 2.49, -0.03]} fontSize={0.07} color="#67c9ff" anchorX="center">
           https://ahmed-hamada-eta.vercel.app
         </Text>
-
-        {/* Screen Glow Rim */}
         <mesh position={[0, 0, -0.08]}>
           <boxGeometry args={[7.8, 4.8, 0.05]} />
           <meshBasicMaterial color="#38bdf8" transparent opacity={0.12} />
         </mesh>
 
-        {/* WebGL Glass Pane (Catches clicks and allows 3D scrolling) */}
-        <mesh 
-          position={[0, 0, 0.07]} 
+        {/* Screenshot texture — always inside the mesh, never overflows */}
+        <mesh
+          position={[0, 0, 0.06]}
           onClick={() => window.open(PORTFOLIO_DATA.identity.oldPortfolioUrl, '_blank')}
-          onPointerEnter={(e) => {
-            document.body.style.cursor = 'pointer';
-            setHovered(true);
-          }}
-          onPointerLeave={(e) => {
-            document.body.style.cursor = 'auto';
-            setHovered(false);
-          }}
+          onPointerEnter={() => { document.body.style.cursor = 'pointer'; setHovered(true); }}
+          onPointerLeave={() => { document.body.style.cursor = 'auto'; setHovered(false); }}
         >
           <planeGeometry args={[7.6, 4.6]} />
-          <meshBasicMaterial transparent opacity={0} color="#000" />
+          <meshBasicMaterial map={previewTexture} />
         </mesh>
 
-        {/* Hover overlay hint */}
         {hovered && (
-          <group position={[0, 0, 0.08]}>
+          <group position={[0, 0, 0.07]}>
             <mesh>
               <planeGeometry args={[7.6, 4.6]} />
-              <meshBasicMaterial color="#0b1221" transparent opacity={0.7} />
+              <meshBasicMaterial color="#020b18" transparent opacity={0.75} />
             </mesh>
-            <Text position={[0, 0, 0.01]} fontSize={0.25} color="#38bdf8" anchorX="center" fontWeight={900}>
-              CLICK TO OPEN LIVE PORTFOLIO
+            <Text position={[0, 0.3, 0.01]} fontSize={0.28} color="#38bdf8" anchorX="center" fontWeight={900} letterSpacing={0.05}>
+              VISIT LIVE PORTFOLIO
+            </Text>
+            <Text position={[0, -0.15, 0.01]} fontSize={0.12} color="#94a3b8" anchorX="center" letterSpacing={0.1}>
+              Click to open in a new tab
             </Text>
           </group>
         )}
 
-        {/* The 3D Html embedded iframe (Always visible, but pointer-events disabled) */}
-        <group position={[0, 0, 0.06]}>
-          <Html
-            transform
-            center
-            distanceFactor={5.0 * scale}
-            position={[0, 0, 0]}
-            zIndexRange={[100, 0]}
-            style={{ pointerEvents: 'none' }}
-          >
-            <div
-              style={{
-                width: '1280px',
-                height: '720px',
-                background: '#040810',
-                borderRadius: '16px',
-                border: '4px solid #38bdf8',
-                boxShadow: '0 0 40px rgba(56, 189, 248, 0.4)',
-                overflow: 'hidden',
-                pointerEvents: 'none',
-              }}
-            >
-              <iframe
-                src={PORTFOLIO_DATA.identity.oldPortfolioUrl}
-                style={{ width: '100%', height: '100%', border: 'none', pointerEvents: 'none' }}
-                title="Old Portfolio"
-                loading="lazy"
-              />
-            </div>
-          </Html>
-        </group>
-
-
-        
-        {/* Ambient Portal illumination */}
         <pointLight position={[0, 0, 2.0]} intensity={15} distance={15} color="#38bdf8" />
       </group>
     </group>
