@@ -107,7 +107,7 @@ export function ProjectPodium({
                 <Html
                   transform
                   center
-                  scale={0.0051} // 3.2 units / 620px = 0.00516
+                  distanceFactor={2.8}
                   position={[0, 0, 0]}
                   zIndexRange={[100, 0]}
                 >
