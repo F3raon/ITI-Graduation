@@ -55,33 +55,7 @@ export function ScrollTrack() {
 
   return (
     <div className="fixed right-[6px] md:right-[24px] top-1/2 -translate-y-1/2 z-[9999] flex flex-row items-center gap-[6px] md:gap-[16px] select-none scale-[0.7] md:scale-100 origin-right">
-      {/* Current Sector Badge */}
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'flex-end',
-          gap: '4px',
-          marginRight: '12px',
-          justifyContent: 'center',
-          opacity: 0.8,
-        }}
-      >
-        <span
-          className="hidden md:inline"
-          style={{
-            fontSize: '11px',
-            fontFamily: 'sans-serif',
-            fontWeight: 600,
-            letterSpacing: '2px',
-            color: '#ffffff',
-            textShadow: '0 0 10px rgba(255, 255, 255, 0.3)',
-            textTransform: 'uppercase',
-          }}
-        >
-          {currentSector.name}
-        </span>
-      </div>
+      {/* Interactive Track Area */}
 
       {/* Vertical Interactive Track */}
       <div
@@ -127,20 +101,48 @@ export function ScrollTrack() {
           }}
         />
 
-        {/* Sector Tick Markers */}
+        {/* Sector Tick Markers and Labels */}
         {SECTORS.map((s) => (
-          <div
-            key={s.name}
-            style={{
-              position: 'absolute',
-              top: `${s.target * 100}%`,
-              left: '50%',
-              transform: 'translateX(-50%)',
-              width: '6px',
-              height: '1px',
-              background: Math.abs(progress - s.target) < 0.04 ? '#ffffff' : 'rgba(255, 255, 255, 0.2)',
-            }}
-          />
+          <React.Fragment key={s.name}>
+            <div
+              style={{
+                position: 'absolute',
+                top: `${s.target * 100}%`,
+                right: '15px',
+                transform: 'translateY(-50%)',
+                opacity: Math.abs(progress - s.target) < 0.04 ? 1 : 0,
+                transition: 'opacity 0.3s ease',
+                pointerEvents: 'none',
+              }}
+              className="hidden md:block"
+            >
+              <span
+                style={{
+                  fontSize: '11px',
+                  fontFamily: 'sans-serif',
+                  fontWeight: 600,
+                  letterSpacing: '2px',
+                  color: '#ffffff',
+                  textShadow: '0 0 10px rgba(255, 255, 255, 0.3)',
+                  textTransform: 'uppercase',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {s.name}
+              </span>
+            </div>
+            <div
+              style={{
+                position: 'absolute',
+                top: `${s.target * 100}%`,
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                width: '6px',
+                height: '1px',
+                background: Math.abs(progress - s.target) < 0.04 ? '#ffffff' : 'rgba(255, 255, 255, 0.2)',
+              }}
+            />
+          </React.Fragment>
         ))}
       </div>
     </div>

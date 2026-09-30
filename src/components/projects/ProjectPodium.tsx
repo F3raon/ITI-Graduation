@@ -77,13 +77,14 @@ export function ProjectPodium({
 
             {/* 3D Iframe Screen */}
             <group position={[0, 0.4, 0.07]}>
-              <Html
-                transform
-                center
-                scale={0.0051} // 3.2 units / 620px = 0.00516
-                position={[0, 0, 0]}
-                zIndexRange={[100, 0]}
-              >
+              {hovered && (
+                <Html
+                  transform
+                  center
+                  scale={0.0051} // 3.2 units / 620px = 0.00516
+                  position={[0, 0, 0]}
+                  zIndexRange={[100, 0]}
+                >
                 <div
                   ref={divRef}
                   style={{
@@ -129,6 +130,7 @@ export function ProjectPodium({
                   )}
                 </div>
               </Html>
+            )}
             </group>
           </group>
         );
