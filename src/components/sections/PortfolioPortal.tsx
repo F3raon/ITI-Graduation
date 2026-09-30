@@ -22,8 +22,8 @@ export function PortfolioPortal({ position = [0, 0, -114] }: { position?: [numbe
         child.rotation.z += delta * (0.15 + i * 0.08) * (i % 2 === 0 ? 1 : -1);
       });
     }
-    // Only render the iframe when we are near the end of the scroll to prevent CSS3D overlap
-    const isVisible = scrollStore.current > 0.85;
+    // Only render the iframe when we are exactly at the final Portal section to prevent it from rendering over the Contact section
+    const isVisible = scrollStore.current > 0.95;
     if (visible !== isVisible) setVisible(isVisible);
   });
 
