@@ -54,8 +54,8 @@ export function ProjectsScene({ position = [0, 0, WORLD.PROJECTS_Z] }: { positio
       </Text>
 
       {/* Rotating Carousel of Projects (Left side) */}
-      <group position={[-7.5, 0, 0]} scale={0.68}>
-        <group position={[0, -0.2, -radius + 1]}>
+      <group position={[-12, 0, -10]} scale={0.68}>
+        <group position={[0, -0.2, 0]}>
           <group ref={carouselRef}>
           {allProjects.map((project, i) => {
             const angle = -(i / total) * Math.PI * 2;

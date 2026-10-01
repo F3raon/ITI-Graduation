@@ -15,7 +15,7 @@ function TrophyObject({ rank, color, hovered }: { rank: string; color: string; h
   });
 
   return (
-    <group ref={trophyRef} position={[0, 0.6, 0]} scale={0.85}>
+    <group ref={trophyRef} position={[0, 0, 0]} scale={0.85}>
       {/* Trophy Stepped Base */}
       <mesh position={[0, -0.4, 0]} castShadow>
         <cylinderGeometry args={[0.3, 0.4, 0.16, 24]} />
@@ -73,7 +73,9 @@ function AchievementPedestal({
   useFrame((_, delta) => {
     if (!groupRef.current) return;
     const targetZ = position[2] + (hovered ? 0.45 : 0);
+    const targetY = position[1] + (hovered ? 0.2 : 0);
     groupRef.current.position.z = THREE.MathUtils.lerp(groupRef.current.position.z, targetZ, 1 - Math.exp(-6 * delta));
+    groupRef.current.position.y = THREE.MathUtils.lerp(groupRef.current.position.y, targetY, 1 - Math.exp(-6 * delta));
   });
 
   return (
@@ -90,48 +92,51 @@ function AchievementPedestal({
         setHovered(false);
       }}
     >
-      {/* 3D Illuminated Rotating Trophy */}
-      <TrophyObject rank={item.rank} color={item.color} hovered={hovered} />
+      {/* 3D Vertical Holographic Card */}
+      <RoundedBox args={[2.4, 3.8, 0.08]} radius={0.06} smoothness={4} castShadow>
+        <meshPhysicalMaterial
+          color="#05080c"
+          metalness={0.85}
+          roughness={0.2}
+          emissive={item.color}
+          emissiveIntensity={hovered ? 0.35 : 0.05}
+          transparent
+          opacity={0.88}
+        />
+      </RoundedBox>
 
-      {/* Trophy Pedestal Display Stand (Sleeker and attached to base) */}
-      <group position={[0, -0.8, 0]}>
-        <RoundedBox args={[2.8, 1.4, 0.06]} radius={0.05} smoothness={4} castShadow>
-          <meshPhysicalMaterial
-            color="#05080c"
-            metalness={0.8}
-            roughness={0.2}
-            emissive={item.color}
-            emissiveIntensity={hovered ? 0.3 : 0.05}
-            transparent
-            opacity={0.85}
-          />
-        </RoundedBox>
+      {/* Holographic Backing Plate */}
+      <mesh position={[0, 0, -0.05]}>
+        <planeGeometry args={[2.45, 3.85]} />
+        <meshBasicMaterial color={item.color} transparent opacity={hovered ? 0.25 : 0.05} />
+      </mesh>
 
-        {/* Holographic Backing Plate (Sleeker border) */}
-        <mesh position={[0, 0, -0.04]}>
-          <planeGeometry args={[2.85, 1.45]} />
-          <meshBasicMaterial color={item.color} transparent opacity={hovered ? 0.25 : 0.05} />
-        </mesh>
+      {/* 3D Illuminated Rotating Trophy (Top Half) */}
+      <group position={[0, 0.7, 0.15]}>
+        <TrophyObject rank={item.rank} color={item.color} hovered={hovered} />
+      </group>
 
+      {/* Text Content (Bottom Half) */}
+      <group position={[0, -0.4, 0.05]}>
         {/* Badge / Rank Ribbon */}
-        <Text position={[0, 0.45, 0.04]} fontSize={0.11} color={item.color} anchorX="center" fontWeight={900} letterSpacing={0.05}>
+        <Text position={[0, 0.0, 0]} fontSize={0.11} color={item.color} anchorX="center" fontWeight={900} letterSpacing={0.05}>
           {item.rank.toUpperCase()} // {item.year}
         </Text>
 
         {/* Title */}
-        <Text position={[0, 0.2, 0.04]} fontSize={0.15} color="#f8fafc" anchorX="center" fontWeight={900} letterSpacing={0.02}>
+        <Text position={[0, -0.25, 0]} fontSize={0.15} color="#f8fafc" anchorX="center" fontWeight={900} letterSpacing={0.02} maxWidth={2.2}>
           {item.title.toUpperCase()}
         </Text>
 
         {/* Competition */}
-        <Text position={[0, 0.0, 0.04]} fontSize={0.09} color="#67c9ff" anchorX="center" fontWeight="bold">
+        <Text position={[0, -0.5, 0]} fontSize={0.09} color="#67c9ff" anchorX="center" fontWeight="bold">
           {item.competition}
         </Text>
 
         {/* Description */}
         <Text
-          position={[0, -0.3, 0.04]}
-          maxWidth={2.5}
+          position={[0, -0.8, 0]}
+          maxWidth={2.1}
           fontSize={0.075}
           color="#94a3b8"
           anchorX="center"
@@ -139,16 +144,16 @@ function AchievementPedestal({
         >
           {item.description}
         </Text>
-
-        {/* Dedicated Spotlight */}
-        <spotLight
-          position={[0, 2.8, 1.2]}
-          angle={0.5}
-          penumbra={0.7}
-          intensity={hovered ? 40 : 15}
-          color={item.color}
-        />
       </group>
+
+      {/* Dedicated Spotlight */}
+      <spotLight
+        position={[0, 2.5, 1.5]}
+        angle={0.6}
+        penumbra={0.5}
+        intensity={hovered ? 40 : 15}
+        color={item.color}
+      />
     </group>
   );
 }
@@ -156,16 +161,10 @@ function AchievementPedestal({
 export function AchievementsScene({ position = [0, 0, -82] }: { position?: [number, number, number] }) {
   const { size } = useThree();
   const aspect = size.width / Math.max(1, size.height);
-  const scale = aspect < 0.9 ? 0.6 : aspect < 1.25 ? 0.76 : aspect < 1.6 ? 0.92 : 1.0;
+  const scale = aspect < 0.9 ? 0.45 : aspect < 1.25 ? 0.6 : aspect < 1.6 ? 0.75 : 0.85;
 
   return (
     <group position={position} scale={scale}>
-      {/* Chamber Architectural Dark Backdrop to isolate room view */}
-      <mesh position={[0, 1.2, -2.2]} receiveShadow>
-        <planeGeometry args={[24, 12]} />
-        <meshStandardMaterial color="#030508" roughness={0.95} metalness={0.1} />
-      </mesh>
-
       {/* Section Header */}
       <Text position={[0, 3.6, 0]} fontSize={0.16} color="#ffc83b" anchorX="center" letterSpacing={0.22}>
         // HONORS & RECOGNITION
@@ -177,26 +176,18 @@ export function AchievementsScene({ position = [0, 0, -82] }: { position?: [numb
         COMPETITIVE ROBOTICS, CLOUD COMPUTING & SPACE INNOVATION AWARDS
       </Text>
 
-      {/* 4 Trophies arranged across the chamber */}
-      <group position={[0, 0, 0]}>
+      {/* Trophies arranged in a single horizontal line */}
+      <group position={[0, -0.8, 0]}>
         {PORTFOLIO_DATA.achievements.map((item, i) => {
-          const isMobile = aspect < 0.9;
-          
-          // 2x2 Grid Layout to fit within camera view
-          const col = i % 2;
-          const row = Math.floor(i / 2);
-          
-          const xSpacing = isMobile ? 3.0 : 3.4;
-          const ySpacing = isMobile ? 2.9 : 2.6; // Tighter vertical spacing so they don't clip floor
-          
-          const x = (col - 0.5) * xSpacing;
-          const y = (0.5 - row) * ySpacing + 0.6; // Center the grid at Y = 0.6
+          const total = PORTFOLIO_DATA.achievements.length;
+          const spacing = 2.8;
+          const x = (i - (total - 1) / 2) * spacing;
 
           return (
             <AchievementPedestal
               key={item.id}
               item={item}
-              position={[x, y, 0]}
+              position={[x, 0, 0]}
             />
           );
         })}

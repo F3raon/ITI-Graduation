@@ -9,6 +9,7 @@ import { CinaVerse } from './CinaVerse';
 import { SmartNursery } from './SmartNursery';
 import { soundEngine } from '../../utils/audio';
 import { scrollStore } from '../../context/ScrollContext';
+import { neonStore } from '../../context/NeonContext';
 
 export function ProjectPodium({
   project,
@@ -23,6 +24,8 @@ export function ProjectPodium({
   const groupRef = useRef<THREE.Group>(null);
   const baseRef = useRef<THREE.Group>(null);
   const divRef = useRef<HTMLDivElement>(null);
+  const glassMatRef = useRef<THREE.MeshPhysicalMaterial>(null);
+  const lightRef = useRef<THREE.PointLight>(null);
 
   useFrame((_, delta) => {
     if (!groupRef.current) return;
@@ -35,6 +38,14 @@ export function ProjectPodium({
       hovered ? (index % 2 === 0 ? 0.12 : -0.12) : 0,
       1 - Math.exp(-6 * delta)
     );
+
+    const neonT = neonStore.current;
+    if (glassMatRef.current) {
+      glassMatRef.current.emissiveIntensity = hovered ? 0.4 + neonT * 0.4 : 0.15 + neonT * 0.3;
+    }
+    if (lightRef.current) {
+      lightRef.current.intensity = (hovered ? 4 : 1) + neonT * 4;
+    }
   });
 
   const renderDiorama = () => {
@@ -180,6 +191,7 @@ export function ProjectPodium({
       <group ref={baseRef} position={[0, -1.4, 0]}>
         <RoundedBox args={[3.4, 1.8, 0.15]} radius={0.06} smoothness={4} castShadow>
           <meshPhysicalMaterial
+            ref={glassMatRef}
             color="#1a2235"
             metalness={0.5}
             roughness={0.2}
@@ -188,7 +200,7 @@ export function ProjectPodium({
             transparent
             opacity={0.8}
             emissive={project.color}
-            emissiveIntensity={hovered ? 0.4 : 0.15}
+            emissiveIntensity={0.15}
           />
         </RoundedBox>
 
@@ -230,7 +242,7 @@ export function ProjectPodium({
         </group>
 
         {/* Under-glow light */}
-        <pointLight position={[0, -0.8, 0.3]} intensity={hovered ? 4 : 1} distance={4} color={project.color} />
+        <pointLight ref={lightRef} position={[0, -0.8, 0.3]} distance={4} color={project.color} />
       </group>
     </group>
   );

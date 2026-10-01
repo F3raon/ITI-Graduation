@@ -1,10 +1,8 @@
-﻿import { useState, useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
-import { Text, useTexture } from '@react-three/drei';
+import { Text, Html } from '@react-three/drei';
 import * as THREE from 'three';
-import { PORTFOLIO_DATA } from '../../data/portfolio';
 import { scrollStore } from '../../context/ScrollContext';
-
 
 export function PortfolioPortal({ position = [0, 0, -114] }: { position?: [number, number, number] }) {
   const { size } = useThree();
@@ -13,9 +11,6 @@ export function PortfolioPortal({ position = [0, 0, -114] }: { position?: [numbe
 
   const portalRingsRef = useRef<THREE.Group>(null);
   const [visible, setVisible] = useState(false);
-  const [hovered, setHovered] = useState(false);
-
-  const previewTexture = useTexture('/images/portfolio-preview.jpg');
 
   useFrame((_, delta) => {
     if (portalRingsRef.current) {
@@ -77,31 +72,31 @@ export function PortfolioPortal({ position = [0, 0, -114] }: { position?: [numbe
           <meshBasicMaterial color="#38bdf8" transparent opacity={0.12} />
         </mesh>
 
-        {/* Screenshot texture — always inside the mesh, never overflows */}
-        <mesh
-          position={[0, 0, 0.06]}
-          onClick={() => window.open(PORTFOLIO_DATA.identity.oldPortfolioUrl, '_blank')}
-          onPointerEnter={() => { document.body.style.cursor = 'pointer'; setHovered(true); }}
-          onPointerLeave={() => { document.body.style.cursor = 'auto'; setHovered(false); }}
-        >
-          <planeGeometry args={[7.6, 4.6]} />
-          <meshBasicMaterial map={previewTexture} />
-        </mesh>
-
-        {hovered && (
-          <group position={[0, 0, 0.07]}>
-            <mesh>
-              <planeGeometry args={[7.6, 4.6]} />
-              <meshBasicMaterial color="#020b18" transparent opacity={0.75} />
-            </mesh>
-            <Text position={[0, 0.3, 0.01]} fontSize={0.28} color="#38bdf8" anchorX="center" fontWeight={900} letterSpacing={0.05}>
-              VISIT LIVE PORTFOLIO
-            </Text>
-            <Text position={[0, -0.15, 0.01]} fontSize={0.12} color="#94a3b8" anchorX="center" letterSpacing={0.1}>
-              Click to open in a new tab
-            </Text>
-          </group>
-        )}
+        {/* Interactive Web Portal */}
+        <Html transform distanceFactor={2.4} position={[0, 0, 0.06]} occlude="blending">
+          <div
+            style={{
+              width: '1440px',
+              height: '860px',
+              borderRadius: '16px',
+              overflow: 'hidden',
+              background: '#070b12',
+              border: '4px solid #38bdf8',
+              boxShadow: '0 0 20px rgba(56, 189, 248, 0.3)'
+            }}
+            onPointerDown={(e) => e.stopPropagation()}
+          >
+            <iframe
+              src="https://ahmed-hamada-eta.vercel.app/"
+              title="Original Portfolio"
+              style={{
+                width: '100%',
+                height: '100%',
+                border: 'none',
+              }}
+            />
+          </div>
+        </Html>
 
         <pointLight position={[0, 0, 2.0]} intensity={15} distance={15} color="#38bdf8" />
       </group>

@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { World } from './components/scene/World';
 import { ScrollTrack } from './components/ui/ScrollTrack';
 import { ScrollProvider } from './context/ScrollContext';
+import { NeonProvider } from './context/NeonContext';
 
 export default function Portfolio() {
   const [activeIframeUrl, setActiveIframeUrl] = useState<string | null>(null);
@@ -21,8 +22,9 @@ export default function Portfolio() {
     };
   }, []);
   return (
-    <ScrollProvider>
-      <div className="fixed inset-0 w-screen h-screen bg-[#030507] overflow-hidden">
+    <NeonProvider>
+      <ScrollProvider>
+        <div className="fixed inset-0 w-screen h-screen bg-[#030507] overflow-hidden">
         {/* 3D WebGL Canvas */}
         <Canvas
           shadows
@@ -76,6 +78,7 @@ export default function Portfolio() {
           </div>
         )}
       </div>
-    </ScrollProvider>
+      </ScrollProvider>
+    </NeonProvider>
   );
 }

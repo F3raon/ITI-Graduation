@@ -104,12 +104,6 @@ export function ExperienceScene({ position = [0, 0, -48] }: { position?: [number
 
   return (
     <group position={position} scale={scale}>
-      {/* Chamber Architectural Dark Backdrop */}
-      <mesh position={[0, 0.8, -1.2]} receiveShadow>
-        <planeGeometry args={[28, 14]} />
-        <meshStandardMaterial color="#030508" roughness={0.95} metalness={0.1} />
-      </mesh>
-
       {/* Section Header */}
       <Text position={[0, 3.8, 0]} fontSize={0.16} color="#67c9ff" anchorX="center" letterSpacing={0.22}>
         // CHRONOLOGICAL TRAJECTORY

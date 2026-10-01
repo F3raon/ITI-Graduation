@@ -2,6 +2,7 @@ import { useMemo, useRef } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { scrollStore } from '../../context/ScrollContext';
+import { neonStore } from '../../context/NeonContext';
 import { WORLD } from '../../data/world';
 
 /**
@@ -148,9 +149,17 @@ export function CameraRig() {
       1 - Math.exp(-6 * delta)
     );
 
+    // Smooth neon interpolation
+    neonStore.current = THREE.MathUtils.lerp(
+      neonStore.current,
+      neonStore.target,
+      1 - Math.exp(-4 * delta)
+    );
+
     // Notify UI subscribers
     if (state.clock.elapsedTime - lastNotify.current > 0.03) {
       scrollStore.notify();
+      neonStore.notify();
       lastNotify.current = state.clock.elapsedTime;
     }
 

@@ -105,12 +105,6 @@ export function ContactScene({ position = [0, 0, -98] }: { position?: [number, n
 
   return (
     <group position={position} scale={scale}>
-      {/* Chamber Architectural Dark Backdrop to isolate room view */}
-      <mesh position={[0, 1.0, -2.4]} receiveShadow>
-        <planeGeometry args={[26, 14]} />
-        <meshStandardMaterial color="#030508" roughness={0.95} metalness={0.1} />
-      </mesh>
-
       {/* Background Energy Ring */}
       <group ref={ringRef} position={[0, 1.0, -1]}>
         <mesh rotation={[Math.PI / 2, 0, 0]}>
