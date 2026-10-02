@@ -43,9 +43,7 @@ export function ProjectsScene({ position = [0, 0, WORLD.PROJECTS_Z] }: { positio
   return (
     <group position={position} scale={scale}>
       {/* Section Header */}
-      <Text position={[0, 3.8, 0]} fontSize={0.16} color="#67c9ff" anchorX="center" letterSpacing={0.22}>
-        // 3D RESEARCH & PRODUCTION SYSTEMS
-      </Text>
+
       <Text position={[0, 3.1, 0]} fontSize={0.65} color="#f8fafc" anchorX="center" fontWeight={900}>
         PROJECT LAB
       </Text>

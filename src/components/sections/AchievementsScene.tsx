@@ -166,9 +166,7 @@ export function AchievementsScene({ position = [0, 0, -82] }: { position?: [numb
   return (
     <group position={position} scale={scale}>
       {/* Section Header */}
-      <Text position={[0, 3.6, 0]} fontSize={0.16} color="#ffc83b" anchorX="center" letterSpacing={0.22}>
-        // HONORS & RECOGNITION
-      </Text>
+
       <Text position={[0, 2.9, 0]} fontSize={0.58} color="#f8fafc" anchorX="center" fontWeight={900}>
         ACHIEVEMENTS CHAMBER
       </Text>

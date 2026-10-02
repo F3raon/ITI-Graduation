@@ -119,9 +119,7 @@ export function ContactScene({ position = [0, 0, -98] }: { position?: [number, n
 
       {/* Giant 3D Typography */}
       <group position={[0, 2.2, 0]}>
-        <Text position={[0, 1.4, 0]} fontSize={0.18} color="#94a3b8" anchorX="center" letterSpacing={0.24}>
-          // COMMENCE COLLABORATION
-        </Text>
+
         <Text position={[0, 0.55, 0]} fontSize={0.92} color="#f8fafc" anchorX="center" fontWeight={900}>
           LET'S BUILD
         </Text>

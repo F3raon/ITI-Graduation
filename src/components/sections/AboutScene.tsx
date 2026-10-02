@@ -109,9 +109,7 @@ export function AboutScene({ position = [0, 0, -18] }: { position?: [number, num
       </RoundedBox>
 
       {/* Section Header */}
-      <Text position={[-0.4, 1.6, 0.0]} fontSize={0.16} color="#67c9ff" anchorX="left" letterSpacing={0.24}>
-        // IDENTITY DOSSIER
-      </Text>
+
       <Text position={[-0.4, 0.85, 0.0]} fontSize={0.72} color="#f8fafc" anchorX="left" fontWeight={900} letterSpacing={0.02}>
         WHO AM I?
       </Text>

@@ -171,9 +171,7 @@ export function SkillsScene({ position = [0, 0, -34] }: { position?: [number, nu
   return (
     <group position={position} scale={scale}>
       {/* Section Header — centered so it's always visible */}
-      <Text position={[0, 3.8, 0]} fontSize={0.16} color="#67c9ff" anchorX="center" letterSpacing={0.22}>
-        // SYSTEM CORE // SKILLS REACTOR
-      </Text>
+
       <Text position={[0, 3.15, 0]} fontSize={0.65} color="#f8fafc" anchorX="center" fontWeight={900}>
         SKILLS LAB
       </Text>

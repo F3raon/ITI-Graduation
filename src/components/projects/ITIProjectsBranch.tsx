@@ -162,9 +162,7 @@ export function ITIProjectsBranch({ position = [0, 0, 0] }: { position?: [number
       </RoundedBox>
 
       {/* Header Text */}
-      <Text position={[0, 1.9, 0.0]} fontSize={0.14} color="#f87171" anchorX="center" letterSpacing={0.2}>
-        // ACADEMIC BRANCH
-      </Text>
+
       <Text position={[0, 1.45, 0.0]} fontSize={0.4} color="#f8fafc" anchorX="center" fontWeight={900}>
         ITI ASSIGNMENTS
       </Text>

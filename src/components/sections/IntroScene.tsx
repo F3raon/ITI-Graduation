@@ -259,16 +259,6 @@ export function IntroScene({ position = [0, 0, 8] }: { position?: [number, numbe
 
       {/* ── HERO TYPOGRAPHY ── */}
       <group position={[0, 0.65, 0.6]}>
-        {/* Eyebrow line */}
-        <Text
-          position={[0, 1.55, 0]}
-          fontSize={isMobile ? 0.10 : 0.125}
-          color="#94a3b8"
-          anchorX="center"
-          letterSpacing={0.22}
-        >
-          // CINEMATIC 3D PORTFOLIO
-        </Text>
 
         {/* Name */}
         <Text

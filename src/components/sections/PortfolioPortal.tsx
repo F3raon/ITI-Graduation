@@ -26,9 +26,7 @@ export function PortfolioPortal({ position = [0, 0, -114] }: { position?: [numbe
 
   return (
     <group position={position} scale={scale}>
-      <Text position={[0, 3.4, 0]} fontSize={0.12} color="#94a3b8" anchorX="center" letterSpacing={0.25}>
-        // THE PREVIOUS CHAPTER
-      </Text>
+
       <Text position={[0, 2.9, 0]} fontSize={0.5} color="#ffffff" anchorX="center" fontWeight={900}>
         ORIGINAL PORTFOLIO
       </Text>
