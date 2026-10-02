@@ -21,14 +21,20 @@ export function Environment() {
 
   // Cyberpunk skyline buildings for the window / horizon backdrop
   const buildings = useMemo(() => {
-    return Array.from({ length: 32 }, (_, i) => {
-      const angle = (i / 32) * Math.PI * 0.9 - Math.PI * 0.45;
-      const dist = 32 + Math.random() * 14;
-      const height = 12 + Math.random() * 26;
-      const width = 2.5 + Math.random() * 3.5;
+    return Array.from({ length: 48 }, (_, i) => {
+      const isLeft = i % 2 === 0;
+      const xBase = isLeft ? -35 : 35;
+      const xOffset = (Math.random() - 0.5) * 15;
+      
+      const zPos = 20 - (i / 48) * 160 + (Math.random() - 0.5) * 10;
+      
+      const height = 15 + Math.random() * 30;
+      const width = 3 + Math.random() * 5;
+      const depth = 3 + Math.random() * 5;
+
       return {
-        pos: [Math.sin(angle) * dist, height / 2 - 8, -Math.cos(angle) * dist - 8] as [number, number, number],
-        size: [width, height, width] as [number, number, number],
+        pos: [xBase + xOffset, height / 2 - 8, zPos] as [number, number, number],
+        size: [width, height, depth] as [number, number, number],
         color: i % 2 === 0 ? '#060c14' : '#04080e',
         glowColor: i % 3 === 0 ? '#ff8a30' : '#38bdf8',
       };
