@@ -4,6 +4,7 @@ import { World } from './components/scene/World';
 import { ScrollTrack } from './components/ui/ScrollTrack';
 import { ScrollProvider } from './context/ScrollContext';
 import { NeonProvider } from './context/NeonContext';
+import { Stats } from '@react-three/drei';
 
 export default function Portfolio() {
   const [activeIframeUrl, setActiveIframeUrl] = useState<string | null>(null);
@@ -38,6 +39,7 @@ export default function Portfolio() {
           className="!w-screen !h-screen block"
         >
           <World />
+          {window.location.search.includes('debug') && <Stats />}
         </Canvas>
 
         {/* Interactive Holographic Scroll Track Indicator */}
