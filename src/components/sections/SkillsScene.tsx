@@ -5,6 +5,7 @@ import * as THREE from 'three';
 import { PORTFOLIO_DATA, SkillNode } from '../../data/portfolio';
 import { soundEngine } from '../../utils/audio';
 import { scrollStore } from '../../context/ScrollContext';
+import { SECTION_MAP } from '../../data/sections';
 
 function SpinningLogo({ iconUrl, iconUrls, color, hovered, invertIcon }: { iconUrl?: string; iconUrls?: string[]; color: string; hovered: boolean, invertIcon?: boolean }) {
   const ref = useRef<THREE.Group>(null);
@@ -16,7 +17,7 @@ function SpinningLogo({ iconUrl, iconUrls, color, hovered, invertIcon }: { iconU
       ref.current.rotation.y += delta * (hovered ? 2.5 : 0.8);
     }
     const p = scrollStore.current;
-    const shouldBeVisible = p < 0.65; // Camera passes Skills around 0.62
+    const shouldBeVisible = p < SECTION_MAP['SKILLS'].end;
     if (isVisible !== shouldBeVisible) {
       setIsVisible(shouldBeVisible);
     }

@@ -3,6 +3,7 @@ import { useFrame, useThree } from '@react-three/fiber';
 import { Text, Html } from '@react-three/drei';
 import * as THREE from 'three';
 import { scrollStore } from '../../context/ScrollContext';
+import { SECTION_MAP } from '../../data/sections';
 
 export function PortfolioPortal({ position = [0, 0, -114] }: { position?: [number, number, number] }) {
   const { size } = useThree();
@@ -18,7 +19,7 @@ export function PortfolioPortal({ position = [0, 0, -114] }: { position?: [numbe
         child.rotation.z += delta * (0.15 + i * 0.08) * (i % 2 === 0 ? 1 : -1);
       });
     }
-    const isVisible = scrollStore.current > 0.95;
+    const isVisible = scrollStore.current > SECTION_MAP['PORTAL'].start - 0.05;
     if (visible !== isVisible) setVisible(isVisible);
   });
 

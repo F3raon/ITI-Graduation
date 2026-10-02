@@ -5,8 +5,9 @@ import * as THREE from 'three';
 import { PORTFOLIO_DATA } from '../../data/portfolio';
 import { ProjectPodium } from '../projects/ProjectPodium';
 import { ITIProjectsBranch } from '../projects/ITIProjectsBranch';
-import { WORLD, sectionProgress } from '../../data/world';
+import { WORLD } from '../../data/world';
 import { scrollStore } from '../../context/ScrollContext';
+import { SECTION_MAP, sectionProgress } from '../../data/sections';
 
 export function ProjectsScene({ position = [0, 0, WORLD.PROJECTS_Z] }: { position?: [number, number, number] }) {
   const { size } = useThree();
@@ -28,7 +29,7 @@ export function ProjectsScene({ position = [0, 0, WORLD.PROJECTS_Z] }: { positio
     if (!carouselRef.current) return;
     
     // Local progress for this section (0 -> 1)
-    const p = sectionProgress(scrollStore.current, WORLD.SCROLL_PROJECTS[0], WORLD.SCROLL_PROJECTS[1]);
+    const p = sectionProgress(scrollStore.current, SECTION_MAP['PROJECTS']);
     
     // Continuous smooth 360 rotation
     const targetRotation = state.clock.elapsedTime * 0.12;

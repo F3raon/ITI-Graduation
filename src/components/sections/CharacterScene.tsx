@@ -5,15 +5,16 @@ import { CharacterLighting } from '../character/CharacterLighting';
 import { CharacterParticles } from '../character/CharacterParticles';
 import { CharacterEffects } from '../character/CharacterEffects';
 import { scrollStore } from '../../context/ScrollContext';
-import { WORLD, sectionProgress } from '../../data/world';
+import { WORLD } from '../../data/world';
+import { SECTION_MAP, sectionProgress } from '../../data/sections';
 import * as THREE from 'three';
 
 export interface CharacterSceneProps {
   position?: [number, number, number];
 }
 
-// Character scroll window — matches WORLD.SCROLL_CHARACTER = [0.26, 0.48]
-const [SCROLL_START, SCROLL_END] = WORLD.SCROLL_CHARACTER;
+const SCROLL_START = SECTION_MAP['NEON'].start;
+const SCROLL_END = SECTION_MAP['NEON'].end;
 
 export function CharacterScene({
   position = [0, -0.5, WORLD.CHARACTER_Z],
@@ -25,7 +26,7 @@ export function CharacterScene({
   const scale = aspect < 0.9 ? 0.75 : aspect < 1.3 ? 0.9 : 1.0;
 
   useFrame(() => {
-    const p = sectionProgress(scrollStore.current, SCROLL_START, SCROLL_END);
+    const p = sectionProgress(scrollStore.current, SECTION_MAP['NEON']);
     if (Math.abs(p - progress) > 0.002) {
       setProgress(p);
     }

@@ -5,6 +5,7 @@ import * as THREE from 'three';
 import { PORTFOLIO_DATA, ExperienceItem } from '../../data/portfolio';
 import { soundEngine } from '../../utils/audio';
 import { scrollStore } from '../../context/ScrollContext';
+import { SECTION_MAP } from '../../data/sections';
 
 function ExperienceNode({
   item,
@@ -96,7 +97,7 @@ export function ExperienceScene({ position = [0, 0, -48] }: { position?: [number
   const [visible, setVisible] = useState(false);
 
   useFrame(() => {
-    const isVisible = scrollStore.current > 0.65 && scrollStore.current < 0.95;
+    const isVisible = scrollStore.current > SECTION_MAP['EXPERIENCE'].start - 0.1 && scrollStore.current < SECTION_MAP['EXPERIENCE'].end + 0.1;
     if (visible !== isVisible) setVisible(isVisible);
   });
 
