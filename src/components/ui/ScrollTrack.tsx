@@ -121,17 +121,42 @@ export function ScrollTrack() {
               return (
                 <div
                   key={s.name}
+                  onPointerDown={(e) => {
+                    e.stopPropagation();
+                    scrollTo(s.start);
+                    soundEngine.playSelect();
+                  }}
+                  onPointerEnter={() => soundEngine.playHover()}
+                  className="group"
                   style={{
                     position: 'absolute',
                     top: `${s.start * 100}%`,
                     left: '50%',
                     transform: 'translate(-50%, -50%)',
-                    width: '6px',
-                    height: '1px',
-                    background: isActive ? '#00f0ff' : 'rgba(255, 255, 255, 0.2)',
-                    boxShadow: isActive ? '0 0 6px #00f0ff' : 'none',
+                    width: '24px', // generous hit area
+                    height: '12px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: 'pointer',
+                    zIndex: 10,
                   }}
-                />
+                >
+                  <div
+                    style={{
+                      width: '6px',
+                      height: '1px',
+                      background: isActive ? '#00f0ff' : 'rgba(255, 255, 255, 0.4)',
+                      boxShadow: isActive ? '0 0 6px #00f0ff' : 'none',
+                    }}
+                  />
+                  {/* Hover Label (Desktop) */}
+                  <div className="absolute right-[100%] mr-2 opacity-0 group-hover:opacity-100 transition-opacity hidden md:block pointer-events-none">
+                    <span className="text-[9px] text-white/70 uppercase tracking-widest whitespace-nowrap bg-black/40 px-1.5 py-0.5 rounded border border-white/10">
+                      {s.name}
+                    </span>
+                  </div>
+                </div>
               );
             })}
           </div>
