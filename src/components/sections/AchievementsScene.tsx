@@ -4,6 +4,8 @@ import { RoundedBox, Text, Float } from '@react-three/drei';
 import * as THREE from 'three';
 import { PORTFOLIO_DATA, AchievementItem } from '../../data/portfolio';
 import { soundEngine } from '../../utils/audio';
+import { scrollStore } from '../../context/ScrollContext';
+import { SECTION_MAP } from '../../data/sections';
 
 function TrophyObject({ rank, color, hovered }: { rank: string; color: string; hovered: boolean }) {
   const trophyRef = useRef<THREE.Group>(null);
@@ -162,6 +164,16 @@ export function AchievementsScene({ position = [0, 0, -82] }: { position?: [numb
   const { size } = useThree();
   const aspect = size.width / Math.max(1, size.height);
   const scale = aspect < 0.9 ? 0.45 : aspect < 1.25 ? 0.6 : aspect < 1.6 ? 0.75 : 0.85;
+
+  const [visible, setVisible] = useState(false);
+
+  useFrame(() => {
+    // Visible slightly before ACHIEVEMENTS starts until slightly after it ends
+    const isVisible = scrollStore.current > SECTION_MAP['ACHIEVEMENTS'].start - 0.1 && scrollStore.current < SECTION_MAP['ACHIEVEMENTS'].end + 0.1;
+    if (visible !== isVisible) setVisible(isVisible);
+  });
+
+  if (!visible) return null;
 
   return (
     <group position={position} scale={scale}>

@@ -3,7 +3,9 @@ import { useFrame, useThree } from '@react-three/fiber';
 import { RoundedBox, Text, useTexture } from '@react-three/drei';
 import * as THREE from 'three';
 import { PORTFOLIO_DATA } from '../../data/portfolio';
-
+import { useState } from 'react';
+import { scrollStore } from '../../context/ScrollContext';
+import { SECTION_MAP } from '../../data/sections';
 function HolographicPortrait({ position = [2.8, 0, 0] }: { position?: [number, number, number] }) {
   const texture = useTexture(PORTFOLIO_DATA.identity.portraitImage);
   const portraitRef = useRef<THREE.Group>(null);
@@ -93,6 +95,16 @@ export function AboutScene({ position = [0, 0, -18] }: { position?: [number, num
   const { size } = useThree();
   const aspect = size.width / Math.max(1, size.height);
   const scale = aspect < 0.9 ? 0.62 : aspect < 1.25 ? 0.78 : aspect < 1.6 ? 0.92 : 1.0;
+
+  const [visible, setVisible] = useState(false);
+
+  useFrame(() => {
+    // About Scene is visible from a bit before its start until after it ends
+    const isVisible = scrollStore.current > SECTION_MAP['ABOUT'].start - 0.1 && scrollStore.current < SECTION_MAP['ABOUT'].end + 0.1;
+    if (visible !== isVisible) setVisible(isVisible);
+  });
+
+  if (!visible) return null;
 
   return (
     <group position={position} scale={scale * 0.80}>

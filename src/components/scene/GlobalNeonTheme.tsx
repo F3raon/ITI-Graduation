@@ -115,6 +115,9 @@ export function GlobalNeonTheme() {
     const t = neonStore.current;
     const time = state.clock.elapsedTime;
     
+    // Update CSS variables for HTML UI components
+    document.documentElement.style.setProperty('--theme-mix', t.toString());
+    
     // Interpolate all scene materials
     materialsCache.current.forEach((cache) => {
       const mat = cache.material as any;

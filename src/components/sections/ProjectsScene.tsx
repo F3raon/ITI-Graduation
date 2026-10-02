@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import { Text } from '@react-three/drei';
 import * as THREE from 'three';
@@ -25,8 +25,14 @@ export function ProjectsScene({ position = [0, 0, WORLD.PROJECTS_Z] }: { positio
   const total = allProjects.length;
   const radius = 8.5; // Increased radius to fit all 11+ projects without overlapping
 
+  const [visible, setVisible] = useState(false);
+
   useFrame((state) => {
-    if (!carouselRef.current) return;
+    // Visible from just before PROJECT LAB to slightly after
+    const isVisible = scrollStore.current > SECTION_MAP['PROJECTS'].start - 0.1 && scrollStore.current < SECTION_MAP['PROJECTS'].end + 0.1;
+    if (visible !== isVisible) setVisible(isVisible);
+
+    if (!carouselRef.current || !visible) return;
     
     // Local progress for this section (0 -> 1)
     const p = sectionProgress(scrollStore.current, SECTION_MAP['PROJECTS']);
@@ -40,6 +46,8 @@ export function ProjectsScene({ position = [0, 0, WORLD.PROJECTS_Z] }: { positio
       0.1
     );
   });
+
+  if (!visible) return null;
 
   return (
     <group position={position} scale={scale}>

@@ -3,6 +3,9 @@ import { useFrame, useThree } from '@react-three/fiber';
 import { Text } from '@react-three/drei';
 import * as THREE from 'three';
 import { PORTFOLIO_DATA } from '../../data/portfolio';
+import { useState } from 'react';
+import { scrollStore } from '../../context/ScrollContext';
+import { SECTION_MAP } from '../../data/sections';
 
 // ─── Atmospheric particle field ───────────────────────────────────────────────
 function IntroParticles({ count = 350 }: { count?: number }) {
@@ -242,6 +245,16 @@ export function IntroScene({ position = [0, 0, 8] }: { position?: [number, numbe
   const nameFontSize   = isMobile ? Math.min(0.38, viewport.width * 0.07) : Math.min(0.52, viewport.width * 0.06);
   const titleFontSize  = isMobile ? 0.14 : 0.19;
   const taglineFontSize = isMobile ? 0.085 : 0.11;
+
+  const [visible, setVisible] = useState(true);
+
+  useFrame(() => {
+    // Intro Scene is visible until a bit after the first section (ENTRY)
+    const isVisible = scrollStore.current < SECTION_MAP['ENTRY'].end + 0.1;
+    if (visible !== isVisible) setVisible(isVisible);
+  });
+
+  if (!visible) return null;
 
   return (
     <group position={position}>

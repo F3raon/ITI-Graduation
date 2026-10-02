@@ -4,6 +4,8 @@ import { RoundedBox, Text } from '@react-three/drei';
 import * as THREE from 'three';
 import { PORTFOLIO_DATA } from '../../data/portfolio';
 import { soundEngine } from '../../utils/audio';
+import { scrollStore } from '../../context/ScrollContext';
+import { SECTION_MAP } from '../../data/sections';
 
 function ContactTerminal({
   label,
@@ -97,11 +99,18 @@ export function ContactScene({ position = [0, 0, -98] }: { position?: [number, n
   const aspect = size.width / Math.max(1, size.height);
   const scale = aspect < 0.9 ? 0.6 : aspect < 1.25 ? 0.76 : aspect < 1.6 ? 0.92 : 1.0;
 
+  const [visible, setVisible] = useState(false);
+
   useFrame((_, delta) => {
-    if (ringRef.current) {
+    const isVisible = scrollStore.current > SECTION_MAP['CONTACT'].start - 0.1 && scrollStore.current < SECTION_MAP['CONTACT'].end + 0.1;
+    if (visible !== isVisible) setVisible(isVisible);
+
+    if (ringRef.current && visible) {
       ringRef.current.rotation.z += delta * 0.18;
     }
   });
+
+  if (!visible) return null;
 
   return (
     <group position={position} scale={scale}>
