@@ -104,7 +104,7 @@ export function AboutScene({ position = [0, 0, -18] }: { position?: [number, num
     if (visible !== isVisible) setVisible(isVisible);
   });
 
-  if (!visible) return null;
+  
 
   return (
     <group position={position} scale={scale * 0.80}>

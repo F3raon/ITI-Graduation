@@ -47,7 +47,7 @@ export function ProjectsScene({ position = [0, 0, WORLD.PROJECTS_Z] }: { positio
     );
   });
 
-  if (!visible) return null;
+  
 
   return (
     <group position={position} scale={scale}>

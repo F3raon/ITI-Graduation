@@ -13,8 +13,10 @@ export interface CharacterSceneProps {
   position?: [number, number, number];
 }
 
-const SCROLL_START = SECTION_MAP['NEON'].start;
-const SCROLL_END = SECTION_MAP['NEON'].end;
+const CHARACTER_BOUNDS = {
+  start: SECTION_MAP['REAL_AHMED'].start,
+  end: SECTION_MAP['NEON'].end,
+};
 
 export function CharacterScene({
   position = [0, -0.5, WORLD.CHARACTER_Z],
@@ -26,7 +28,7 @@ export function CharacterScene({
   const scale = aspect < 0.9 ? 0.75 : aspect < 1.3 ? 0.9 : 1.0;
 
   useFrame(() => {
-    const p = sectionProgress(scrollStore.current, SECTION_MAP['NEON']);
+    const p = sectionProgress(scrollStore.current, CHARACTER_BOUNDS as any);
     if (Math.abs(p - progress) > 0.002) {
       setProgress(p);
     }

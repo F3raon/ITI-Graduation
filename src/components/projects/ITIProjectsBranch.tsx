@@ -177,16 +177,17 @@ export function ITIProjectsBranch({ position = [0, 0, 0] }: { position?: [number
           const col = i % 3;
           const row = Math.floor(i / 3);
           
-          const x = (col - 1) * 1.5;
-          const y = 0.5 - (row * 0.65); // Start at Y=0.5 and go down
+          const x = (col - 1) * 1.2;
+          const y = 0.7 - (row * 0.7); // Adjust start and row spacing
           
           return (
-            <Folder3DItem
-              key={session}
-              name={session}
-              position={[x, y, 0]}
-              onClick={() => setActiveSession(session)}
-            />
+            <group key={session} position={[x, y, 0]} scale={0.75}>
+              <Folder3DItem
+                name={session}
+                position={[0, 0, 0]}
+                onClick={() => setActiveSession(session)}
+              />
+            </group>
           );
         })}
       </group>

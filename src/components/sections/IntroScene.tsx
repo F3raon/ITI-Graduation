@@ -246,16 +246,6 @@ export function IntroScene({ position = [0, 0, 8] }: { position?: [number, numbe
   const titleFontSize  = isMobile ? 0.14 : 0.19;
   const taglineFontSize = isMobile ? 0.085 : 0.11;
 
-  const [visible, setVisible] = useState(true);
-
-  useFrame(() => {
-    // Intro Scene is visible until a bit after the first section (ENTRY)
-    const isVisible = scrollStore.current < SECTION_MAP['ENTRY'].end + 0.1;
-    if (visible !== isVisible) setVisible(isVisible);
-  });
-
-  if (!visible) return null;
-
   return (
     <group position={position}>
       {/* Dark atmospheric floor */}

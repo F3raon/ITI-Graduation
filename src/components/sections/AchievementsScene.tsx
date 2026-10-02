@@ -173,7 +173,7 @@ export function AchievementsScene({ position = [0, 0, -82] }: { position?: [numb
     if (visible !== isVisible) setVisible(isVisible);
   });
 
-  if (!visible) return null;
+  
 
   return (
     <group position={position} scale={scale}>

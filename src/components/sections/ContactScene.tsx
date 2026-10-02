@@ -110,7 +110,7 @@ export function ContactScene({ position = [0, 0, -98] }: { position?: [number, n
     }
   });
 
-  if (!visible) return null;
+  
 
   return (
     <group position={position} scale={scale}>
